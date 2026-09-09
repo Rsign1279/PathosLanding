@@ -1,0 +1,9 @@
+.DS_Store
+.claude/
+node_modules/
+*.blend
+*.blend1
+*.mp4
+*.zip
+**/frames/
+*.log

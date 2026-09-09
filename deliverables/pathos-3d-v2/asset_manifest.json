@@ -1,0 +1,273 @@
+{
+  "objects": 84,
+  "mesh_objects": 57,
+  "triangles": 436679,
+  "duration_seconds": 48,
+  "fps": 24,
+  "nets": [
+    {
+      "net": "SDA_BME280",
+      "from": "ESP32_S3.GPIO8",
+      "to": "BME280.SDA"
+    },
+    {
+      "net": "SDA_MAX30102",
+      "from": "BME280.SDA",
+      "to": "MAX30102.SDA"
+    },
+    {
+      "net": "SDA_MPU6050",
+      "from": "MAX30102.SDA",
+      "to": "MPU6050.SDA"
+    },
+    {
+      "net": "SDA_TMP117",
+      "from": "MPU6050.SDA",
+      "to": "TMP117.SDA"
+    },
+    {
+      "net": "SDA_ADS1115",
+      "from": "TMP117.SDA",
+      "to": "ADS1115.SDA"
+    },
+    {
+      "net": "SCL_BME280",
+      "from": "ESP32_S3.GPIO9",
+      "to": "BME280.SCL"
+    },
+    {
+      "net": "SCL_MAX30102",
+      "from": "BME280.SCL",
+      "to": "MAX30102.SCL"
+    },
+    {
+      "net": "SCL_MPU6050",
+      "from": "MAX30102.SCL",
+      "to": "MPU6050.SCL"
+    },
+    {
+      "net": "SCL_TMP117",
+      "from": "MPU6050.SCL",
+      "to": "TMP117.SCL"
+    },
+    {
+      "net": "SCL_ADS1115",
+      "from": "TMP117.SCL",
+      "to": "ADS1115.SCL"
+    },
+    {
+      "net": "3V3_BME280",
+      "from": "ESP32_S3.3V3",
+      "to": "BME280.3V3"
+    },
+    {
+      "net": "3V3_MAX30102",
+      "from": "BME280.3V3",
+      "to": "MAX30102.3V3"
+    },
+    {
+      "net": "3V3_MPU6050",
+      "from": "MAX30102.3V3",
+      "to": "MPU6050.3V3"
+    },
+    {
+      "net": "3V3_TMP117",
+      "from": "MPU6050.3V3",
+      "to": "TMP117.3V3"
+    },
+    {
+      "net": "3V3_ADS1115",
+      "from": "TMP117.3V3",
+      "to": "ADS1115.3V3"
+    },
+    {
+      "net": "GND_BME280",
+      "from": "ESP32_S3.GND",
+      "to": "BME280.GND"
+    },
+    {
+      "net": "GND_MAX30102",
+      "from": "BME280.GND",
+      "to": "MAX30102.GND"
+    },
+    {
+      "net": "GND_MPU6050",
+      "from": "MAX30102.GND",
+      "to": "MPU6050.GND"
+    },
+    {
+      "net": "GND_TMP117",
+      "from": "MPU6050.GND",
+      "to": "TMP117.GND"
+    },
+    {
+      "net": "GND_ADS1115",
+      "from": "TMP117.GND",
+      "to": "ADS1115.GND"
+    },
+    {
+      "net": "3V3_GSR_Module",
+      "from": "ADS1115.3V3",
+      "to": "GSR_Module.3V3"
+    },
+    {
+      "net": "GND_GSR_Module",
+      "from": "ADS1115.GND",
+      "to": "GSR_Module.GND"
+    },
+    {
+      "net": "3V3_MicroSD_Breakout",
+      "from": "ADS1115.3V3",
+      "to": "MicroSD_Breakout.3V3"
+    },
+    {
+      "net": "GND_MicroSD_Breakout",
+      "from": "ADS1115.GND",
+      "to": "MicroSD_Breakout.GND"
+    },
+    {
+      "net": "SPI_CLK",
+      "from": "ESP32_S3.GPIO12",
+      "to": "MicroSD_Breakout.CLK"
+    },
+    {
+      "net": "SPI_MISO",
+      "from": "ESP32_S3.GPIO13",
+      "to": "MicroSD_Breakout.MISO"
+    },
+    {
+      "net": "SPI_MOSI",
+      "from": "ESP32_S3.GPIO11",
+      "to": "MicroSD_Breakout.MOSI"
+    },
+    {
+      "net": "SPI_CS",
+      "from": "ESP32_S3.GPIO10",
+      "to": "MicroSD_Breakout.CS"
+    },
+    {
+      "net": "GSR_OUT_to_ADS_A0",
+      "from": "GSR_Module.OUT",
+      "to": "ADS1115.A0"
+    },
+    {
+      "net": "Electrode_1",
+      "from": "GSR_Electrode_Left.CONTACT",
+      "to": "GSR_Module.E1"
+    },
+    {
+      "net": "Electrode_2",
+      "from": "GSR_Electrode_Right.CONTACT",
+      "to": "GSR_Module.E2"
+    },
+    {
+      "net": "USB 5V",
+      "from": "PowerBank.USB_A",
+      "to": "ESP32_S3.USB_C",
+      "note": "No physical laptop cable"
+    },
+    {
+      "net": "ADDR",
+      "from": "ADS1115.ADDR",
+      "to": "ADS1115.3V3",
+      "address": "0x49"
+    }
+  ],
+  "shots": [
+    {
+      "frame": 1,
+      "name": "01 HERO INTRO"
+    },
+    {
+      "frame": 114,
+      "name": "01 HERO ORBIT"
+    },
+    {
+      "frame": 120,
+      "name": "02 EXPLODED VIEW"
+    },
+    {
+      "frame": 270,
+      "name": "02 EXPLODED HOLD"
+    },
+    {
+      "frame": 276,
+      "name": "03 THE BRAIN"
+    },
+    {
+      "frame": 354,
+      "name": "03 BRAIN MACRO"
+    },
+    {
+      "frame": 360,
+      "name": "04 SENSOR HIGHWAY"
+    },
+    {
+      "frame": 477,
+      "name": "04 BUS TO CONTROLLER"
+    },
+    {
+      "frame": 480,
+      "name": "05 GSR DATA PATH"
+    },
+    {
+      "frame": 594,
+      "name": "05 ADC TO I2C"
+    },
+    {
+      "frame": 600,
+      "name": "06 STORAGE"
+    },
+    {
+      "frame": 666,
+      "name": "06 SPI TRANSFER"
+    },
+    {
+      "frame": 672,
+      "name": "07 WI-FI"
+    },
+    {
+      "frame": 774,
+      "name": "07 WIRELESS RECEIVER"
+    },
+    {
+      "frame": 780,
+      "name": "08 LAPTOP"
+    },
+    {
+      "frame": 894,
+      "name": "08 LIVE SIGNALS"
+    },
+    {
+      "frame": 900,
+      "name": "09 FULL PIPELINE"
+    },
+    {
+      "frame": 1002,
+      "name": "09 PIPELINE HOLD"
+    },
+    {
+      "frame": 1008,
+      "name": "10 REASSEMBLY"
+    },
+    {
+      "frame": 1152,
+      "name": "10 FINAL HERO"
+    }
+  ],
+  "version": 2,
+  "movie": {
+    "width": 1920,
+    "height": 1080,
+    "native_rendered_fps": 24,
+    "frames": 1152,
+    "engine": "EEVEE",
+    "samples": 16
+  },
+  "detail_still": {
+    "width": 3840,
+    "height": 2160,
+    "engine": "CYCLES",
+    "samples": 128
+  }
+}
