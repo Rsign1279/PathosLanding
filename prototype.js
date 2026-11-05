@@ -130,7 +130,7 @@ function resetExplore() {
 }
 function buildSignals() {
  const geometry=new THREE.SphereGeometry(.00095,8,6);
- const material=new THREE.MeshBasicMaterial({color:0xd2af70});
+ const material=new THREE.MeshBasicMaterial({color:0xb8577a});
  for(const [name,path] of Object.entries(paths)){
   if(!/^(SDA_|SPI_|GSR_OUT|Electrode_)/.test(name))continue;
   const wire=objects[name];if(!wire)continue;
@@ -141,7 +141,7 @@ function buildSignals() {
  a.y+=.025;b.y+=.09;
  const curve=new THREE.QuadraticBezierCurve3(a,a.clone().lerp(b,.5).add(v([0,.13,0])),b);
  // Discrete dashes make the wireless path unambiguously non-physical.
- const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(64)),new THREE.LineDashedMaterial({color:0xd9c98a,dashSize:.006,gapSize:.006,transparent:true,opacity:.35}));
+ const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(64)),new THREE.LineDashedMaterial({color:0x7b5d23,dashSize:.006,gapSize:.006,transparent:true,opacity:.35}));
  line.computeLineDistances();scene.add(line);wireless.push({line,curve});
  for(let i=0;i<3;i++){const dot=new THREE.Mesh(geometry,material);scene.add(dot);wireless.push({dot,curve,offset:i/3});}
 }
