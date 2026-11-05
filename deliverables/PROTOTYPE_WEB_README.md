@@ -10,7 +10,7 @@ GLBs were not modified.
 
 - `prototype.js` owns one deterministic scroll timeline: clip time, camera,
   cable signals, material emphasis, wireless indicators, and chapter state.
-- `prototype.css` scopes the dark ink/yellow styling and responsive layouts to the section.
+- `prototype.css` scopes the black/gold styling and responsive layouts to the section.
 - The supplied Draco GLB is loaded with locally bundled decoders; the supplied
   standard GLB is the decoder-error fallback. Three.js 0.165.0 is bundled locally
   and shared with the existing hero renderer through the import map.

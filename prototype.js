@@ -130,7 +130,7 @@ function resetExplore() {
 }
 function buildSignals() {
  const geometry=new THREE.SphereGeometry(.00095,8,6);
- const material=new THREE.MeshBasicMaterial({color:0xffd400});
+ const material=new THREE.MeshBasicMaterial({color:0xd2af70});
  for(const [name,path] of Object.entries(paths)){
   if(!/^(SDA_|SPI_|GSR_OUT|Electrode_)/.test(name))continue;
   const wire=objects[name];if(!wire)continue;
@@ -206,7 +206,7 @@ function render(stamp) {
 async function init() {
  try{
  renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
- renderer.setClearColor(0x1b1a14,0);
+ renderer.setClearColor(0x000000,0);
  quality=Math.min(devicePixelRatio,innerWidth<800?1.25:1.5);
  renderer.setPixelRatio(quality);renderer.outputColorSpace=THREE.SRGBColorSpace;
  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;
