@@ -25,7 +25,7 @@ body { overflow-x: clip; }
 .prototype-chapters { position:relative; margin-top:calc(-100svh + 64px); pointer-events:none; }
 .prototype-chapter { margin-left:65%; width:31%; min-height:95svh; display:flex; flex-direction:column; justify-content:center; padding:120px 0; pointer-events:none; }
 .prototype-chapter:nth-child(2),.prototype-chapter:nth-child(4) { min-height:125svh; }
-.prototype-chapter h2 { color:#f3e9e1; font-family:var(--font-display); font-size:clamp(30px,3.2vw,50px); line-height:1.08; letter-spacing:0; margin:22px 0; font-weight:400; }
+.prototype-chapter h2 { color:#f3e9e1; font-family:var(--font-display); font-size:clamp(30px,3.2vw,50px); line-height:1.1; letter-spacing:-.03em; margin:22px 0; font-weight:500; }
 .prototype-chapter p { color:#c9c3b4; font-size:clamp(14px,1.2vw,17px); line-height:1.75; max-width:390px; }
 .prototype-kicker { font-family:var(--font-body); font-weight:700; color:#d2af70; font-size:12px; letter-spacing:.18em; }
 .prototype-chapter .prototype-note { font-size:12px; line-height:1.7; margin-top:24px; padding-top:20px; border-top:1px solid #3a372f; color:#958f80; }
