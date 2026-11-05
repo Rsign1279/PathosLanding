@@ -264,15 +264,36 @@ async function initHalftones() {
     arts.forEach(a => a.poke());
   };
 
-  hero.addEventListener('pointermove', e => {
+  // Track the pointer on the whole document: the hand hangs below the hero's
+  // bottom edge, where the next section sits on top of it, so hero-only
+  // listeners would miss the cursor there.
+  const canvases = [hand, board];
+  const overArt = (x, y) => {
+    const pad = REPEL_RADIUS;
+    if (canvases.some(c => {
+      const r = c.getBoundingClientRect();
+      return x > r.left - pad && x < r.right + pad && y > r.top - pad && y < r.bottom + pad;
+    })) return true;
+    const h = hero.getBoundingClientRect();
+    return x >= h.left && x <= h.right && y >= h.top && y <= h.bottom;
+  };
+
+  document.addEventListener('pointermove', e => {
     if (e.pointerType === 'touch') return;
-    move(e.clientX, e.clientY);
-    ring.classList.add('on');
-  });
-  hero.addEventListener('pointerleave', leave);
+    if (overArt(e.clientX, e.clientY)) {
+      move(e.clientX, e.clientY);
+      ring.classList.add('on');
+    } else if (pointer.active) {
+      leave();
+    }
+  }, { passive: true });
+  document.documentElement.addEventListener('pointerleave', () => { if (pointer.active) leave(); });
   // Touch: dragging a finger across the art parts the dots too (no ring).
-  hero.addEventListener('touchmove', e => { const t = e.touches[0]; if (t) move(t.clientX, t.clientY); }, { passive: true });
-  hero.addEventListener('touchend', leave, { passive: true });
+  document.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    if (t && overArt(t.clientX, t.clientY)) move(t.clientX, t.clientY);
+  }, { passive: true });
+  document.addEventListener('touchend', () => { if (pointer.active) leave(); }, { passive: true });
   addEventListener('scroll', () => { if (pointer.active) arts.forEach(a => a.poke()); }, { passive: true });
 }
 
