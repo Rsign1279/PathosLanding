@@ -177,6 +177,10 @@ async function initHalftones() {
     console.warn('Halftone art unavailable:', err.message);
   }
 
+  // Pause the idle drift once the hero is off screen.
+  const heroEl = document.getElementById('hero');
+  new IntersectionObserver(([e]) => document.documentElement.classList.toggle('hero-off', !e.isIntersecting)).observe(heroEl);
+
   // Gentle pointer parallax on desktop; the canvases are composited layers.
   if (reduceMotion || !matchMedia('(pointer: fine)').matches) return;
   const hero = document.getElementById('hero');
@@ -194,32 +198,96 @@ async function initHalftones() {
   });
 }
 
-/* ---------- Device tilt ---------- */
+/* ---------- Device tour ----------
+   Scroll through the tall #device-tour section: the iPad tilts in, then turns
+   between screens, and the screenshot switches at the peak of each turn.
+   Targets are computed on scroll; a rAF loop eases toward them and stops once
+   settled, so nothing runs while the section is idle or off screen. */
 
 function initDevice() {
+  const section = document.getElementById('device-tour');
   const device = document.getElementById('device');
-  if (!device) return;
+  if (!section || !device) return;
+  const shots = Array.from(device.querySelectorAll('.screen-shot'));
+  const steps = Array.from(section.querySelectorAll('.step-btn'));
+  const caps = Array.from(section.querySelectorAll('.device-caption'));
+  const n = shots.length;
+  let index = 0;
 
-  const io = new IntersectionObserver(([entry]) => {
-    device.classList.toggle('live', entry.isIntersecting);
-  });
-  io.observe(device);
-
-  if (reduceMotion) { device.style.transform = 'none'; return; }
-
-  let ticking = false;
-  function update() {
-    ticking = false;
-    const rect = device.getBoundingClientRect();
-    const vh = innerHeight;
-    if (rect.top > vh || rect.bottom < 0) return;
-    const p = Math.min(1, Math.max(0, (vh - rect.top) / (vh * 0.75)));
-    const e = 1 - Math.pow(1 - p, 2);
-    device.style.transform = `perspective(1600px) rotateX(${(1 - e) * 16}deg) scale(${0.93 + e * 0.07})`;
+  function show(i) {
+    if (i === index) return;
+    index = i;
+    shots.forEach((el, k) => el.classList.toggle('is-on', k === i));
+    steps.forEach((el, k) => el.classList.toggle('is-on', k === i));
+    caps.forEach((el, k) => el.classList.toggle('is-on', k === i));
   }
-  addEventListener('scroll', () => { if (!ticking) { ticking = true; raf(update); } }, { passive: true });
-  addEventListener('resize', update, { passive: true });
-  update();
+
+  // Scroll range during which the stage is pinned.
+  const range = () => Math.max(1, section.offsetHeight - innerHeight);
+  const progress = () => Math.min(1, Math.max(0, -section.getBoundingClientRect().top / range()));
+
+  steps.forEach((btn, i) => btn.addEventListener('click', () => {
+    const top = section.getBoundingClientRect().top + scrollY + range() * ((i + 0.5) / n);
+    scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }));
+
+  const smooth = t => t * t * (3 - 2 * t);
+  const cur = { rx: 0, ry: 0, rz: 0, s: 1 };
+  const tgt = { rx: 0, ry: 0, rz: 0, s: 1 };
+  let running = false, visible = false;
+
+  function computeTargets() {
+    const rect = section.getBoundingClientRect();
+    const vh = innerHeight;
+    // Entry: from first sight until the stage pins, the device tilts flat.
+    const enter = smooth(Math.min(1, Math.max(0, 1 - rect.top / vh)));
+    const p = progress();
+    const x = p * n;                               // 0..n across the screens
+    show(Math.min(n - 1, Math.floor(x)));
+    // Turn around each boundary (1..n-1): peaks exactly when the screen switches.
+    let turn = 0;
+    for (let b = 1; b < n; b++) {
+      const d = Math.abs(x - b);
+      if (d < 0.42) turn = smooth(1 - d / 0.42) * (b % 2 ? 1 : -1);
+    }
+    tgt.rx = (1 - enter) * 26 + Math.abs(turn) * 4;
+    tgt.ry = turn * 18;
+    tgt.rz = (1 - enter) * -5 + turn * -1.2;
+    tgt.s = 0.9 + enter * 0.1 - Math.abs(turn) * 0.025;
+  }
+
+  function apply() {
+    device.style.setProperty('--rx', cur.rx.toFixed(2) + 'deg');
+    device.style.setProperty('--ry', cur.ry.toFixed(2) + 'deg');
+    device.style.setProperty('--rz', cur.rz.toFixed(2) + 'deg');
+    device.style.setProperty('--s', cur.s.toFixed(4));
+  }
+
+  function loop() {
+    let moving = false;
+    for (const k in cur) {
+      const d = tgt[k] - cur[k];
+      if (Math.abs(d) > 0.001) { cur[k] += d * 0.16; moving = true; } else cur[k] = tgt[k];
+    }
+    apply();
+    if (moving && visible) raf(loop); else running = false;
+  }
+
+  function onScroll() {
+    computeTargets();
+    if (reduceMotion) return;
+    if (!running && visible) { running = true; raf(loop); }
+  }
+
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) onScroll(); },
+    { rootMargin: '200px 0px' }).observe(section);
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll, { passive: true });
+
+  // Start in the tilted pose so the first frame matches the entry animation.
+  computeTargets();
+  if (!reduceMotion) Object.assign(cur, tgt);
+  apply();
 }
 
 /* ---------- Images + lightbox ---------- */
