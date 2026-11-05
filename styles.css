@@ -512,6 +512,219 @@ body.lightbox-open { overflow: hidden; }
   .grid--4 { grid-template-columns: 1fr; }
 }
 
+/* ==========================================================================
+   Marble cards, larger type, tighter rhythm
+   Cards sit on the marble art under a dark tint (heavier where text starts,
+   lighter toward the far corner so the marble shows). Text is cream.
+   ========================================================================== */
+
+:root {
+  --on-dark: #f6efe7;
+  --on-dark-2: #ddd2c6;
+  --on-dark-3: #b7ab9c;
+  --dark-line: rgba(255, 255, 255, 0.1);
+}
+
+body { font-size: 18px; }
+
+/* --- Marble surfaces --- */
+.card, .panel, .callout, .is-isnt p, .shot, .contact {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #16120e;
+  border: 1px solid rgba(10, 8, 6, 0.5);
+  color: var(--on-dark-2);
+  box-shadow: 0 1px 2px rgba(40, 25, 10, 0.08), 0 16px 34px -22px rgba(40, 25, 10, 0.55);
+}
+.card::before, .panel::before, .callout::before, .is-isnt p::before, .shot::before, .contact::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(135deg, rgba(14, 10, 7, 0.9) 0%, rgba(14, 10, 7, 0.76) 52%, rgba(14, 10, 7, 0.42) 100%),
+    url('assets/marble-sm.webp') var(--mp, 50% 40%) / cover no-repeat;
+  transition: transform 0.7s var(--ease);
+}
+/* Long lists keep a steadier tint so every row stays readable. */
+.panel::before {
+  background:
+    linear-gradient(180deg, rgba(14, 10, 7, 0.84), rgba(14, 10, 7, 0.88)),
+    url('assets/marble-sm.webp') var(--mp, 30% 60%) / cover no-repeat;
+}
+.card:hover::before, .shot:hover::before { transform: scale(1.06); }
+.card, .panel, .callout, .is-isnt p, .shot, .contact { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+
+/* Different crop of the art per card */
+.grid > :nth-child(4n+1) { --mp: 8% 30%; }
+.grid > :nth-child(4n+2) { --mp: 55% 20%; }
+.grid > :nth-child(4n+3) { --mp: 92% 60%; }
+.grid > :nth-child(4n+4) { --mp: 30% 90%; }
+.gallery > :nth-child(1) { --mp: 15% 80%; }
+.gallery > :nth-child(2) { --mp: 60% 15%; }
+.gallery > :nth-child(3) { --mp: 95% 50%; }
+.is-isnt p:first-child { --mp: 50% 25%; }
+.is-isnt p:last-child { --mp: 85% 75%; }
+.contact { --mp: 70% 30%; }
+.contact::before {
+  background:
+    linear-gradient(100deg, rgba(10, 8, 6, 0.95) 0%, rgba(10, 8, 6, 0.88) 55%, rgba(10, 8, 6, 0.55) 100%),
+    url('assets/marble-sm.webp') var(--mp) / cover no-repeat;
+}
+
+/* --- Text on marble --- */
+.card-kicker, .card h3, .sensor-row h3, .log h3, .partner-list h3, .workshop-list h3, .person h3,
+.specs dd, .shot-caption-text strong, .is-isnt p { color: var(--on-dark); }
+.card-text, .sensor-row p, .log p, .partner-list p, .workshop-list p, .callout p:last-child,
+.checks li, .lines li { color: var(--on-dark-2); }
+.step, .sensor-row code, .role, .callout-label { color: var(--gold-light); }
+.specs dt, .log time, .shot-caption-text span { color: var(--on-dark-3); }
+.log .is-now time { color: var(--gold-light); }
+.log .is-now time::after { background: var(--pink); }
+
+.sensor-row, .log li, .partner-list > div, .workshop-list li { border-top-color: var(--dark-line); }
+.checks li, .lines li, .specs > div { border-top-color: var(--dark-line); }
+.sensor-row--head { background: rgba(0, 0, 0, 0.35); color: var(--on-dark-3); }
+.sensor-row:hover:not(.sensor-row--head) { background: rgba(255, 255, 255, 0.04); }
+.checks li::before { border-color: #9fd3a8; }
+.checks--open li::before { border-color: var(--on-dark-3); }
+
+.pill { background: rgba(255, 255, 255, 0.1); color: #e6dccf; }
+.pill--live { background: rgba(120, 190, 130, 0.18); color: #b2e0ba; }
+.pill--no { background: rgba(240, 163, 187, 0.18); color: var(--pink); }
+.initials { background: rgba(0, 0, 0, 0.45); box-shadow: inset 0 0 0 1px var(--dark-line); }
+.is-isnt p { border-style: solid; }
+
+/* Photos: caption sits on the marble strip under the image */
+.shot img { position: relative; z-index: 0; }
+.shot.is-missing::before { position: static; z-index: auto; background: none; color: var(--on-dark-3); transform: none; }
+
+/* --- Larger type --- */
+.announce { font-size: 14px; padding: 7px 12px; }
+.hero-inner { max-width: 840px; }
+.hero-title { font-size: clamp(38px, 4.9vw, 64px); }
+.hero-sub { font-size: 20px; max-width: 32em; }
+.btn { font-size: 15.5px; min-height: 44px; padding: 0 18px; }
+.logo { font-size: 18.5px; }
+.logo--caps { font-size: 13px; }
+.logo--caps small { font-size: 9.5px; }
+.logo--heavy { font-size: 22px; }
+.logo--mono { font-size: 16.5px; }
+.logo--serif { font-size: 20px; }
+.nav-link { font-size: 15.5px; }
+.brand { font-size: 18px; }
+
+.eyebrow { font-size: 14px; margin-bottom: 10px; }
+.sec-head { max-width: 700px; margin-bottom: 26px; }
+.sec-head h2 { font-size: clamp(34px, 4.8vw, 56px); }
+.sec-head p:not(.eyebrow) { margin-top: 10px; font-size: 19px; }
+.card { padding: 24px; }
+.card-kicker { font-size: 19.5px; margin-bottom: 8px; }
+.card-text { font-size: 16.5px; line-height: 1.55; }
+.card h3 { font-size: 19.5px; margin: 8px 0 6px; }
+.step { font-size: 14px; }
+.statement { font-size: 23px; margin-top: 24px; max-width: 720px; }
+.sensor-row { padding: 18px 24px; }
+.sensor-row--head { font-size: 13px; }
+.sensor-row h3 { font-size: 17.5px; }
+.sensor-row code { font-size: 15px; }
+.sensor-row p { font-size: 16.5px; }
+.pill { font-size: 13.5px; padding: 4px 10px; }
+.callout { margin-top: 18px; padding: 20px 24px; }
+.callout-label { font-size: 14px; }
+.callout p:last-child { font-size: 16.5px; }
+.checks li, .lines li { font-size: 16.5px; padding-top: 8px; padding-bottom: 8px; }
+.checks li::before { top: 16px; }
+.checks--open li::before { top: 14px; }
+.lines li::before { top: 18px; }
+.specs { font-size: 16px; }
+.specs dt { font-size: 13px; }
+.shot-caption { padding: 14px 16px 16px; }
+.shot-caption-text strong { font-size: 16.5px; }
+.shot-caption-text span { font-size: 15px; }
+.log li { padding: 18px 24px; grid-template-columns: 120px 1fr; }
+.log time { font-size: 14px; }
+.log h3 { font-size: 19.5px; }
+.log p { font-size: 16.5px; }
+.partner-list > div { padding: 16px 24px; }
+.partner-list h3 { font-size: 18.5px; }
+.partner-list p { font-size: 16.5px; }
+.is-isnt p { font-size: 18px; padding: 18px 22px; display: flex; align-items: baseline; gap: 12px; }
+.is-isnt .pill { margin-right: 0; flex: none; }
+.workshop-list li { padding: 16px 24px; }
+.workshop-list h3 { font-size: 17.5px; }
+.workshop-list p { font-size: 16.5px; }
+.initials { width: 44px; height: 44px; font-size: 14px; }
+.person h3 { font-size: 20px; margin-top: 14px; }
+.role { font-size: 13.5px; }
+.fine { font-size: 15.5px; margin-top: 16px; max-width: 700px; }
+.contact p { font-size: 18px; }
+.contact h2 { font-size: clamp(34px, 4.8vw, 56px); }
+.contact-email { font-size: 27px; margin-top: 18px; }
+.contact-links { font-size: 16.5px; margin-top: 18px; }
+.form-group label { font-size: 14.5px; }
+.form-group input, .form-group textarea { font-size: 16.5px; padding: 11px 13px; }
+.form-intro { font-size: 14px; }
+.footer-links { font-size: 16px; }
+.footer-fine { font-size: 14px; }
+.step-btn { font-size: 15px; height: 38px; padding: 0 14px; }
+.step-btn span { font-size: 12.5px; }
+.device-caption { font-size: 17px; }
+.device-captions { max-width: 680px; }
+.lightbox-caption span { font-size: 16px; }
+
+.logos { max-width: 1040px; gap: 18px 34px; }
+.halftone--hand { top: 560px; width: min(27vw, 400px); }
+.logos { max-width: 860px; }
+@media (max-width: 1280px) { .logos { max-width: 640px; } }
+/* --- Less vertical whitespace --- */
+.hero { padding-top: 124px; padding-bottom: 32px; }
+.hero-title { margin-top: 26px; }
+.hero-sub { margin-top: 16px; }
+.hero-cta { margin-top: 22px; }
+.logos { margin-top: 44px; }
+.device-section { height: 340vh; }
+.device-meta { gap: 10px; }
+.section { padding: 56px 0; }
+.cv { contain-intrinsic-size: auto 700px; }
+.contact { padding: 34px; gap: 32px; }
+.footer { padding: 24px 0 32px; }
+.footer-inner { padding-top: 22px; }
+
+/* --- Cursor ring for the hero art --- */
+.cursor-ring {
+  position: fixed; left: 0; top: 0; z-index: 90; pointer-events: none;
+  width: calc(var(--r) * 2); height: calc(var(--r) * 2);
+  border-radius: 50%;
+  border: 1.5px solid rgba(123, 93, 35, 0.55);
+  background: radial-gradient(circle, rgba(210, 175, 112, 0.1) 0%, rgba(210, 175, 112, 0) 70%);
+  opacity: 0; transition: opacity 0.25s var(--ease);
+  will-change: transform;
+}
+.cursor-ring::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%; background: var(--gold);
+}
+.cursor-ring.on { opacity: 1; }
+
+@media (max-width: 720px) {
+  body { font-size: 17px; }
+  .hero { padding-top: 104px; }
+  .hero-sub { font-size: 18px; }
+  .logos { margin-top: 36px; }
+  .device-section { height: 300vh; }
+  .section { padding: 40px 0; }
+  .sec-head { margin-bottom: 20px; }
+  .sec-head h2 { font-size: 34px; }
+  .sec-head p:not(.eyebrow) { font-size: 17.5px; }
+  .card { padding: 20px; }
+  .sensor-row, .log li, .partner-list > div, .workshop-list li { padding-left: 18px; padding-right: 18px; }
+  .log li { grid-template-columns: 1fr; }
+  .statement { font-size: 20px; }
+  .contact { padding: 24px 20px; }
+  .step-btn { font-size: 12.5px; height: 34px; padding: 0 4px; }
+  .device-caption { font-size: 15.5px; }
+  .device-captions { height: 4.8em; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }

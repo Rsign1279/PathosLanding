@@ -10,11 +10,11 @@ body { overflow-x: clip; }
   --stage-top: 76px;
   --stage-h: calc(100svh - 92px);
   position: relative; z-index: 2;
-  padding: 96px 0 40px;
+  padding: 56px 0 32px;
   background: var(--bg);
   color: var(--ink);
 }
-.prototype-head { margin-bottom: 36px; }
+.prototype-head { margin-bottom: 24px; }
 
 .prototype-stage {
   position: sticky; top: var(--stage-top);
@@ -83,7 +83,7 @@ body { overflow-x: clip; }
 .prototype-tools label { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
 .prototype select { max-width: 230px; padding-right: 30px; cursor: pointer; font-family: var(--font-body); }
 
-.prototype-detail { position: absolute; left: 22px; bottom: 22px; z-index: 3; width: 58%; font-size: 13px; line-height: 1.5; color: var(--text); }
+.prototype-detail { position: absolute; left: 22px; bottom: 22px; z-index: 3; width: 58%; font-size: 14.5px; line-height: 1.5; color: var(--text); }
 .prototype-explore-help {
   position: absolute; top: 58px; left: 22px; z-index: 3; max-width: 56%;
   padding: 7px 11px; border-radius: 8px;
@@ -115,41 +115,51 @@ body { overflow-x: clip; }
 
 .prototype-card {
   padding: 22px 24px;
-  background: rgba(251, 247, 242, 0.94);
-  border: 1px solid var(--line);
+  position: relative; isolation: isolate; overflow: hidden;
+  background: #16120e;
+  border: 1px solid rgba(10, 8, 6, 0.5);
   border-radius: 18px;
-  box-shadow: 0 1px 2px rgba(40, 25, 10, 0.05), 0 24px 50px -28px rgba(40, 25, 10, 0.45);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  opacity: 0.4;
+  box-shadow: 0 1px 2px rgba(40, 25, 10, 0.08), 0 24px 50px -28px rgba(40, 25, 10, 0.55);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  opacity: 0.72;
+  filter: saturate(0.6) brightness(0.8);
   transform: translateY(8px) scale(0.985);
-  transition: opacity 0.35s var(--ease), transform 0.45s var(--ease);
+  transition: opacity 0.3s var(--ease), filter 0.3s var(--ease), transform 0.45s var(--ease);
 }
-.prototype-chapter.is-current .prototype-card { opacity: 1; transform: none; }
+.prototype-card::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(135deg, rgba(14, 10, 7, 0.9) 0%, rgba(14, 10, 7, 0.78) 55%, rgba(14, 10, 7, 0.5) 100%),
+    url('assets/marble-sm.webp') var(--mp, 60% 30%) / cover no-repeat;
+}
+.prototype-chapter:nth-child(3n+2) .prototype-card { --mp: 10% 70%; }
+.prototype-chapter:nth-child(3n) .prototype-card { --mp: 90% 45%; }
+.prototype-chapter.is-current .prototype-card { opacity: 1; filter: none; transform: none; }
 .prototype.is-exploring .prototype-card { opacity: 0.2; }
 
-.prototype-kicker { font-family: var(--font-mono); font-size: 12px; color: var(--gold); }
+.prototype-kicker { font-family: var(--font-mono); font-size: 13.5px; color: var(--gold-light); }
 .prototype-chapter h2 {
   margin: 10px 0 10px;
   font-family: var(--font-display); font-weight: 500;
-  font-size: clamp(24px, 2.3vw, 32px); line-height: 1.12; letter-spacing: -0.03em;
-  color: var(--ink);
+  font-size: clamp(26px, 2.5vw, 36px); line-height: 1.12; letter-spacing: -0.03em;
+  color: #f6efe7;
 }
-.prototype-chapter p { font-size: 15px; line-height: 1.6; color: var(--text); }
+.prototype-chapter p { font-size: 17px; line-height: 1.55; color: #ddd2c6; }
 .prototype-chapter .prototype-note {
-  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line);
-  font-family: var(--font-mono); font-size: 11.5px; line-height: 1.6; color: var(--muted);
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.6; color: #b7ab9c;
 }
 .prototype-cta {
   display: inline-flex; align-items: center; margin-top: 16px; pointer-events: auto;
   min-height: 40px; padding: 0 16px; border-radius: 8px;
   font-size: 14px; font-weight: 500; text-decoration: none;
-  background: var(--ink); color: var(--bg);
+  background: var(--gold-light); color: var(--ink);
 }
-.prototype-cta:hover { background: #2a231d; }
+.prototype-cta:hover { background: #e2c389; }
 
 /* Phones and narrow tablets: model on top, text card at the bottom of the frame */
 @media (max-width: 800px) {
-  .prototype { --stage-top: 72px; --stage-h: calc(100svh - 84px); padding-top: 72px; }
+  .prototype { --stage-top: 72px; --stage-h: calc(100svh - 84px); padding-top: 40px; }
   .prototype-stage { width: calc(100% - 24px); min-height: 560px; border-width: 8px; border-radius: 22px; }
   .prototype-topline { height: 40px; padding: 0 12px; font-size: 11px; }
   .prototype-topline a { font-size: 12px; padding: 4px 8px; }
@@ -168,8 +178,8 @@ body { overflow-x: clip; }
   /* Chapters 2 and 4 are taller (more animation); keep their cards at the same height on screen. */
   .prototype-chapter:nth-child(2), .prototype-chapter:nth-child(4) { padding-bottom: calc(190px + 5svh); }
   .prototype-card { padding: 16px 18px; border-radius: 14px; }
-  .prototype-chapter h2 { font-size: 22px; margin: 6px 0; }
-  .prototype-chapter p { font-size: 13.5px; line-height: 1.5; }
+  .prototype-chapter h2 { font-size: 23px; margin: 6px 0; }
+  .prototype-chapter p { font-size: 15px; line-height: 1.5; }
   .prototype-chapter .prototype-note { font-size: 10.5px; margin-top: 10px; padding-top: 8px; }
 }
 

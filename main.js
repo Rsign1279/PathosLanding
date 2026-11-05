@@ -93,6 +93,10 @@ async function loadDots(url) {
   return { ...head, count, x, y, r, c };
 }
 
+// Shared pointer state for the hero art (client coordinates; null when away).
+const pointer = { x: 0, y: 0, active: false };
+const REPEL_RADIUS = 78;          // CSS px; matches the visible cursor ring
+
 function halftone(canvas, data, from) {
   const ctx = canvas.getContext('2d');
   const n = data.count;
@@ -100,7 +104,7 @@ function halftone(canvas, data, from) {
   const groups = data.palette.map(() => []);
   for (let i = 0; i < n; i++) groups[data.c[i]].push(i);
 
-  // Each dot starts scattered off to one side and settles in, wrist/cable first.
+  // Intro: each dot starts scattered to one side and settles in.
   const sx = new Float32Array(n), sy = new Float32Array(n), delay = new Float32Array(n);
   for (let i = 0; i < n; i++) {
     const t = data.x[i] / data.w;
@@ -109,8 +113,16 @@ function halftone(canvas, data, from) {
     sy[i] = (Math.random() - 0.5) * 260;
     delay[i] = lead * 0.55 + Math.random() * 0.25;
   }
+  // Interaction: per-dot displacement and velocity (data units), plus a
+  // little per-dot randomness so the dots part unevenly, like grains.
+  const ox = new Float32Array(n), oy = new Float32Array(n);
+  const vx = new Float32Array(n), vy = new Float32Array(n);
+  const jitter = new Float32Array(n);
+  for (let i = 0; i < n; i++) jitter[i] = 0.75 + Math.random() * 0.5;
 
-  let scale = 1, dpr = 1;
+  let scale = 1, dpr = 1, introStart = performance.now(), introDone = reduceMotion;
+  let running = false, displaced = false;
+
   function size() {
     dpr = Math.min(devicePixelRatio || 1, 2);
     const w = canvas.clientWidth;
@@ -122,6 +134,7 @@ function halftone(canvas, data, from) {
   function draw(progress) {
     ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
     ctx.clearRect(0, 0, data.w, data.h);
+    const intro = progress < 1.8;
     for (let g = 0; g < groups.length; g++) {
       const ids = groups[g];
       if (!ids.length) continue;
@@ -129,12 +142,12 @@ function halftone(canvas, data, from) {
       ctx.beginPath();
       for (let k = 0; k < ids.length; k++) {
         const i = ids[k];
-        let px = data.x[i], py = data.y[i];
-        if (progress < 1.8) {
+        let px = data.x[i] + ox[i], py = data.y[i] + oy[i];
+        if (intro) {
           let t = (progress - delay[i]) / 1.0;
           t = t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(1 - t, 3);
-          if (t < 1) { px += sx[i] * (1 - t); py += sy[i] * (1 - t); }
           if (t === 0) continue;
+          if (t < 1) { px += sx[i] * (1 - t); py += sy[i] * (1 - t); }
         }
         ctx.moveTo(px + data.r[i], py);
         ctx.arc(px, py, data.r[i], 0, 6.2832);
@@ -143,59 +156,124 @@ function halftone(canvas, data, from) {
     }
   }
 
-  size();
-  if (reduceMotion) { draw(2); canvas.classList.add('settled'); return { resize() { size(); draw(2); } }; }
-
-  const t0 = performance.now();
-  function frame(now) {
-    const p = (now - t0) / 1000;
-    draw(p);
-    if (p < 1.8) raf(frame);
-    else canvas.classList.add('settled');
+  // Push dots out of the cursor's radius; springs pull them home.
+  function physics() {
+    let moving = false;
+    let mx = -1e6, my = -1e6, R = 0;
+    if (pointer.active) {
+      const rect = canvas.getBoundingClientRect();
+      const k = rect.width / data.w;               // CSS px per data unit (includes drift transform)
+      R = REPEL_RADIUS / k;
+      mx = (pointer.x - rect.left) / k;
+      my = (pointer.y - rect.top) / k;
+    }
+    const R2 = R * R;
+    for (let i = 0; i < n; i++) {
+      const hx = data.x[i] + ox[i] - mx, hy = data.y[i] + oy[i] - my;
+      const d2 = hx * hx + hy * hy;
+      if (d2 < R2 && d2 > 0.0001) {
+        const d = Math.sqrt(d2);
+        const push = (R - d) * 0.22 * jitter[i];
+        vx[i] += (hx / d) * push;
+        vy[i] += (hy / d) * push;
+      }
+      vx[i] = (vx[i] - ox[i] * 0.055) * 0.78;
+      vy[i] = (vy[i] - oy[i] * 0.055) * 0.78;
+      ox[i] += vx[i];
+      oy[i] += vy[i];
+      if (Math.abs(ox[i]) > 0.05 || Math.abs(oy[i]) > 0.05 || Math.abs(vx[i]) > 0.02 || Math.abs(vy[i]) > 0.02) moving = true;
+      else { ox[i] = oy[i] = vx[i] = vy[i] = 0; }
+    }
+    return moving;
   }
-  raf(frame);
-  return { resize() { size(); draw(2); } };
+
+  function near() {
+    if (!pointer.active) return false;
+    const r = canvas.getBoundingClientRect();
+    const m = REPEL_RADIUS;
+    return pointer.x > r.left - m && pointer.x < r.right + m && pointer.y > r.top - m && pointer.y < r.bottom + m;
+  }
+
+  function frame(now) {
+    const p = introDone ? 2 : (now - introStart) / 1000;
+    if (!introDone && p >= 1.8) { introDone = true; canvas.classList.add('settled'); }
+    displaced = (near() || displaced) ? physics() : false;
+    draw(p);
+    if (!introDone || displaced || near()) raf(frame);
+    else running = false;
+  }
+  function wake() { if (!running) { running = true; raf(frame); } }
+
+  size();
+  if (reduceMotion) { draw(2); canvas.classList.add('settled'); }
+  else wake();
+
+  return {
+    resize() { size(); draw(introDone ? 2 : 0); },
+    poke() { if (!reduceMotion && (near() || displaced)) wake(); },
+  };
 }
 
 async function initHalftones() {
   const hand = document.getElementById('htHand');
   const board = document.getElementById('htBoard');
-  if (!hand || !board) return;
+  const hero = document.getElementById('hero');
+  if (!hand || !board || !hero) return;
+
+  // Pause the idle drift once the hero is off screen.
+  new IntersectionObserver(([e]) => document.documentElement.classList.toggle('hero-off', !e.isIntersecting)).observe(hero);
+
+  let arts = [];
   try {
     const [handData, boardData] = await Promise.all([
       loadDots('assets/halftone-hand.bin'),
       loadDots('assets/halftone-board.bin'),
     ]);
-    const a = halftone(hand, handData, 'left');
-    const b = halftone(board, boardData, 'right');
+    arts = [halftone(hand, handData, 'left'), halftone(board, boardData, 'right')];
     let timer;
     addEventListener('resize', () => {
       clearTimeout(timer);
-      timer = setTimeout(() => { a.resize(); b.resize(); }, 120);
+      timer = setTimeout(() => arts.forEach(a => a.resize()), 120);
     }, { passive: true });
   } catch (err) {
     console.warn('Halftone art unavailable:', err.message);
+    return;
   }
+  if (reduceMotion) return;
 
-  // Pause the idle drift once the hero is off screen.
-  const heroEl = document.getElementById('hero');
-  new IntersectionObserver(([e]) => document.documentElement.classList.toggle('hero-off', !e.isIntersecting)).observe(heroEl);
+  // Cursor ring showing the repel radius (mouse/pen only).
+  const ring = document.createElement('div');
+  ring.className = 'cursor-ring';
+  ring.style.setProperty('--r', REPEL_RADIUS + 'px');
+  ring.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(ring);
 
-  // Gentle pointer parallax on desktop; the canvases are composited layers.
-  if (reduceMotion || !matchMedia('(pointer: fine)').matches) return;
-  const hero = document.getElementById('hero');
-  let tx = 0, ty = 0, pending = false;
+  let ringQueued = false;
+  const placeRing = () => {
+    ringQueued = false;
+    ring.style.transform = `translate3d(${pointer.x - REPEL_RADIUS}px, ${pointer.y - REPEL_RADIUS}px, 0)`;
+  };
+  const move = (x, y) => {
+    pointer.x = x; pointer.y = y; pointer.active = true;
+    arts.forEach(a => a.poke());
+    if (!ringQueued) { ringQueued = true; raf(placeRing); }
+  };
+  const leave = () => {
+    pointer.active = false;
+    ring.classList.remove('on');
+    arts.forEach(a => a.poke());
+  };
+
   hero.addEventListener('pointermove', e => {
-    tx = (e.clientX / innerWidth - 0.5);
-    ty = (e.clientY / innerHeight - 0.5);
-    if (pending) return;
-    pending = true;
-    raf(() => {
-      hand.style.translate = `${tx * 14}px ${ty * 10}px`;
-      board.style.translate = `${tx * -14}px ${ty * -10}px`;
-      pending = false;
-    });
+    if (e.pointerType === 'touch') return;
+    move(e.clientX, e.clientY);
+    ring.classList.add('on');
   });
+  hero.addEventListener('pointerleave', leave);
+  // Touch: dragging a finger across the art parts the dots too (no ring).
+  hero.addEventListener('touchmove', e => { const t = e.touches[0]; if (t) move(t.clientX, t.clientY); }, { passive: true });
+  hero.addEventListener('touchend', leave, { passive: true });
+  addEventListener('scroll', () => { if (pointer.active) arts.forEach(a => a.poke()); }, { passive: true });
 }
 
 /* ---------- Device tour ----------
