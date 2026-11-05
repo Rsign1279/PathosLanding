@@ -487,7 +487,7 @@ function initContactForm() {
     const message = form.elements.message.value.trim();
     const subject = encodeURIComponent(`PATHOS inquiry from ${name}`);
     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-    location.href = `mailto:rahul@pathos.io?subject=${subject}&body=${body}`;
+    location.href = `mailto:rsignsv1279@gmail.com?subject=${subject}&body=${body}`;
     show('Your email app should now be open with the message ready to send.', 'success');
     form.reset();
   });
