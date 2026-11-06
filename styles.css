@@ -697,7 +697,7 @@ body { font-size: 18px; }
 }
 
 /* --- Edge art: dot pieces in the side margins (wide screens only) --- */
-.section { position: relative; }
+.section { position: relative; overflow-x: clip; }   /* figures' explosion padding never widens the page */
 .section > .wrap { position: relative; z-index: 1; }
 .edge-art {
   /* width/position are set by main.js (fitWidth + vertical centring) */
@@ -706,16 +706,16 @@ body { font-size: 18px; }
   display: none; pointer-events: none;
   will-change: transform;
 }
-.edge-art[data-side="left"] { left: 20px; }
-.edge-art[data-side="right"] { right: 20px; }
+.edge-art[data-side="left"] { left: 12px; }
+.edge-art[data-side="right"] { right: 12px; }
 /* Only when the gutter beside the 1040px column can hold a real figure */
-@media (min-width: 1420px) { .edge-art { display: block; } }
+@media (min-width: 1360px) { .edge-art { display: block; } }
 
 /* Hero figures fill the gutters beside the 900px-wide hero text */
 @media (min-width: 1400px) {
-  .halftone--hand, .halftone--board { width: clamp(220px, calc((100vw - 900px) / 2 - 40px), 540px); }
-  .halftone--hand { left: 20px; top: 330px; }
-  .halftone--board { right: 20px; top: 112px; }
+  .halftone--hand, .halftone--board { width: clamp(220px, calc((100vw - 900px) / 2 - 28px), 720px); }
+  .halftone--hand { left: 12px; top: 300px; }
+  .halftone--board { right: 12px; top: 100px; }
 }
 
 /* --- Less vertical whitespace --- */
