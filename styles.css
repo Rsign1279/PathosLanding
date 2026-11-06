@@ -760,6 +760,26 @@ body { font-size: 18px; }
   .device-captions { height: 4.8em; }
 }
 
+/* --- Click explosion on the dot figures --- */
+.blast-ring {
+  position: fixed; z-index: 91; pointer-events: none;
+  width: 20px; height: 20px; margin: -10px 0 0 -10px; border-radius: 50%;
+  border: 2px solid rgba(210, 175, 112, 0.9);
+  box-shadow: 0 0 0 1px rgba(184, 87, 122, 0.35), inset 0 0 14px rgba(210, 175, 112, 0.35);
+  animation: blast-ring 0.55s cubic-bezier(0.15, 0.8, 0.25, 1) forwards;
+  will-change: transform, opacity;
+}
+@keyframes blast-ring {
+  0% { transform: scale(0.4); opacity: 1; }
+  100% { transform: scale(13); opacity: 0; border-width: 0.5px; }
+}
+.cursor-ring.pulse { animation: ring-pulse 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes ring-pulse {
+  0% { scale: 1; }
+  35% { scale: 0.72; }
+  100% { scale: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
