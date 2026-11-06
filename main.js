@@ -95,7 +95,7 @@ async function loadDots(url) {
 
 // Shared pointer state for the hero art (client coordinates; null when away).
 const pointer = { x: 0, y: 0, active: false };
-const REPEL_RADIUS = 78;          // CSS px; matches the visible cursor ring
+const REPEL_RADIUS = 58;          // CSS px: how far around the cursor the dots part
 
 function flipData(d) {
   const x = new Float32Array(d.count);
@@ -140,7 +140,7 @@ function halftone(canvas, data, from, opts = {}) {
     dpr = Math.min(devicePixelRatio || 1, 2);
     canvas.style.width = '';
     canvas.style.margin = '';
-    const w = canvas.clientWidth;               // the art's own CSS width
+    const w = opts.fit ? opts.fit(data) : canvas.clientWidth;   // the art's own CSS width
     if (!w) return;
     scale = w / data.w;
     const p = PAD * scale;
@@ -257,6 +257,7 @@ function halftone(canvas, data, from, opts = {}) {
     play,
     get started() { return started; },
     resize() { if (!started) return; size(); draw(introDone ? 2 : 0); },
+    prepare() { size(); },           // size the canvas before it is shown
     poke() { if (!reduceMotion && (near() || displaced)) wake(); },
     // Is a client point on (or just around) this piece?
     hit(x, y, pad = 12) {
@@ -319,26 +320,12 @@ async function initHalftones() {
   }
   if (reduceMotion) return;
 
-  // Cursor ring showing the repel radius (mouse/pen only).
-  const ring = document.createElement('div');
-  ring.className = 'cursor-ring';
-  ring.style.setProperty('--r', REPEL_RADIUS + 'px');
-  ring.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(ring);
-
-  let ringQueued = false;
-  const placeRing = () => {
-    ringQueued = false;
-    ring.style.transform = `translate3d(${pointer.x - REPEL_RADIUS}px, ${pointer.y - REPEL_RADIUS}px, 0)`;
-  };
   const move = (x, y) => {
     pointer.x = x; pointer.y = y; pointer.active = true;
     arts.forEach(a => a.poke());
-    if (!ringQueued) { ringQueued = true; raf(placeRing); }
   };
   const leave = () => {
     pointer.active = false;
-    ring.classList.remove('on');
     arts.forEach(a => a.poke());
   };
 
@@ -361,7 +348,6 @@ async function initHalftones() {
     if (e.pointerType === 'touch') return;
     if (overArt(e.clientX, e.clientY)) {
       move(e.clientX, e.clientY);
-      ring.classList.add('on');
     } else if (pointer.active) {
       leave();
     }
@@ -380,7 +366,6 @@ async function initHalftones() {
     wave.setAttribute('aria-hidden', 'true');
     document.body.appendChild(wave);
     wave.addEventListener('animationend', () => wave.remove(), { once: true });
-    ring.classList.remove('pulse'); void ring.offsetWidth; ring.classList.add('pulse');
   };
   document.addEventListener('pointerdown', e => {
     if (e.pointerType === 'touch' || e.button !== 0) return;
@@ -393,7 +378,7 @@ async function initHalftones() {
     blastAt(e.clientX, e.clientY, e.target);
   });
 
-  // Touch: dragging a finger across the art parts the dots too (no ring).
+  // Touch: dragging a finger across the art parts the dots too.
   document.addEventListener('touchmove', e => {
     const t = e.touches[0];
     if (t && overArt(t.clientX, t.clientY)) move(t.clientX, t.clientY);
@@ -417,6 +402,16 @@ function initEdgeArt(arts) {
   const src = name => name === 'hand' ? 'assets/halftone-hand.bin' : `assets/edge-${name}.bin`;
   const load = name => (cache[name] ||= loadDots(src(name)));
   const items = [];
+  // Fill the free gutter beside the 1040px content column (20px clear of
+  // the viewport edge and of the content), never taller than ~88% of the
+  // section, capped at 480px wide.
+  const CONTENT = 1040, GAP = 20;
+  function fitWidth(el, d) {
+    const gutter = (document.documentElement.clientWidth - CONTENT) / 2;
+    const host = el.offsetParent;
+    const maxH = host ? host.clientHeight * 0.88 : 600;
+    return Math.max(0, Math.min(gutter - 2 * GAP, 480, maxH * d.w / d.h));
+  }
 
   const setup = el => {
     if (el.dataset.ready) return;
@@ -424,50 +419,60 @@ function initEdgeArt(arts) {
     const side = el.dataset.side === 'right' ? 'right' : 'left';
     load(el.dataset.art).then(raw => {
       const data = el.dataset.flip === '1' ? flipData(raw) : raw;
-      const art = halftone(el, data, side, { autoStart: false });
+      const art = halftone(el, data, side, { autoStart: false, fit: d => fitWidth(el, d) });
       arts.push(art);
       const item = { el, art, side, speed: parseFloat(el.dataset.speed || '0.16'), visible: false };
       items.push(item);
+      art.prepare();
+      update();
       showIO.observe(el);
-      queue();
     }).catch(err => console.warn('Edge art unavailable:', err.message));
   };
 
   // Load a piece's data ahead of time; assemble it once it's actually on screen.
   const loadIO = new IntersectionObserver(entries => entries.forEach(e => {
     if (e.isIntersecting) { setup(e.target); loadIO.unobserve(e.target); }
-  }), { rootMargin: '900px 0px' });
+  }), { rootMargin: '2600px 0px' });
   const showIO = new IntersectionObserver(entries => entries.forEach(e => {
     const item = items.find(i => i.el === e.target);
     if (!item) return;
     item.visible = e.isIntersecting;
-    if (e.isIntersecting && e.intersectionRatio > 0.2) item.art.play();
+    if (e.isIntersecting && e.intersectionRatio > 0.3) item.art.play();
     if (e.isIntersecting) queue();
-  }), { threshold: [0, 0.2, 0.5] });
+  }), { threshold: [0, 0.3, 0.6] });
   els.forEach(el => loadIO.observe(el));
 
-  if (reduceMotion) return;
-
-  // Scroll parallax: drift against the scroll and slide out toward the page
-  // edge as the piece moves away from the middle of the screen.
+  // Vertically centre each piece beside its section, with a gentle drift
+  // against the scroll (kept small so a piece never leaves its section).
   let ticking = false;
   function update() {
     ticking = false;
     const mid = innerHeight / 2;
     for (const it of items) {
-      if (!it.visible) continue;
       const host = it.el.offsetParent;
       if (!host) continue;
-      const base = host.getBoundingClientRect().top + it.el.offsetTop + it.el.offsetHeight / 2;
-      const off = base - mid;
-      const y = Math.max(-70, Math.min(70, -off * it.speed));
-      const x = (it.side === 'left' ? -1 : 1) * Math.min(60, Math.abs(off) * 0.06);
-      it.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      const pad = -parseFloat(it.el.style.marginTop || '0') || 0;
+      const artH = it.el.offsetHeight - 2 * pad;
+      const centre = Math.max(0, (host.clientHeight - artH) / 2);
+      let y = centre;
+      if (!reduceMotion) {
+        const off = host.getBoundingClientRect().top + centre + artH / 2 - mid;
+        const room = Math.max(0, Math.min(36, centre - 8));
+        y += Math.max(-room, Math.min(room, -off * it.speed));
+      }
+      it.el.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0)`;
     }
   }
   function queue() { if (!ticking) { ticking = true; raf(update); } }
   addEventListener('scroll', queue, { passive: true });
-  addEventListener('resize', queue, { passive: true });
+  let resizeTimer;
+  addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      items.forEach(i => { if (!i.art.started) i.art.prepare(); });
+      update();
+    }, 160);
+  }, { passive: true });
 }
 
 /* ---------- Device tour ----------
