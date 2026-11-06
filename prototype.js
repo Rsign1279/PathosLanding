@@ -130,7 +130,7 @@ function resetExplore() {
 }
 function buildSignals() {
  const geometry=new THREE.SphereGeometry(.00095,8,6);
- const material=new THREE.MeshBasicMaterial({color:0xa7ecff});
+ const material=new THREE.MeshBasicMaterial({color:0xb8577a});
  for(const [name,path] of Object.entries(paths)){
   if(!/^(SDA_|SPI_|GSR_OUT|Electrode_)/.test(name))continue;
   const wire=objects[name];if(!wire)continue;
@@ -141,7 +141,7 @@ function buildSignals() {
  a.y+=.025;b.y+=.09;
  const curve=new THREE.QuadraticBezierCurve3(a,a.clone().lerp(b,.5).add(v([0,.13,0])),b);
  // Discrete dashes make the wireless path unambiguously non-physical.
- const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(64)),new THREE.LineDashedMaterial({color:0x80c8e0,dashSize:.006,gapSize:.006,transparent:true,opacity:.35}));
+ const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(64)),new THREE.LineDashedMaterial({color:0x7b5d23,dashSize:.006,gapSize:.006,transparent:true,opacity:.35}));
  line.computeLineDistances();scene.add(line);wireless.push({line,curve});
  for(let i=0;i<3;i++){const dot=new THREE.Mesh(geometry,material);scene.add(dot);wireless.push({dot,curve,offset:i/3});}
 }
@@ -206,7 +206,7 @@ function render(stamp) {
 async function init() {
  try{
  renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
- renderer.setClearColor(0x080f19,0);
+ renderer.setClearColor(0x000000,0);
  quality=Math.min(devicePixelRatio,innerWidth<800?1.25:1.5);
  renderer.setPixelRatio(quality);renderer.outputColorSpace=THREE.SRGBColorSpace;
  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;
@@ -217,12 +217,12 @@ async function init() {
  const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();
  const environment=pmrem.fromScene(room,.04);scene.environment=environment.texture;room.dispose();pmrem.dispose();
  scene.environmentIntensity=.45;
- scene.add(new THREE.HemisphereLight(0xe0efff,0x253647,.65));
+ scene.add(new THREE.HemisphereLight(0xf3eee2,0x2b281f,.65));
  const key=new THREE.DirectionalLight(0xffffff,2);key.position.set(-.3,.6,.4);scene.add(key);
  key.castShadow=true;key.shadow.mapSize.set(1024,1024);
  Object.assign(key.shadow.camera,{left:-.45,right:.45,top:.5,bottom:-.5,near:.01,far:2});
  key.shadow.bias=-.00015;key.shadow.normalBias=.0002;key.shadow.radius=3;
- const fill=new THREE.DirectionalLight(0xa8dfff,.6);fill.position.set(.4,.2,-.2);scene.add(fill);
+ const fill=new THREE.DirectionalLight(0xfff0d8,.6);fill.position.set(.4,.2,-.2);scene.add(fill);
  const floor=new THREE.Mesh(new THREE.PlaneGeometry(2,2),new THREE.ShadowMaterial({opacity:.22}));
  floor.rotation.x=-Math.PI/2;floor.position.y=-.004;floor.receiveShadow=true;scene.add(floor);
  controls=new OrbitControls(camera,renderer.domElement);
