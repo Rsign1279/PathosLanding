@@ -696,6 +696,20 @@ body { font-size: 18px; }
   .founder h3 { font-size: 26px; }
 }
 
+/* --- Edge art: dot pieces in the side margins (wide screens only) --- */
+.section { position: relative; }
+.section > .wrap { position: relative; z-index: 1; }
+.edge-art {
+  --ew: clamp(250px, calc((100vw - 1080px) / 2 + 120px), 440px);
+  position: absolute; top: var(--t, 10%); z-index: 0;
+  width: var(--ew); height: auto;
+  display: none; pointer-events: none;
+  will-change: transform;
+}
+.edge-art[data-side="left"] { left: -100px; }
+.edge-art[data-side="right"] { right: -100px; }
+@media (min-width: 1200px) { .edge-art { display: block; } }
+
 /* --- Less vertical whitespace --- */
 .hero { padding-top: 124px; padding-bottom: 32px; }
 .hero-title { margin-top: 26px; }
