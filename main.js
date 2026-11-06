@@ -97,6 +97,13 @@ async function loadDots(url) {
 const pointer = { x: 0, y: 0, active: false };
 const REPEL_RADIUS = 58;          // CSS px: how far around the cursor the dots part
 
+// Rotate 90° clockwise: stands a wide figure upright for the tall gutters.
+function rotateData(d) {
+  const x = new Float32Array(d.count), y = new Float32Array(d.count);
+  for (let i = 0; i < d.count; i++) { x[i] = d.h - d.y[i]; y[i] = d.x[i]; }
+  return { ...d, w: d.h, h: d.w, x, y };
+}
+
 function flipData(d) {
   const x = new Float32Array(d.count);
   for (let i = 0; i < d.count; i++) x[i] = d.w - d.x[i];
@@ -402,15 +409,15 @@ function initEdgeArt(arts) {
   const src = name => name === 'hand' ? 'assets/halftone-hand.bin' : `assets/edge-${name}.bin`;
   const load = name => (cache[name] ||= loadDots(src(name)));
   const items = [];
-  // Fill the free gutter beside the 1040px content column (20px clear of
-  // the viewport edge and of the content), never taller than ~88% of the
-  // section, capped at 480px wide.
-  const CONTENT = 1040, GAP = 20;
+  // Fill the free gutter beside the 1040px content column (12px from the
+  // viewport edge, 16px clear of the content), up to ~96% of the section's
+  // height, capped at 680px wide.
+  const CONTENT = 1040, EDGE = 12, CLEAR = 16;
   function fitWidth(el, d) {
     const gutter = (document.documentElement.clientWidth - CONTENT) / 2;
     const host = el.offsetParent;
-    const maxH = host ? host.clientHeight * 0.88 : 600;
-    return Math.max(0, Math.min(gutter - 2 * GAP, 480, maxH * d.w / d.h));
+    const maxH = host ? host.clientHeight * 0.96 : 700;
+    return Math.max(0, Math.min(gutter - EDGE - CLEAR, 680, maxH * d.w / d.h));
   }
 
   const setup = el => {
@@ -418,7 +425,9 @@ function initEdgeArt(arts) {
     el.dataset.ready = '1';
     const side = el.dataset.side === 'right' ? 'right' : 'left';
     load(el.dataset.art).then(raw => {
-      const data = el.dataset.flip === '1' ? flipData(raw) : raw;
+      let data = raw;
+      if (el.dataset.rotate === '1') data = rotateData(data);
+      if (el.dataset.flip === '1') data = flipData(data);
       const art = halftone(el, data, side, { autoStart: false, fit: d => fitWidth(el, d) });
       arts.push(art);
       const item = { el, art, side, speed: parseFloat(el.dataset.speed || '0.16'), visible: false };
