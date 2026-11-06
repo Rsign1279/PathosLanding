@@ -97,7 +97,16 @@ async function loadDots(url) {
 const pointer = { x: 0, y: 0, active: false };
 const REPEL_RADIUS = 78;          // CSS px; matches the visible cursor ring
 
-function halftone(canvas, data, from) {
+function flipData(d) {
+  const x = new Float32Array(d.count);
+  for (let i = 0; i < d.count; i++) x[i] = d.w - d.x[i];
+  return { ...d, x };
+}
+
+// opts.autoStart = false: stay blank until play() (used for art that
+// assembles when it scrolls into view).
+function halftone(canvas, data, from, opts = {}) {
+  const autoStart = opts.autoStart !== false;
   const ctx = canvas.getContext('2d');
   const n = data.count;
   // Pre-group dots by colour so each frame is one path per colour.
@@ -121,7 +130,7 @@ function halftone(canvas, data, from) {
   for (let i = 0; i < n; i++) jitter[i] = 0.75 + Math.random() * 0.5;
 
   let scale = 1, dpr = 1, introStart = performance.now(), introDone = reduceMotion;
-  let running = false, displaced = false;
+  let running = false, displaced = false, started = autoStart;
 
   function size() {
     dpr = Math.min(devicePixelRatio || 1, 2);
@@ -188,13 +197,15 @@ function halftone(canvas, data, from) {
   }
 
   function near() {
-    if (!pointer.active) return false;
+    if (!pointer.active || !started) return false;
     const r = canvas.getBoundingClientRect();
+    if (!r.width) return false;
     const m = REPEL_RADIUS;
     return pointer.x > r.left - m && pointer.x < r.right + m && pointer.y > r.top - m && pointer.y < r.bottom + m;
   }
 
   function frame(now) {
+    if (!started) { running = false; return; }
     const p = introDone ? 2 : (now - introStart) / 1000;
     if (!introDone && p >= 1.8) { introDone = true; canvas.classList.add('settled'); }
     displaced = (near() || displaced) ? physics() : false;
@@ -204,12 +215,27 @@ function halftone(canvas, data, from) {
   }
   function wake() { if (!running) { running = true; raf(frame); } }
 
-  size();
-  if (reduceMotion) { draw(2); canvas.classList.add('settled'); }
-  else wake();
+  function play() {
+    if (started && !autoStart) return;
+    started = true;
+    size();
+    if (reduceMotion) { draw(2); canvas.classList.add('settled'); return; }
+    introStart = performance.now();
+    introDone = false;
+    wake();
+  }
+
+  if (autoStart) {
+    size();
+    if (reduceMotion) { draw(2); canvas.classList.add('settled'); }
+    else wake();
+  }
 
   return {
-    resize() { size(); draw(introDone ? 2 : 0); },
+    canvas,
+    play,
+    get started() { return started; },
+    resize() { if (!started) return; size(); draw(introDone ? 2 : 0); },
     poke() { if (!reduceMotion && (near() || displaced)) wake(); },
   };
 }
@@ -230,6 +256,7 @@ async function initHalftones() {
       loadDots('assets/halftone-board.bin'),
     ]);
     arts = [halftone(hand, handData, 'left'), halftone(board, boardData, 'right')];
+    initEdgeArt(arts);
     let timer;
     addEventListener('resize', () => {
       clearTimeout(timer);
@@ -267,11 +294,12 @@ async function initHalftones() {
   // Track the pointer on the whole document: the hand hangs below the hero's
   // bottom edge, where the next section sits on top of it, so hero-only
   // listeners would miss the cursor there.
-  const canvases = [hand, board];
   const overArt = (x, y) => {
     const pad = REPEL_RADIUS;
-    if (canvases.some(c => {
-      const r = c.getBoundingClientRect();
+    if (arts.some(a => {
+      if (!a.started) return false;
+      const r = a.canvas.getBoundingClientRect();
+      if (!r.width) return false;
       return x > r.left - pad && x < r.right + pad && y > r.top - pad && y < r.bottom + pad;
     })) return true;
     const h = hero.getBoundingClientRect();
@@ -295,6 +323,74 @@ async function initHalftones() {
   }, { passive: true });
   document.addEventListener('touchend', () => { if (pointer.active) leave(); }, { passive: true });
   addEventListener('scroll', () => { if (pointer.active) arts.forEach(a => a.poke()); }, { passive: true });
+}
+
+/* ---------- Edge art ----------
+   Dot-art pieces in the page's side margins (<canvas class="edge-art">),
+   built from PATHOS photos and renders like the hero art. Each assembles
+   from scattered dots the first time it scrolls into view, then drifts with
+   the scroll (parallax) and parts around the cursor. Data loads only when
+   the first piece nears the viewport; hidden below ~1200px wide. */
+
+function initEdgeArt(arts) {
+  const els = Array.from(document.querySelectorAll('canvas.edge-art'));
+  if (!els.length) return;
+  const cache = {};
+  // data-art names an asset: "hand" reuses the hero hand, others are edge-*.bin.
+  const src = name => name === 'hand' ? 'assets/halftone-hand.bin' : `assets/edge-${name}.bin`;
+  const load = name => (cache[name] ||= loadDots(src(name)));
+  const items = [];
+
+  const setup = el => {
+    if (el.dataset.ready) return;
+    el.dataset.ready = '1';
+    const side = el.dataset.side === 'right' ? 'right' : 'left';
+    load(el.dataset.art).then(raw => {
+      const data = el.dataset.flip === '1' ? flipData(raw) : raw;
+      const art = halftone(el, data, side, { autoStart: false });
+      arts.push(art);
+      const item = { el, art, side, speed: parseFloat(el.dataset.speed || '0.16'), visible: false };
+      items.push(item);
+      showIO.observe(el);
+      queue();
+    }).catch(err => console.warn('Edge art unavailable:', err.message));
+  };
+
+  // Load a piece's data ahead of time; assemble it once it's actually on screen.
+  const loadIO = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { setup(e.target); loadIO.unobserve(e.target); }
+  }), { rootMargin: '900px 0px' });
+  const showIO = new IntersectionObserver(entries => entries.forEach(e => {
+    const item = items.find(i => i.el === e.target);
+    if (!item) return;
+    item.visible = e.isIntersecting;
+    if (e.isIntersecting && e.intersectionRatio > 0.2) item.art.play();
+    if (e.isIntersecting) queue();
+  }), { threshold: [0, 0.2, 0.5] });
+  els.forEach(el => loadIO.observe(el));
+
+  if (reduceMotion) return;
+
+  // Scroll parallax: drift against the scroll and slide out toward the page
+  // edge as the piece moves away from the middle of the screen.
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const mid = innerHeight / 2;
+    for (const it of items) {
+      if (!it.visible) continue;
+      const host = it.el.offsetParent;
+      if (!host) continue;
+      const base = host.getBoundingClientRect().top + it.el.offsetTop + it.el.offsetHeight / 2;
+      const off = base - mid;
+      const y = Math.max(-70, Math.min(70, -off * it.speed));
+      const x = (it.side === 'left' ? -1 : 1) * Math.min(60, Math.abs(off) * 0.06);
+      it.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+    }
+  }
+  function queue() { if (!ticking) { ticking = true; raf(update); } }
+  addEventListener('scroll', queue, { passive: true });
+  addEventListener('resize', queue, { passive: true });
 }
 
 /* ---------- Device tour ----------
