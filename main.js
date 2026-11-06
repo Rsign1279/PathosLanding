@@ -131,18 +131,35 @@ function halftone(canvas, data, from, opts = {}) {
 
   let scale = 1, dpr = 1, introStart = performance.now(), introDone = reduceMotion;
   let running = false, displaced = false, started = autoStart;
+  let boomUntil = 0;                // looser damping right after a click explosion
 
+  // The canvas extends PAD data units past the art on every side (negative
+  // margins keep the art itself in place) so exploding dots stay visible.
+  const PAD = Math.round(Math.max(data.w, data.h) * 0.32);
   function size() {
     dpr = Math.min(devicePixelRatio || 1, 2);
-    const w = canvas.clientWidth;
+    canvas.style.width = '';
+    canvas.style.margin = '';
+    const w = canvas.clientWidth;               // the art's own CSS width
+    if (!w) return;
     scale = w / data.w;
-    canvas.width = Math.round(w * dpr);
-    canvas.height = Math.round(data.h * scale * dpr);
+    const p = PAD * scale;
+    canvas.style.width = (w + 2 * p) + 'px';
+    canvas.style.margin = (-p) + 'px';
+    canvas.width = Math.round((w + 2 * p) * dpr);
+    canvas.height = Math.round((data.h * scale + 2 * p) * dpr);
+  }
+  // Client-space box of the art itself (excluding the padding).
+  function box() {
+    const r = canvas.getBoundingClientRect();
+    const k = r.width / (data.w + 2 * PAD);
+    const p = PAD * k;
+    return { k, left: r.left + p, top: r.top + p, right: r.right - p, bottom: r.bottom - p, width: r.width - 2 * p };
   }
 
   function draw(progress) {
-    ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
-    ctx.clearRect(0, 0, data.w, data.h);
+    ctx.setTransform(dpr * scale, 0, 0, dpr * scale, PAD * scale * dpr, PAD * scale * dpr);
+    ctx.clearRect(-PAD, -PAD, data.w + 2 * PAD, data.h + 2 * PAD);
     const intro = progress < 1.8;
     for (let g = 0; g < groups.length; g++) {
       const ids = groups[g];
@@ -168,13 +185,16 @@ function halftone(canvas, data, from, opts = {}) {
   // Push dots out of the cursor's radius; springs pull them home.
   function physics() {
     let moving = false;
+    // Just after a blast: let dots fly a little, then snap home quickly.
+    const booming = performance.now() < boomUntil;
+    const damp = booming ? 0.9 : 0.8;
+    const spring = booming ? 0.02 : 0.075;
     let mx = -1e6, my = -1e6, R = 0;
     if (pointer.active) {
-      const rect = canvas.getBoundingClientRect();
-      const k = rect.width / data.w;               // CSS px per data unit (includes drift transform)
-      R = REPEL_RADIUS / k;
-      mx = (pointer.x - rect.left) / k;
-      my = (pointer.y - rect.top) / k;
+      const b = box();                             // includes any drift transform
+      R = REPEL_RADIUS / b.k;
+      mx = (pointer.x - b.left) / b.k;
+      my = (pointer.y - b.top) / b.k;
     }
     const R2 = R * R;
     for (let i = 0; i < n; i++) {
@@ -186,8 +206,8 @@ function halftone(canvas, data, from, opts = {}) {
         vx[i] += (hx / d) * push;
         vy[i] += (hy / d) * push;
       }
-      vx[i] = (vx[i] - ox[i] * 0.055) * 0.78;
-      vy[i] = (vy[i] - oy[i] * 0.055) * 0.78;
+      vx[i] = (vx[i] - ox[i] * spring) * damp;
+      vy[i] = (vy[i] - oy[i] * spring) * damp;
       ox[i] += vx[i];
       oy[i] += vy[i];
       if (Math.abs(ox[i]) > 0.05 || Math.abs(oy[i]) > 0.05 || Math.abs(vx[i]) > 0.02 || Math.abs(vy[i]) > 0.02) moving = true;
@@ -198,8 +218,8 @@ function halftone(canvas, data, from, opts = {}) {
 
   function near() {
     if (!pointer.active || !started) return false;
-    const r = canvas.getBoundingClientRect();
-    if (!r.width) return false;
+    const r = box();
+    if (!(r.width > 0)) return false;
     const m = REPEL_RADIUS;
     return pointer.x > r.left - m && pointer.x < r.right + m && pointer.y > r.top - m && pointer.y < r.bottom + m;
   }
@@ -233,10 +253,41 @@ function halftone(canvas, data, from, opts = {}) {
 
   return {
     canvas,
+    box,
     play,
     get started() { return started; },
     resize() { if (!started) return; size(); draw(introDone ? 2 : 0); },
     poke() { if (!reduceMotion && (near() || displaced)) wake(); },
+    // Is a client point on (or just around) this piece?
+    hit(x, y, pad = 12) {
+      if (!started) return false;
+      const r = box();
+      return r.width > 0 && x > r.left - pad && x < r.right + pad && y > r.top - pad && y < r.bottom + pad;
+    },
+    // Mini explosion: kick every dot outward from the click point with a
+    // falloff and a little random spread; the springs bring them home.
+    blast(x, y) {
+      if (reduceMotion || !started) return;
+      const b = box();
+      const cx = (x - b.left) / b.k, cy = (y - b.top) / b.k;
+      const RB = Math.max(data.w, data.h) * 0.85;
+      const power = 120;
+      for (let i = 0; i < n; i++) {
+        let dx = data.x[i] + ox[i] - cx, dy = data.y[i] + oy[i] - cy;
+        let d = Math.sqrt(dx * dx + dy * dy);
+        if (d > RB) continue;
+        if (d < 0.001) { const a = Math.random() * 6.2832; dx = Math.cos(a); dy = Math.sin(a); d = 1; }
+        const f = Math.pow(1 - d / RB, 1.4) * power * jitter[i];
+        const a = (Math.random() - 0.5) * 0.9;       // scatter the angle a bit
+        const ux = dx / d, uy = dy / d;
+        const c = Math.cos(a), s = Math.sin(a);
+        vx[i] += (ux * c - uy * s) * f;
+        vy[i] += (ux * s + uy * c) * f - f * 0.12;   // slight upward lift
+      }
+      boomUntil = performance.now() + 340;
+      displaced = true;
+      wake();
+    },
   };
 }
 
@@ -298,8 +349,8 @@ async function initHalftones() {
     const pad = REPEL_RADIUS;
     if (arts.some(a => {
       if (!a.started) return false;
-      const r = a.canvas.getBoundingClientRect();
-      if (!r.width) return false;
+      const r = a.box();
+      if (!(r.width > 0)) return false;
       return x > r.left - pad && x < r.right + pad && y > r.top - pad && y < r.bottom + pad;
     })) return true;
     const h = hero.getBoundingClientRect();
@@ -316,6 +367,32 @@ async function initHalftones() {
     }
   }, { passive: true });
   document.documentElement.addEventListener('pointerleave', () => { if (pointer.active) leave(); });
+  // Click (or tap) a figure: mini explosion + shockwave ring.
+  const blastAt = (x, y, target) => {
+    if (target && target.closest && target.closest('a, button, input, textarea, select, label, .device, .card, .shot, .prototype-stage')) return;
+    const hitArts = arts.filter(a => a.hit(x, y));
+    if (!hitArts.length) return;
+    hitArts.forEach(a => a.blast(x, y));
+    const wave = document.createElement('div');
+    wave.className = 'blast-ring';
+    wave.style.left = x + 'px';
+    wave.style.top = y + 'px';
+    wave.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(wave);
+    wave.addEventListener('animationend', () => wave.remove(), { once: true });
+    ring.classList.remove('pulse'); void ring.offsetWidth; ring.classList.add('pulse');
+  };
+  document.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'touch' || e.button !== 0) return;
+    blastAt(e.clientX, e.clientY, e.target);
+  });
+  // Touch: use click so a scroll gesture never triggers it.
+  document.addEventListener('click', e => {
+    if (e.pointerType && e.pointerType !== 'touch') return;
+    if (!e.pointerType && !matchMedia('(pointer: coarse)').matches) return;
+    blastAt(e.clientX, e.clientY, e.target);
+  });
+
   // Touch: dragging a finger across the art parts the dots too (no ring).
   document.addEventListener('touchmove', e => {
     const t = e.touches[0];
