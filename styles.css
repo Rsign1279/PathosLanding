@@ -700,15 +700,23 @@ body { font-size: 18px; }
 .section { position: relative; }
 .section > .wrap { position: relative; z-index: 1; }
 .edge-art {
-  --ew: clamp(250px, calc((100vw - 1080px) / 2 + 120px), 440px);
-  position: absolute; top: var(--t, 10%); z-index: 0;
-  width: var(--ew); height: auto;
+  /* width/position are set by main.js (fitWidth + vertical centring) */
+  position: absolute; top: 0; z-index: 0;
+  width: 200px; height: auto;
   display: none; pointer-events: none;
   will-change: transform;
 }
-.edge-art[data-side="left"] { left: -100px; }
-.edge-art[data-side="right"] { right: -100px; }
-@media (min-width: 1200px) { .edge-art { display: block; } }
+.edge-art[data-side="left"] { left: 20px; }
+.edge-art[data-side="right"] { right: 20px; }
+/* Only when the gutter beside the 1040px column can hold a real figure */
+@media (min-width: 1420px) { .edge-art { display: block; } }
+
+/* Hero figures fill the gutters beside the 900px-wide hero text */
+@media (min-width: 1400px) {
+  .halftone--hand, .halftone--board { width: clamp(220px, calc((100vw - 900px) / 2 - 40px), 540px); }
+  .halftone--hand { left: 20px; top: 330px; }
+  .halftone--board { right: 20px; top: 112px; }
+}
 
 /* --- Less vertical whitespace --- */
 .hero { padding-top: 124px; padding-bottom: 32px; }
@@ -723,22 +731,6 @@ body { font-size: 18px; }
 .contact { padding: 34px; gap: 32px; }
 .footer { padding: 24px 0 32px; }
 .footer-inner { padding-top: 22px; }
-
-/* --- Cursor ring for the hero art --- */
-.cursor-ring {
-  position: fixed; left: 0; top: 0; z-index: 90; pointer-events: none;
-  width: calc(var(--r) * 2); height: calc(var(--r) * 2);
-  border-radius: 50%;
-  border: 1.5px solid rgba(123, 93, 35, 0.55);
-  background: radial-gradient(circle, rgba(210, 175, 112, 0.1) 0%, rgba(210, 175, 112, 0) 70%);
-  opacity: 0; transition: opacity 0.25s var(--ease);
-  will-change: transform;
-}
-.cursor-ring::after {
-  content: ""; position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px;
-  border-radius: 50%; background: var(--gold);
-}
-.cursor-ring.on { opacity: 1; }
 
 @media (max-width: 720px) {
   body { font-size: 17px; }
@@ -772,12 +764,6 @@ body { font-size: 18px; }
 @keyframes blast-ring {
   0% { transform: scale(0.4); opacity: 1; }
   100% { transform: scale(13); opacity: 0; border-width: 0.5px; }
-}
-.cursor-ring.pulse { animation: ring-pulse 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
-@keyframes ring-pulse {
-  0% { scale: 1; }
-  35% { scale: 0.72; }
-  100% { scale: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
