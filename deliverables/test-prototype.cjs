@@ -49,31 +49,47 @@ const clip = page => page.evaluate(() => {
   await page.waitForFunction(() => window.pathosPrototype?.stats.ready, { timeout: 120000 });
   const loadMs = Date.now() - t0;
 
-  // 1. Every chapter: correct shot, titles on, frame counter in sync.
-  const chapters = await page.$$eval('#hwHud .hw-chapter', els => els.map((e, i) => ({ i, start: +e.dataset.start, end: +e.dataset.end, final: e.classList.contains('hw-chapter--final') })));
+  // 1. Every shot: correct chapter, titles on (none in the laptop shot), counter in sync.
+  const chapters = await page.$$eval('#hwHud .hw-chapter', els => els.map((e, i) => ({ i, shotStart: +e.dataset.shotStart, start: +e.dataset.start, end: +e.dataset.end })));
   const states = [];
   for (const c of chapters) {
-    const f = (c.final ? 2598 : c.start) + 40;
+    const f = (c.start || c.shotStart) + 40;
     const s = await seek(page, f);
-    const on = await page.$eval(`#hwHud .hw-chapter:nth-child(${c.i + 1})`, el => el.classList.contains('is-on'));
+    const lit = await page.$$eval('#hwHud .hw-chapter', els => els.map(e => e.classList.contains('is-on')));
     const counter = await page.$eval('#hwFrame', el => +el.textContent);
     if (s.chapter !== c.i) throw Error(`Chapter ${c.i + 1}: expected shot ${c.i}, got ${s.chapter}`);
-    if (!on) throw Error(`Chapter ${c.i + 1}: titles not shown at frame ${f}`);
+    if (c.start && !lit[c.i]) throw Error(`Chapter ${c.i + 1}: titles not shown at frame ${f}`);
+    if (!c.start && lit.some(Boolean)) throw Error(`Chapter ${c.i + 1}: titles shown in a shot without titles`);
+    if (lit.filter(Boolean).length > 1) throw Error(`Frame ${f}: more than one chapter's titles shown`);
     if (Math.abs(counter - s.frame) > 1) throw Error(`Chapter ${c.i + 1}: counter ${counter} vs frame ${s.frame}`);
-    states.push({ chapter: c.i + 1, frame: +s.frame.toFixed(2) });
+    states.push({ chapter: c.i + 1, frame: +s.frame.toFixed(2), page: s.page, art: s.art });
     await page.screenshot({ timeout: 180000, path: `${OUT}/chapter-${String(c.i + 1).padStart(2, '0')}.png`, clip: await clip(page) });
   }
 
-  // 2. Title timing: the final card stays hidden until frame 2598, as in the film.
-  await seek(page, 2560);
-  if (await page.$eval('.hw-chapter--final', el => el.classList.contains('is-on'))) throw Error('Final titles shown before frame 2598');
+  // 2. Title timing on the film's frames: chapter 1 leaves at 286, the final
+  //    card waits for 2598.
+  const isOn = sel => page.$eval(sel, el => el.classList.contains('is-on'));
+  // Seeks land within a frame or so; check against the frame actually shown.
+  for (const f of [283, 285, 287, 289]) {
+    const s = await seek(page, f);
+    const shown = Math.round(s.frame), on = await isOn('#hwHud .hw-chapter:nth-child(1)');
+    if (on !== shown < 286) throw Error(`Chapter 1 titles ${on ? 'shown' : 'hidden'} at frame ${shown}`);
+  }
+  for (const f of [2560, 2596, 2600]) {
+    const s = await seek(page, f);
+    const shown = Math.round(s.frame), on = await isOn('.hw-chapter--final');
+    if (on !== shown >= 2598) throw Error(`Final titles ${on ? 'shown' : 'hidden'} at frame ${shown}`);
+  }
 
-  // 3. Route timing: on the sensor highway only TMP117 is lit at 920; all five by 1100.
-  await seek(page, 920);
-  const lit920 = await page.$$eval('#hwHud .hw-chapter:nth-child(4) .hw-route li', l => l.filter(x => x.classList.contains('is-lit')).length);
-  await seek(page, 1100);
-  const lit1100 = await page.$$eval('#hwHud .hw-chapter:nth-child(4) .hw-route li', l => l.filter(x => x.classList.contains('is-lit')).length);
-  if (lit920 !== 1 || lit1100 !== 5) throw Error(`Route timing wrong: ${lit920} lit at 920, ${lit1100} at 1100`);
+  // 3. MacBook screen and table artwork follow the film's keys.
+  const film = [[1990, 0, 0], [2050, 1, 0], [2120, 2, 0], [2200, 3, 0], [2500, 3, 0], [2540, 0, 1], [150, 0, 1], [1000, 0, 0]];
+  const screen = [];
+  for (const [f, pageNo, art] of film) {
+    const s = await seek(page, f);
+    screen.push({ frame: f, page: s.page, art: s.art });
+    if (s.page !== pageNo) throw Error(`Screen page at ${f}: expected ${pageNo}, got ${s.page}`);
+    if (s.art !== art) throw Error(`Table artwork at ${f}: expected ${art}, got ${s.art}`);
+  }
 
   // 4. Reverse scrubbing lands on the same frames.
   for (const i of [6, 2, 0]) {
@@ -88,13 +104,34 @@ const clip = page => page.evaluate(() => {
 
   const stats = await page.evaluate(() => window.pathosPrototype.stats);
 
-  // 6. Phone layout.
+  // 6. Narrow window: no overflow.
   await page.setViewportSize({ width: 390, height: 844 });
   await page.waitForTimeout(400);
-  await seek(page, 1300);
-  await page.screenshot({ timeout: 180000, path: `${OUT}/mobile.png`, clip: await clip(page) });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
-  if (overflow) throw Error('Horizontal overflow on phone');
+  if (overflow) throw Error('Horizontal overflow on a narrow window');
+
+  // 6b. A phone loads the lighter model and the smaller screenshots, and stacks
+  //     the titles under the picture inside the stage.
+  const phoneBrowser = await chromium.launch({ args: ARGS });
+  const phone = await phoneBrowser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
+  const phoneReqs = [];
+  phone.on('request', r => phoneReqs.push(r.url()));
+  phone.on('pageerror', e => errors.push('phone: ' + e.message));
+  await phone.goto('http://127.0.0.1:8000/#prototype', { timeout: 120000 });
+  await phone.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
+  await phone.waitForFunction(() => window.pathosPrototype?.stats.ready, { timeout: 180000 });
+  await seek(phone, 1300);
+  const mobile = await phone.evaluate(() => {
+    const v = document.getElementById('hwView').getBoundingClientRect();
+    const plate = document.querySelector('#hwHud .hw-chapter.is-on .hw-plate').getBoundingClientRect();
+    return { model: window.pathosPrototype.stats.model, compact: document.getElementById('hwView').classList.contains('is-compact'),
+      plateInside: plate.left >= v.left && plate.right <= v.right && plate.bottom <= v.bottom && plate.top >= v.top,
+      overflow: document.documentElement.scrollWidth > innerWidth };
+  });
+  mobile.smallShots = phoneReqs.some(u => /v1-live-instrument-sm\.webp/.test(u));
+  await phone.screenshot({ timeout: 180000, path: `${OUT}/mobile.png`, clip: await clip(phone) });
+  await phoneBrowser.close();
+  if (!/mobile\.glb$/.test(mobile.model) || !mobile.compact || !mobile.plateInside || mobile.overflow || !mobile.smallShots) throw Error('Phone layout: ' + JSON.stringify(mobile));
 
   // 7. Reduced motion: no easing, the frame lands on the target immediately.
   const rm = await browser.newPage({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
@@ -103,8 +140,8 @@ const clip = page => page.evaluate(() => {
   await rm.waitForFunction(() => window.pathosPrototype?.stats.ready, { timeout: 120000 });
   const reduced = await seek(rm, 1600);
 
-  fs.writeFileSync(`${OUT}/validation.json`, JSON.stringify({ errors, loadMs, states, stats, overflow, reduced }, null, 2));
-  console.log(JSON.stringify({ errors, loadMs, chapters: states.length, drawCalls: stats.drawCalls, triangles: stats.triangles, overflow, reducedFrame: +reduced.frame.toFixed(1) }));
+  fs.writeFileSync(`${OUT}/validation.json`, JSON.stringify({ errors, loadMs, states, screen, stats, overflow, mobile, reduced }, null, 2));
+  console.log(JSON.stringify({ errors, loadMs, chapters: states.length, drawCalls: stats.drawCalls, triangles: stats.triangles, overflow, mobile: mobile.model, reducedFrame: +reduced.frame.toFixed(1) }));
   if (errors.length) process.exitCode = 1;
   await browser.close();
 })().catch(e => { console.error(e); process.exit(1); });

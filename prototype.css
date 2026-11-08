@@ -1,10 +1,10 @@
 /* ==========================================================================
    PATHOS hardware in 3D: scroll-driven stage
-   The stage sits in the site's dark device frame. The scene is a warm-black
-   "black table"; titles, routes and the chapter rail use the site palette.
-   Title reveals are driven by frame-accurate CSS variables from prototype.js:
+   The stage sits in the site's dark device frame and plays the Blender film
+   PATHOS_Final_Complete. Title reveals are driven by frame-accurate CSS
+   variables from prototype.js:
      --t  frames since the chapter's titles came in
-     --x  1 → 0 over the last 12 frames of the chapter
+     --x  1 → 0 over the last 3 frames before they leave
    ========================================================================== */
 
 body { overflow-x: clip; }
@@ -41,18 +41,14 @@ body { overflow-x: clip; }
 .hw-skip:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(210, 175, 112, 0.5); }
 
 /* Scene */
-.hw-view { position: absolute; inset: 46px 0 0 0; z-index: 1; }
-.hw-view canvas, .hw-poster { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.hw-poster { object-fit: cover; transition: opacity 0.6s var(--ease); }
-.hw-stage.is-ready .hw-poster { opacity: 0; pointer-events: none; }
-.hw-view::after { /* lens vignette + darker floor for the titles */
-  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
-  background:
-    radial-gradient(64% 80% at 0% 100%, rgba(8, 6, 5, 0.92) 0%, rgba(8, 6, 5, 0.8) 38%, rgba(8, 6, 5, 0) 74%),
-    linear-gradient(270deg, rgba(8, 6, 5, 0.55) 0%, rgba(8, 6, 5, 0) 13%),
-    radial-gradient(120% 90% at 55% 45%, transparent 55%, rgba(8, 6, 5, 0.5) 100%),
-    linear-gradient(180deg, transparent 62%, rgba(8, 6, 5, 0.45) 100%);
+.hw-view { position: absolute; inset: 46px 0 0 0; z-index: 1; background: #060607; }
+.hw-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* The poster is a still of the film's frame, placed where the film renders. */
+.hw-poster {
+  position: absolute; display: block; object-fit: cover; transition: opacity 0.6s var(--ease);
+  left: var(--fx, 0px); top: var(--fy, 0px); width: var(--fw, 100%); height: var(--fh, 100%);
 }
+.hw-stage.is-ready .hw-poster { opacity: 0; pointer-events: none; }
 .hw-status {
   position: absolute; left: 50%; top: 50%; z-index: 3; transform: translate(-50%, -50%);
   padding: 8px 14px; border-radius: 9px; background: rgba(15, 12, 10, 0.78);
@@ -67,64 +63,87 @@ body { overflow-x: clip; }
   background: rgba(15, 12, 10, 0.85); border: 1px solid rgba(210, 175, 112, 0.45);
 }
 
-/* ---------- HUD: chapter titles ---------- */
+/* ---------- HUD: the film's own titles ----------
+   The box is the film's 16:9 frame inside the view (--fx/--fy/--fw/--fh from
+   prototype.js), so every position below is the film's, in cqw/cqh.
+   Sizes are cap heights (font-size-adjust: cap-height), positions are cap
+   tops and baselines measured from the Blender HUD. */
 
-.hw-hud { position: absolute; z-index: 3; left: 40px; bottom: 54px; width: min(560px, 48%); pointer-events: none; }
-.hw-js .hw-chapter { position: absolute; left: 0; bottom: 0; width: 100%; visibility: hidden; }
+.hw-hud {
+  --serif: Didot, "Bodoni Moda", "Bodoni 72", "Libre Bodoni", Georgia, serif;
+  --sans: Arial, "Helvetica Neue", Helvetica, Arimo, "Liberation Sans", sans-serif;
+  position: absolute; z-index: 3; pointer-events: none;
+  left: var(--fx, 0px); top: var(--fy, 0px); width: var(--fw, 100%); height: var(--fh, 100%);
+  container-type: size;
+}
+.hw-js .hw-chapter { position: absolute; inset: 0; visibility: hidden; }
 .hw-js .hw-chapter.is-on { visibility: visible; }
-.hw-js .hw-chapter > * {
-  --a: clamp(0, calc((var(--t, 0) - var(--d, 0)) / 14), 1);
-  opacity: calc(var(--a) * var(--x, 1));
-  transform: translate3d(0, calc((1 - var(--a)) * 18px + (1 - var(--x, 1)) * -10px), 0);
-  will-change: transform, opacity;
+/* The film pops each element in over two frames; a four-frame fade is the
+   scroll-friendly equivalent, and it leaves on the exact frame. */
+.hw-js .hw-chapter > * { opacity: calc(clamp(0, (var(--t, 0) + 1) / 4, 1) * var(--x, 1)); }
+
+/* A text line whose box runs exactly from cap top to baseline. */
+.hw-eyebrow, .hw-title, .hw-caption, .hw-line {
+  position: absolute; margin: 0; white-space: nowrap;
+  font-size: calc(var(--cap) / 0.7); font-size-adjust: cap-height 0.7;
+  line-height: 1; text-box: trim-both cap alphabetic;
+  top: var(--top); left: var(--left, 4.73cqw);
+  font-weight: 400; font-kerning: normal;
 }
-.hw-eyebrow { --d: 0; display: flex; gap: 8px; margin: 0 0 12px; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.06em; color: var(--gold-light); }
-.hw-eyebrow span:nth-child(2) { color: #5e554b; }
+@supports not (text-box: trim-both cap alphabetic) {
+  /* Without text-box trimming, shift by the font's own half-leading (about
+     0.15 em above the cap height at line-height 1). */
+  .hw-eyebrow, .hw-title, .hw-caption, .hw-line { top: calc(var(--top) - var(--cap) / 0.7 * 0.15); }
+}
+
+.hw-eyebrow {
+  --cap: 1.12cqh; --top: 8.11cqh;
+  font-family: var(--sans); color: #c2a574; letter-spacing: 0; white-space: pre;
+}
 .hw-title {
-  --d: 5;
-  margin: 0; font-size: clamp(34px, 3.7vw, 58px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 500;
-  color: #f6efe7; text-wrap: balance;
+  --cap: 2.88cqh; --top: 14.41cqh;
+  font-family: var(--serif); color: #cac7c2; letter-spacing: 0.005em;
 }
-.hw-title em { font-style: normal; color: var(--gold-light); }
-.hw-route {
-  --d: 11;
-  list-style: none; margin: 18px 0 0; padding: 0;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 0;
-  font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.02em;
-}
-.hw-route li { position: relative; color: #6f665c; padding-bottom: 5px; transition: color 0.25s; }
-.hw-route li + li::before { content: "→"; margin: 0 10px; color: #4a433d; transition: color 0.25s; }
-.hw-route li::after { /* progress of the signal along this segment */
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px; border-radius: 2px;
-  background: var(--gold-light); transform-origin: left; transform: scaleX(var(--p, 0)); opacity: 0;
-}
-.hw-route li + li::after { left: 30px; }
-.hw-route li.is-lit { color: #f6efe7; }
-.hw-route li.is-lit::before { color: var(--gold-light); }
-.hw-route li.is-live { color: var(--gold-light); text-shadow: 0 0 18px rgba(210, 175, 112, 0.55); }
-.hw-route li.is-live::after { opacity: 1; }
+.hw-title--intro { --cap: 3.39cqh; --top: 13.9cqh; letter-spacing: 0.04em; }
+.hw-title--final { --cap: 5.64cqh; --top: 10.7cqh; letter-spacing: 0.04em; }
 
-.hw-mods {
-  --d: 11;
-  list-style: none; margin: 18px 0 0; padding: 0;
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px;
-  font-family: var(--font-mono); font-size: 11.5px;
+.hw-plate {
+  position: absolute; left: 1.8cqw; right: 1.8cqw; top: 85.14cqh; bottom: 5.14cqh;
+  background: #c8c4c1;
 }
-.hw-mods li { position: relative; overflow: hidden; padding: 6px 8px; border-radius: 6px; color: #6f665c; background: rgba(255, 255, 255, 0.035); border: 1px solid rgba(255, 255, 255, 0.06); transition: color 0.25s, border-color 0.25s; }
-.hw-mods li::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(210, 175, 112, 0.22), rgba(210, 175, 112, 0.08)); transform-origin: left; transform: scaleX(var(--p, 0)); }
-.hw-mods li span { position: relative; }
-.hw-mods li.is-lit { color: #f6efe7; border-color: rgba(210, 175, 112, 0.35); }
+.hw-plate--short { right: 23cqw; }
+.hw-plate--final { right: 23cqw; top: 83.33cqh; bottom: 2.11cqh; }
+.hw-plate > * { --left: 2.93cqw; }
+.hw-caption {
+  --cap: 1.2cqh; --top: 4.67cqh;
+  font-family: var(--sans); color: #221e1a; letter-spacing: 0.005em; text-transform: uppercase; white-space: pre;
+}
+.hw-line { --cap: 1.95cqh; font-family: var(--serif); letter-spacing: 0.035em; }
+.hw-line--ink { --top: 0.99cqh; color: #221e1a; }
+.hw-line--gold { --top: 5.97cqh; color: #8d6f50; }
 
-.hw-desc { --d: 18; margin: 16px 0 0; max-width: 46ch; font-size: 15.5px; line-height: 1.55; color: #cfc4b8; }
-.hw-chapter--final .hw-title { font-size: clamp(40px, 4.6vw, 72px); }
+.hw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
 .hw-cta {
-  --d: 24;
-  display: inline-flex; align-items: center; margin-top: 18px; pointer-events: auto;
-  min-height: 42px; padding: 0 16px; border-radius: 9px;
-  font-size: 14.5px; font-weight: 500; text-decoration: none;
-  background: var(--gold-light); color: var(--ink); transition: background 0.2s;
+  position: absolute; right: 1.8cqw; bottom: 2.11cqh; height: 14.56cqh; pointer-events: auto;
+  display: inline-flex; align-items: center; padding: 0 2.2cqw;
+  font-family: var(--font-body); font-size: clamp(12px, 1.15cqw, 16px); font-weight: 500; text-decoration: none; white-space: nowrap;
+  background: #c8c4c1; color: #221e1a; transition: background 0.2s, color 0.2s;
 }
-.hw-cta:hover { background: #e2c389; }
+.hw-cta:hover, .hw-cta:focus-visible { background: #e4ddd3; }
+
+/* Compact views (phones, narrow windows): the picture sits higher and the
+   titles stack underneath it at a readable size, in the same style. */
+.hw-view.is-compact .hw-hud { left: 14px; right: 14px; top: auto; bottom: 16px; width: auto; height: auto; container-type: normal; }
+.hw-view.is-compact .hw-chapter { inset: auto 0 0 0; display: flex; flex-direction: column; align-items: flex-start; }
+.hw-view.is-compact :is(.hw-eyebrow, .hw-title, .hw-caption, .hw-line) { position: static; top: auto; left: auto; }
+.hw-view.is-compact .hw-eyebrow { --cap: 8px; margin-bottom: 12px; }
+.hw-view.is-compact .hw-title { --cap: 19px; margin-bottom: 18px; white-space: normal; }
+.hw-view.is-compact .hw-title--final { --cap: 30px; }
+.hw-view.is-compact .hw-plate { position: static; align-self: stretch; padding: 15px 14px; display: grid; gap: 10px; }
+.hw-view.is-compact .hw-caption { --cap: 8.5px; white-space: normal; line-height: 1.6; text-box: none; }
+.hw-view.is-compact .hw-line { --cap: 14px; }
+.hw-view.is-compact .hw-cta { position: static; height: 40px; margin-top: 10px; padding: 0 14px; font-size: 13.5px; }
 
 /* ---------- Chapter rail + scrubber ---------- */
 
@@ -135,6 +154,7 @@ body { overflow-x: clip; }
   font-family: var(--font-mono); font-size: 11.5px; color: #5e554b; cursor: pointer;
   transition: color 0.2s, background 0.2s;
 }
+.hw-rail-btn { text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7); }
 .hw-rail-btn .l { order: -1; opacity: 0; transform: translateX(6px); transition: opacity 0.2s, transform 0.25s var(--ease); white-space: nowrap; }
 .hw-rail-btn .n { position: relative; padding-right: 14px; }
 .hw-rail-btn .n::after { content: ""; position: absolute; right: 0; top: 50%; width: 6px; height: 1.5px; background: currentColor; transition: width 0.25s var(--ease); }
@@ -153,8 +173,7 @@ body { overflow-x: clip; }
 html:not(.hw-js) .hw-track { height: auto; }
 html:not(.hw-js) .hw-stage { position: relative; top: 0; height: auto; }
 html:not(.hw-js) .hw-view { position: relative; inset: auto; aspect-ratio: 16 / 9; margin-top: 46px; }
-html:not(.hw-js) .hw-hud { position: relative; left: auto; bottom: auto; width: auto; padding: 28px; display: grid; gap: 28px; }
-html:not(.hw-js) .hw-rail, html:not(.hw-js) .hw-scrub, html:not(.hw-js) .hw-status { display: none; }
+html:not(.hw-js) .hw-rail, html:not(.hw-js) .hw-scrub, html:not(.hw-js) .hw-status, html:not(.hw-js) .hw-hud { display: none; }
 
 /* ---------- Narrow screens ---------- */
 
@@ -167,28 +186,11 @@ html:not(.hw-js) .hw-rail, html:not(.hw-js) .hw-scrub, html:not(.hw-js) .hw-stat
   .hw-clock { margin-left: 0; }
   .hw-skip { margin-left: auto; font-size: 12px; padding: 4px 8px; }
   .hw-view { inset: 40px 0 0 0; }
-  .hw-hud { left: 18px; right: 18px; bottom: 22px; width: auto; }
-  .hw-hud::before { /* readability scrim behind the titles */
-    content: ""; position: absolute; left: -18px; right: -18px; bottom: -22px; height: 150%;
-    background: linear-gradient(180deg, transparent, rgba(12, 10, 8, 0.88) 45%);
-    z-index: -1;
-  }
-  .hw-title { font-size: 30px; }
-  .hw-chapter--final .hw-title { font-size: 34px; }
-  .hw-route { margin-top: 12px; font-size: 11.5px; }
-  .hw-route li + li::before { margin: 0 6px; }
-  .hw-route li + li::after { left: 20px; }
-  .hw-mods { margin-top: 12px; gap: 4px; font-size: 10px; }
-  .hw-mods li { padding: 4px 5px; }
-  .hw-desc { margin-top: 10px; font-size: 13.5px; }
   .hw-rail { display: none; }
 }
 
 @media (max-height: 680px) and (min-width: 801px) {
   .hw-stage { min-height: 0; }
-  .hw-hud { bottom: 30px; }
-  .hw-title { font-size: 34px; }
-  .hw-desc { display: none; }
 }
 
 @media print {
