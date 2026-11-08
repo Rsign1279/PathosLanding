@@ -299,6 +299,62 @@ function halftone(canvas, data, from, opts = {}) {
   };
 }
 
+/* Hero figures: on desktop, place each figure in the largest clear area
+   beside the hero text. Obstacles are the real line boxes of the headline
+   and subtitle, the announcement pill, the button and each partner logo, so
+   the figure can grow wherever the text is narrow. Returns the art width and
+   sets the canvas's top; below 1100px the stylesheet decides. */
+const HERO_EDGE = 12, HERO_CLEAR = 18, HERO_MAX = 760;
+function heroObstacles(hero) {
+  const out = [];
+  const lines = el => { const r = document.createRange(); r.selectNodeContents(el); return [...r.getClientRects()]; };
+  hero.querySelectorAll('.hero-title, .hero-sub').forEach(el => lines(el).forEach(q => q.width && out.push(q)));
+  hero.querySelectorAll('.announce, .hero-cta .btn, .logos li').forEach(el => out.push(el.getBoundingClientRect()));
+  return out;
+}
+function heroFit(canvas, hero, d, side) {
+  canvas.style.top = ''; canvas.style.left = ''; canvas.style.right = '';
+  if (innerWidth < 1100) return canvas.clientWidth;
+  const hr = hero.getBoundingClientRect();
+  const vw = document.documentElement.clientWidth;
+  const obs = heroObstacles(hero).map(q => ({ t: q.top - hr.top, b: q.bottom - hr.top, l: q.left, r: q.right }));
+  const nav = document.getElementById('nav');
+  const minY = (nav ? nav.getBoundingClientRect().bottom - hr.top : 70) + 14;
+  const maxY = hr.height - 12;
+  const ar = d.h / d.w;
+  // Free width for a band [y0, y1] on this side.
+  const free = (y0, y1) => {
+    let lim = side === 'left' ? Infinity : -Infinity;
+    for (const o of obs) {
+      if (o.b < y0 - HERO_CLEAR || o.t > y1 + HERO_CLEAR) continue;
+      lim = side === 'left' ? Math.min(lim, o.l) : Math.max(lim, o.r);
+    }
+    const space = side === 'left' ? (lim === Infinity ? vw : lim) - HERO_EDGE - HERO_CLEAR
+                                  : vw - (lim === -Infinity ? 0 : lim) - HERO_EDGE - HERO_CLEAR;
+    return Math.min(space, HERO_MAX);
+  };
+  let best = { w: 0, y: minY };
+  for (let y0 = minY; y0 < maxY - 80; y0 += 6) {
+    let lo = 80, hi = Math.min(HERO_MAX, (maxY - y0) / ar);
+    if (hi < lo) break;
+    for (let k = 0; k < 18; k++) {             // largest w whose box is clear
+      const w = (lo + hi) / 2;
+      if (w <= free(y0, y0 + w * ar)) lo = w; else hi = w;
+    }
+    if (lo > best.w + 0.5) best = { w: lo, y: y0 };
+  }
+  if (best.w < 120) return canvas.clientWidth;   // no good spot: fall back to CSS
+  // Centre the figure vertically inside the clear band it can occupy.
+  let yTop = best.y, h = best.w * ar;
+  let up = yTop, down = yTop;
+  while (up - 4 >= minY && best.w <= free(up - 4, up - 4 + h)) up -= 4;
+  while (down + 4 + h <= maxY && best.w <= free(down + 4, down + 4 + h)) down += 4;
+  yTop = (up + down) / 2;
+  canvas.style.top = yTop.toFixed(1) + 'px';
+  canvas.style[side] = HERO_EDGE + 'px';
+  return Math.floor(best.w);
+}
+
 async function initHalftones() {
   const hand = document.getElementById('htHand');
   const board = document.getElementById('htBoard');
@@ -314,7 +370,12 @@ async function initHalftones() {
       loadDots('assets/halftone-hand.bin'),
       loadDots('assets/halftone-board.bin'),
     ]);
-    arts = [halftone(hand, handData, 'left'), halftone(board, boardData, 'right')];
+    arts = [
+      halftone(hand, handData, 'left', { fit: d => heroFit(hand, hero, d, 'left') }),
+      halftone(board, boardData, 'right', { fit: d => heroFit(board, hero, d, 'right') }),
+    ];
+    // Web fonts change the text's width; re-place the figures once they load.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => arts.slice(0, 2).forEach(a => a.resize()));
     initEdgeArt(arts);
     let timer;
     addEventListener('resize', () => {
