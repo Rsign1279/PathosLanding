@@ -20,12 +20,13 @@ for how the model is exported, how scroll maps to frames, and how to run the tes
 
 The MacBook in the model shows screenshots of the PATHOS v1 software, not live readings or V4 inference.
 
-## Photo deck (`#field`)
+## The build: photo deck (`#product`)
 
-`field.js` + `field.css` turn the five field photos (`assets/field-*.webp`,
-with `-sm` variants for phones) into a scroll-driven deck. Scrolling moves the
-cards along a U-shaped path; the centred card faces you, neighbours bank with
-the curve and turn, and outer cards flip to a marble back with their caption.
-Sideways drag swipes, the arrows step, tapping a side card centres it and
-tapping the centre card opens it in the lightbox. With reduced motion or no
-JavaScript the photos show as a plain grid.
+`field.js` + `field.css` turn the MVP 1 and field photos (`assets/field-*.webp`,
+with `-sm` variants for phones) into a scroll-driven deck under the "The build"
+heading. Scrolling moves the cards along a U-shaped path; the centred card faces
+you, neighbours bank with the curve and turn, and outer cards flip to a marble
+back with their caption. Sideways drag swipes, the arrows step, tapping a side
+card centres it and tapping the centre card opens it in the lightbox. With
+reduced motion or no JavaScript the photos show as a plain grid. The track
+length scales with the number of cards (`--n` on `#flTrack`).
