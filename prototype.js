@@ -86,8 +86,13 @@ function progressAt(frame) {
   const c = chapters[i];
   return clamp(cum[i] + ((frame - c.shotStart) / (c.shotEnd - c.shotStart)) * (cum[i + 1] - cum[i]), 0, 1);
 }
+// The stage pins `top` px below the viewport edge, so the film runs from the
+// moment it pins until the moment it releases.
+let pinTop = parseFloat(getComputedStyle(stage).top) || 0;
+addEventListener('resize', () => { pinTop = parseFloat(getComputedStyle(stage).top) || 0; });
 const scrollRange = () => Math.max(1, track.offsetHeight - stage.offsetHeight);
-const scrollProgress = () => clamp(-track.getBoundingClientRect().top / scrollRange(), 0, 1);
+const scrollProgress = () => clamp((pinTop - track.getBoundingClientRect().top) / scrollRange(), 0, 1);
+const scrollYForFrame = f => track.getBoundingClientRect().top + scrollY - pinTop + progressAt(f) * scrollRange() + 1;
 
 /* ---------- Rail + scrubber ---------- */
 
@@ -100,8 +105,7 @@ const railButtons = chapters.map(c => {
   b.addEventListener('click', () => {
     // Land where the shot's titles are up (or a moment into a shot without titles).
     const f = c.start ? Math.min(c.start + 40, c.end - 12) : c.shotStart + 40;
-    const top = track.getBoundingClientRect().top + scrollY + progressAt(f) * scrollRange() + 1;
-    scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
+    scrollTo({ top: scrollYForFrame(f), behavior: reduced ? 'auto' : 'smooth' });
   });
   rail.appendChild(b);
   return b;
@@ -480,8 +484,9 @@ async function init() {
     shownPage = -1; dirty = true; wake();
   }).catch(() => {}));
 
-  new IntersectionObserver(([e]) => {
-    visible = e.isIntersecting;
+  // Use the latest entry: a fast jump can queue several in one callback.
+  new IntersectionObserver(entries => {
+    visible = entries[entries.length - 1].isIntersecting;
     if (visible) { dirty = true; wake(); }
   }, { rootMargin: '120px 0px' }).observe(stage);
   // Backstop for a missed observer callback: on scroll, confirm visibility directly.
@@ -535,5 +540,5 @@ init().catch(err => {
 window.pathosPrototype = {
   stats, film,
   get state() { return { frame: cur, target: tgt, chapter: activeChapter, visible, rendering: !!raf, page: shownPage, art: uArt.value }; },
-  frameAt, progressAt,
+  frameAt, progressAt, scrollProgress, scrollYForFrame,
 };

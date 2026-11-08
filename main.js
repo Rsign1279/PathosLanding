@@ -362,7 +362,7 @@ async function initHalftones() {
   if (!hand || !board || !hero) return;
 
   // Pause the idle drift once the hero is off screen.
-  new IntersectionObserver(([e]) => document.documentElement.classList.toggle('hero-off', !e.isIntersecting)).observe(hero);
+  new IntersectionObserver(es => document.documentElement.classList.toggle('hero-off', !es[es.length - 1].isIntersecting)).observe(hero);
 
   let arts = [];
   try {
@@ -626,7 +626,7 @@ function initDevice() {
     if (!running && visible) { running = true; raf(loop); }
   }
 
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) onScroll(); },
+  new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) onScroll(); },
     { rootMargin: '200px 0px' }).observe(section);
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', onScroll, { passive: true });

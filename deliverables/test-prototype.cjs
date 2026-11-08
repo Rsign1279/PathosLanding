@@ -10,16 +10,9 @@ async function seek(page, frame) {
   // Sections above may still change height (lazy rendering), so re-aim until the
   // scroll position maps to the requested frame, then wait for playback to arrive.
   for (let attempt = 0; attempt < 6; attempt++) {
-    await page.evaluate(f => {
-      const tr = document.getElementById('hwTrack'), st = document.getElementById('hwStage');
-      const range = tr.offsetHeight - st.offsetHeight;
-      scrollTo(0, tr.getBoundingClientRect().top + scrollY + window.pathosPrototype.progressAt(f) * range + 1);
-    }, frame);
+    await page.evaluate(f => scrollTo(0, window.pathosPrototype.scrollYForFrame(f)), frame);
     await page.waitForTimeout(300);
-    const aimed = await page.evaluate(() => {
-      const tr = document.getElementById('hwTrack'), st = document.getElementById('hwStage');
-      return window.pathosPrototype.frameAt(-tr.getBoundingClientRect().top / (tr.offsetHeight - st.offsetHeight));
-    });
+    const aimed = await page.evaluate(() => window.pathosPrototype.frameAt(window.pathosPrototype.scrollProgress()));
     if (Math.abs(aimed - frame) < 1.5) break;
   }
   try {

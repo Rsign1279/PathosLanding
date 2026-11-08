@@ -18,6 +18,7 @@
 
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="prototype.css">
+    <link rel="stylesheet" href="field.css">
 
     <script type="importmap">
     {
@@ -337,6 +338,86 @@
         </div>
     </section>
 
+    <!-- 05b In the field: scroll-driven photo deck -->
+    <section id="field" class="field" aria-label="PATHOS in the field">
+        <div class="wrap">
+            <header class="sec-head" data-reveal>
+                <p class="eyebrow">In the field</p>
+                <h2>From the bench to the <span class="accent accent--mono">booth</span></h2>
+                <p>Keep scrolling to deal through the photos. Drag sideways to swipe, tap one to open it.</p>
+            </header>
+        </div>
+        <div class="fl-track" id="flTrack">
+            <div class="fl-stage" id="flStage">
+                <ol class="fl-deck" id="flDeck" data-lightbox-group="field">
+                <li class="fl-card" style="--ar: 977 / 1100">
+                    <button type="button" class="shot fl-face fl-front">
+                        <img src="assets/field-rig.webp" srcset="assets/field-rig-sm.webp 560w, assets/field-rig.webp 1100w" sizes="(max-width: 800px) 80vw, 560px" alt="Close-up of the PATHOS prototype wiring: a breadboard dense with coloured jumper wires, a coiled cable and the microcontroller boards." decoding="async">
+                        <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>The rig, up close</strong><span>Every sensor, the ESP32 and the microSD on one breadboard, before it had a case.</span></span></span>
+                    </button>
+                    <div class="fl-face fl-back" aria-hidden="true">
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;01</span>
+                        <span class="fl-back-t">The rig, up close</span>
+                        <span class="fl-back-d">Every sensor, the ESP32 and the microSD on one breadboard, before it had a case.</span>
+                    </div>
+                </li>
+                <li class="fl-card" style="--ar: 935 / 740">
+                    <button type="button" class="shot fl-face fl-front">
+                        <img src="assets/field-aim-fest.webp" srcset="assets/field-aim-fest-sm.webp 560w, assets/field-aim-fest.webp 1100w" sizes="(max-width: 800px) 80vw, 560px" alt="A PATHOS team member standing beside the PATHOS research poster at an outdoor AIM Fest booth, with the breadboard prototype and laptops on the table." decoding="async">
+                        <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>AIM Fest</strong><span>Presenting the research poster and a live demo of the pipeline.</span></span></span>
+                    </button>
+                    <div class="fl-face fl-back" aria-hidden="true">
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;02</span>
+                        <span class="fl-back-t">AIM Fest</span>
+                        <span class="fl-back-d">Presenting the research poster and a live demo of the pipeline.</span>
+                    </div>
+                </li>
+                <li class="fl-card" style="--ar: 605 / 685">
+                    <button type="button" class="shot fl-face fl-front">
+                        <img src="assets/field-aim-demo.webp" srcset="assets/field-aim-demo-sm.webp 560w, assets/field-aim-demo.webp 1100w" sizes="(max-width: 800px) 80vw, 560px" alt="A PATHOS team member at a table with a laptop and the breadboard prototype, explaining the device to a visitor in front of an Autism Involves Me backdrop." decoding="async">
+                        <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>Live at Autism Involves Me</strong><span>Walking a visitor through what the readings mean.</span></span></span>
+                    </button>
+                    <div class="fl-face fl-back" aria-hidden="true">
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;03</span>
+                        <span class="fl-back-t">Live at Autism Involves Me</span>
+                        <span class="fl-back-d">Walking a visitor through what the readings mean.</span>
+                    </div>
+                </li>
+                <li class="fl-card" style="--ar: 1029 / 860">
+                    <button type="button" class="shot fl-face fl-front">
+                        <img src="assets/field-aim-team.webp" srcset="assets/field-aim-team-sm.webp 560w, assets/field-aim-team.webp 1100w" sizes="(max-width: 800px) 80vw, 560px" alt="The PATHOS team smiling with members of Autism Involves Me, holding a blue AIM sensory kit bag." decoding="async">
+                        <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>With the AIM community</strong><span>The team with Autism Involves Me and the AIM sensory kit.</span></span></span>
+                    </button>
+                    <div class="fl-face fl-back" aria-hidden="true">
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;04</span>
+                        <span class="fl-back-t">With the AIM community</span>
+                        <span class="fl-back-d">The team with Autism Involves Me and the AIM sensory kit.</span>
+                    </div>
+                </li>
+                <li class="fl-card" style="--ar: 556 / 757">
+                    <button type="button" class="shot fl-face fl-front">
+                        <img src="assets/field-hands-on.webp" srcset="assets/field-hands-on-sm.webp 560w, assets/field-hands-on.webp 1100w" sizes="(max-width: 800px) 80vw, 560px" alt="A visitor rests their fingers on the PATHOS electrodes on a breadboard while a team member explains the dashboard on the laptop." decoding="async">
+                        <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>Hands on</strong><span>A visitor tries the finger electrodes while the dashboard reads the signal.</span></span></span>
+                    </button>
+                    <div class="fl-face fl-back" aria-hidden="true">
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;05</span>
+                        <span class="fl-back-t">Hands on</span>
+                        <span class="fl-back-d">A visitor tries the finger electrodes while the dashboard reads the signal.</span>
+                    </div>
+                </li>
+                </ol>
+                <div class="fl-ui">
+                    <p class="fl-caption" id="flCaption" aria-live="polite"><strong></strong><span></span></p>
+                    <div class="fl-nav">
+                        <button type="button" class="fl-btn" id="flPrev" aria-label="Previous photo">&larr;</button>
+                        <span class="fl-count" id="flCount">01 / 05</span>
+                        <button type="button" class="fl-btn" id="flNext" aria-label="Next photo">&rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 06 MVP 2 -->
     <section id="pathos-iot" class="section cv">
         <canvas class="edge-art" data-art="electrodes" data-side="left" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
@@ -552,6 +633,7 @@
 
     <script type="module" src="main.js"></script>
     <script type="module" src="tilt.js"></script>
+    <script type="module" src="field.js"></script>
     <script type="module">
         // Load the 3D hardware section (Three.js + 2.2 MB model) only when it's close to the viewport.
         const section = document.getElementById('prototype');
