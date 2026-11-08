@@ -1,0 +1,129 @@
+/* ==========================================================================
+   In the field: a scroll-driven deck of photo cards (field.js)
+   Cards ride a U-shaped path through a sticky stage. The centred card faces
+   you; as cards move out along the arms they bank with the curve, turn, and
+   flip to a marble back that carries their caption. field.js writes each
+   card's transform; everything here is layout, faces and the static fallback.
+   ========================================================================== */
+
+.field { position: relative; z-index: 2; padding: 72px 0 24px; background: var(--bg); overflow-x: clip; }
+.field .sec-head { margin-bottom: 8px; }
+
+.fl-track { position: relative; height: 420svh; }
+.fl-stage {
+  position: sticky; top: 64px;
+  height: calc(100svh - 64px); min-height: 560px;
+  overflow: hidden;
+  perspective: 1500px; perspective-origin: 50% 42%;
+  touch-action: pan-y;
+  cursor: grab;
+}
+.fl-stage.is-dragging { cursor: grabbing; }
+.fl-deck { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
+
+.fl-card {
+  position: absolute; left: 50%; top: 0;
+  width: 300px; height: 380px;        /* field.js sizes each card from --ar */
+  transform-style: preserve-3d;
+  will-change: transform;
+  --sheen: 0;
+  pointer-events: auto;
+}
+.fl-face {
+  position: absolute; inset: 0;
+  border-radius: 18px;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+/* Front: the photo. Reuses .shot so the lightbox opens it; undo the grid
+   card styling it would otherwise inherit. */
+.fl-front.shot {
+  display: block; padding: 0; border: 0; margin: 0;
+  background: #16120e;
+  box-shadow: 0 1px 2px rgba(40, 25, 10, 0.12), 0 26px 50px -26px rgba(40, 25, 10, 0.55);
+  transition: none; transform: none; cursor: inherit;
+}
+.fl-front.shot:hover { transform: none; }
+.field .fl-front.shot::before { display: none; }
+.fl-front.shot img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  aspect-ratio: auto; object-fit: cover;
+  -webkit-user-drag: none; user-select: none; pointer-events: none;
+}
+/* A light catch that brightens as the card turns away from you. */
+.field .fl-front.shot::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: 0;
+  background: linear-gradient(105deg, rgba(255, 246, 232, 0) 30%, rgba(255, 246, 232, 0.22) 48%, rgba(255, 246, 232, 0) 66%);
+  background-size: 260% 100%;
+  background-position: calc(50% + var(--sheen) * 60%) 0;
+  opacity: calc(var(--sheen-a, 0));
+}
+.fl-front:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 4px; }
+.fl-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Back: the marble, with the caption. */
+.fl-back {
+  transform: rotateY(180deg);
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;
+  padding: clamp(18px, 7%, 30px);
+  background:
+    linear-gradient(160deg, rgba(14, 10, 7, 0.35) 0%, rgba(14, 10, 7, 0.82) 70%),
+    #16120e url('assets/marble-sm.webp') var(--mp, 50% 40%) / cover no-repeat;
+  box-shadow: 0 26px 50px -26px rgba(40, 25, 10, 0.55);
+  color: var(--on-dark, #f6efe7);
+}
+.fl-card:nth-child(5n+1) .fl-back { --mp: 10% 30%; }
+.fl-card:nth-child(5n+2) .fl-back { --mp: 60% 20%; }
+.fl-card:nth-child(5n+3) .fl-back { --mp: 92% 65%; }
+.fl-card:nth-child(5n+4) .fl-back { --mp: 30% 85%; }
+.fl-card:nth-child(5n+5) .fl-back { --mp: 75% 50%; }
+.fl-back-n { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.04em; color: var(--gold-light); white-space: pre; }
+.fl-back-t { font-size: clamp(20px, 2vw, 26px); line-height: 1.15; letter-spacing: -0.02em; font-weight: 500; }
+.fl-back-d { font-size: 15px; line-height: 1.5; color: var(--on-dark-2, #ddd2c6); max-width: 30ch; }
+
+/* Caption + controls under the deck */
+.fl-ui {
+  position: absolute; left: 0; right: 0; bottom: 18px; z-index: 50;
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;
+  width: min(100% - 40px, 1100px); margin: 0 auto;
+  pointer-events: none;
+}
+.fl-caption { margin: 0; max-width: 46ch; min-height: 3.2em; }
+.fl-caption strong { display: block; font-size: 19px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+.fl-caption span { display: block; margin-top: 3px; font-size: 16px; line-height: 1.45; color: var(--muted); }
+.fl-caption.is-swap { animation: fl-swap 0.32s var(--ease); }
+@keyframes fl-swap { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.fl-nav { display: flex; align-items: center; gap: 10px; pointer-events: auto; }
+.fl-count { min-width: 64px; text-align: center; font-family: var(--font-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.fl-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--line-strong, rgba(10, 8, 6, 0.16)); background: rgba(255, 255, 255, 0.5);
+  font-size: 17px; color: var(--ink); cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s var(--ease);
+}
+.fl-btn:hover { background: #fff; border-color: rgba(10, 8, 6, 0.3); }
+.fl-btn:active { transform: scale(0.94); }
+.fl-btn:disabled { opacity: 0.35; cursor: default; }
+.fl-btn:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+
+/* ---------- Static fallback: no JS or reduced motion ---------- */
+.field:not(.is-live) .fl-track { height: auto; }
+.field:not(.is-live) .fl-stage { position: relative; top: 0; height: auto; min-height: 0; overflow: visible; perspective: none; cursor: auto; }
+.field:not(.is-live) .fl-deck {
+  position: static; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
+  width: min(100% - 40px, 1100px); margin: 16px auto 0;
+}
+.field:not(.is-live) .fl-card { position: relative; left: auto; width: auto !important; height: auto !important; aspect-ratio: 4 / 5; transform: none !important; opacity: 1 !important; }
+.field:not(.is-live) .fl-back, .field:not(.is-live) .fl-ui { display: none; }
+
+@media (max-width: 800px) {
+  .field { padding-top: 56px; }
+  .fl-track { height: 380svh; }
+  .fl-stage { top: 56px; height: calc(100svh - 56px); min-height: 520px; }
+  .fl-ui { bottom: 12px; width: calc(100% - 28px); flex-direction: column; align-items: stretch; gap: 10px; }
+  .fl-caption { min-height: 4.4em; }
+  .fl-caption strong { font-size: 17px; }
+  .fl-caption span { font-size: 14.5px; }
+  .fl-nav { justify-content: space-between; }
+}

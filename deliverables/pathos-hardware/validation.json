@@ -1,64 +1,64 @@
 {
   "errors": [],
-  "loadMs": 1395,
+  "loadMs": 1905,
   "states": [
     {
       "chapter": 1,
-      "frame": 41.24,
+      "frame": 41.19,
       "page": 0,
       "art": 1
     },
     {
       "chapter": 2,
-      "frame": 338.45,
+      "frame": 338.4,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 3,
-      "frame": 728.42,
+      "frame": 728.37,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 4,
-      "frame": 938.32,
+      "frame": 938.27,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 5,
-      "frame": 1238.49,
+      "frame": 1238.44,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 6,
-      "frame": 1538.26,
+      "frame": 1538.21,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 7,
-      "frame": 1718.27,
+      "frame": 1718.22,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 8,
-      "frame": 1988.19,
+      "frame": 1988.47,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 9,
-      "frame": 2288.36,
+      "frame": 2288.31,
       "page": 3,
       "art": 0
     },
     {
       "chapter": 10,
-      "frame": 2638.17,
+      "frame": 2638.45,
       "page": 0,
       "art": 1
     }
@@ -107,7 +107,7 @@
   ],
   "stats": {
     "ready": true,
-    "frames": 459,
+    "frames": 449,
     "drawCalls": 221,
     "triangles": 437828,
     "quality": 0.6000000000000001,
