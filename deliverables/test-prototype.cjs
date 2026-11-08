@@ -46,7 +46,7 @@ const clip = page => page.evaluate(() => {
   await page.goto('http://127.0.0.1:8000/#prototype');
   await page.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
   const t0 = Date.now();
-  await page.waitForFunction(() => window.pathosPrototype?.stats.ready, { timeout: 120000 });
+  await page.waitForFunction(() => window.pathosPrototype?.stats.ready, undefined, { timeout: 120000 });
   const loadMs = Date.now() - t0;
 
   // 1. Every shot: correct chapter, titles on (none in the laptop shot), counter in sync.
@@ -100,7 +100,7 @@ const clip = page => page.evaluate(() => {
 
   // 5. Rail navigation.
   await page.click('#hwRail .hw-rail-btn:nth-child(7)');
-  await page.waitForFunction(() => window.pathosPrototype.state.chapter === 6, { timeout: 120000, polling: 250 });
+  await page.waitForFunction(() => window.pathosPrototype.state.chapter === 6, undefined, { timeout: 120000, polling: 250 });
 
   const stats = await page.evaluate(() => window.pathosPrototype.stats);
 
@@ -119,7 +119,7 @@ const clip = page => page.evaluate(() => {
   phone.on('pageerror', e => errors.push('phone: ' + e.message));
   await phone.goto('http://127.0.0.1:8000/#prototype', { timeout: 120000 });
   await phone.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
-  await phone.waitForFunction(() => window.pathosPrototype?.stats.ready, { timeout: 180000 });
+  await phone.waitForFunction(() => window.pathosPrototype?.stats.ready, undefined, { timeout: 180000 });
   await seek(phone, 1300);
   const mobile = await phone.evaluate(() => {
     const v = document.getElementById('hwView').getBoundingClientRect();
@@ -134,14 +134,16 @@ const clip = page => page.evaluate(() => {
   if (!/mobile\.glb$/.test(mobile.model) || !mobile.compact || !mobile.plateInside || mobile.overflow || !mobile.smallShots) throw Error('Phone layout: ' + JSON.stringify(mobile));
 
   // 7. Reduced motion: no easing, the frame lands on the target immediately.
-  const rm = await browser.newPage({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
+  const rmBrowser = await chromium.launch({ args: ARGS });
+  const rm = await rmBrowser.newPage({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
   await rm.goto('http://127.0.0.1:8000/#prototype');
   await rm.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
-  await rm.waitForFunction(() => window.pathosPrototype?.stats.ready, { timeout: 120000 });
+  await rm.waitForFunction(() => window.pathosPrototype?.stats.ready, undefined, { timeout: 120000 });
   const reduced = await seek(rm, 1600);
 
   fs.writeFileSync(`${OUT}/validation.json`, JSON.stringify({ errors, loadMs, states, screen, stats, overflow, mobile, reduced }, null, 2));
   console.log(JSON.stringify({ errors, loadMs, chapters: states.length, drawCalls: stats.drawCalls, triangles: stats.triangles, overflow, mobile: mobile.model, reducedFrame: +reduced.frame.toFixed(1) }));
   if (errors.length) process.exitCode = 1;
+  await rmBrowser.close();
   await browser.close();
 })().catch(e => { console.error(e); process.exit(1); });
