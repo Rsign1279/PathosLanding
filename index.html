@@ -44,7 +44,7 @@
             <div class="menu" id="navLinks">
                 <a href="#sensors" class="nav-link">Sensors</a>
                 <a href="#ai" class="nav-link">Model</a>
-                <a href="#prototype" class="nav-link">3D prototype</a>
+                <a href="#prototype" class="nav-link">Hardware in 3D</a>
                 <a href="#product" class="nav-link">The build</a>
                 <a href="#impact" class="nav-link">Partners</a>
                 <a href="#roadmap" class="nav-link">Roadmap</a>
@@ -238,94 +238,95 @@
         </div>
     </section>
 
-    <section id="prototype" class="prototype" aria-label="Interactive PATHOS prototype">
+    <section id="prototype" class="prototype" aria-label="PATHOS hardware, in 3D">
         <div class="wrap">
             <header class="sec-head prototype-head" data-reveal>
-                <p class="eyebrow">3D prototype</p>
+                <p class="eyebrow">Hardware in 3D</p>
                 <h2>Follow one signal through the <span class="accent accent--mono">rig</span></h2>
-                <p>A 3D model of the full PATHOS setup. Scroll to move the camera through it, or open Explore to orbit and pick out parts.</p>
+                <p>A 3D study of the PATHOS prototype, modelled in Blender. Scroll to take it apart and follow each signal from the skin to the dashboard.</p>
             </header>
         </div>
-        <div class="prototype-stage">
-            <div class="prototype-topline"><span><i class="dot" aria-hidden="true"></i>pathos-prototype.glb</span><a href="#product">Skip to the build &darr;</a></div>
-            <div class="prototype-view" id="prototypeView" aria-label="Interactive 3D prototype">
-                <div class="prototype-loading" id="prototypeStatus" role="status">PATHOS<br><small>Preparing the interactive prototype…</small></div>
-                <span class="prototype-hover" id="prototypeHover" hidden></span>
+        <div class="hw-track" id="hwTrack">
+            <div class="hw-stage" id="hwStage">
+                <div class="hw-bar">
+                    <span class="hw-file"><i class="dot" aria-hidden="true"></i>pathos-hardware.glb</span>
+                    <span class="hw-clock" aria-hidden="true"><span id="hwFrame">0001</span> / 2880</span>
+                    <a class="hw-skip" href="#product">Skip to the build &darr;</a>
+                </div>
+                <div class="hw-view" id="hwView">
+                    <img class="hw-poster" id="hwPoster" src="assets/pathos-hardware-poster.webp" alt="The PATHOS prototype on a dark table: an ESP32-S3 and seven sensor modules wired across a breadboard, with finger electrodes and a laptop." width="1600" height="900" decoding="async">
+                    <p class="hw-status" id="hwStatus" role="status">Loading the 3D model…</p>
+                    <span class="hw-tip" id="hwTip" hidden></span>
+                </div>
+                <div class="hw-hud" id="hwHud" aria-live="polite">
+                <article class="hw-chapter" data-start="1" data-end="298" data-rail="Overview">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>01</span></p>
+                    <h3 class="hw-title">PATHOS</h3>
+                    <ol class="hw-route"><li data-on="1" data-off="284">Physiological awareness, engineered.</li></ol>
+                    <p class="hw-desc">A working study of the PATHOS prototype: one breadboard, eight modules and every connection traced. Scroll to take it apart.</p>
+                </article>
+                <article class="hw-chapter" data-start="298" data-end="688" data-rail="Exploded">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>02</span></p>
+                    <h3 class="hw-title">Anatomy of awareness</h3>
+                    <ol class="hw-route"><li data-on="298" data-off="674">One breadboard.</li><li data-on="330" data-off="674">Eight connected modules.</li></ol>
+                    <ol class="hw-mods" aria-label="Modules, in lift order"><li data-on="298" data-off="404"><span>ESP32-S3</span></li><li data-on="326" data-off="431"><span>TMP117</span></li><li data-on="354" data-off="458"><span>ADS1115</span></li><li data-on="381" data-off="486"><span>MPU6050</span></li><li data-on="408" data-off="514"><span>MAX30102</span></li><li data-on="436" data-off="541"><span>BME280</span></li><li data-on="464" data-off="568"><span>microSD</span></li><li data-on="491" data-off="596"><span>GSR</span></li></ol>
+                    <p class="hw-desc">Each module lifts away in the order it was wired, and every lead stays attached.</p>
+                </article>
+                <article class="hw-chapter" data-start="688" data-end="898" data-rail="The brain">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>03</span></p>
+                    <h3 class="hw-title">The brain</h3>
+                    <ol class="hw-route"><li data-on="688" data-off="884">ESP32-S3</li><li data-on="712" data-off="884">Acquisition</li><li data-on="736" data-off="884">Control</li><li data-on="760" data-off="884">Wi-Fi</li></ol>
+                    <p class="hw-desc">The ESP32-S3 timestamps every sample, runs the shared bus, writes to storage and sends data over Wi-Fi.</p>
+                </article>
+                <article class="hw-chapter" data-start="898" data-end="1198" data-rail="Sensor bus">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>04</span></p>
+                    <h3 class="hw-title">The sensor highway</h3>
+                    <ol class="hw-route"><li data-on="896" data-off="956">TMP117</li><li data-on="941" data-off="1001">ADS1115</li><li data-on="986" data-off="1046">MPU6050</li><li data-on="1031" data-off="1091">MAX30102</li><li data-on="1076" data-off="1194">BME280</li></ol>
+                    <p class="hw-desc">Each sensor answers at its own address on one shared I2C bus. Data travels on SDA (gold), clock on SCL (pink).</p>
+                </article>
+                <article class="hw-chapter" data-start="1198" data-end="1498" data-rail="GSR path">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>05</span></p>
+                    <h3 class="hw-title">From contact to signal</h3>
+                    <ol class="hw-route"><li data-on="1216" data-off="1276">Electrodes</li><li data-on="1256" data-off="1321">GSR</li><li data-on="1276" data-off="1388">ADS1115 A0</li><li data-on="1354" data-off="1484">I2C</li><li data-on="1378" data-off="1484">ESP32-S3</li></ol>
+                    <p class="hw-desc">Finger electrodes feed the GSR front end. The ADS1115 digitises its analog output on A0, and the ESP32-S3 reads it over I2C.</p>
+                </article>
+                <article class="hw-chapter" data-start="1498" data-end="1678" data-rail="Storage">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>06</span></p>
+                    <h3 class="hw-title">Every signal, stored</h3>
+                    <ol class="hw-route"><li data-on="1498" data-off="1664">ESP32-S3</li><li data-on="1511" data-off="1664">Dedicated SPI</li><li data-on="1571" data-off="1664">microSD</li></ol>
+                    <p class="hw-desc">A separate SPI bus (CLK 12, MOSI 11, MISO 13, CS 10) records locally without touching the sensor bus.</p>
+                </article>
+                <article class="hw-chapter" data-start="1678" data-end="1948" data-rail="Wi-Fi">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>07</span></p>
+                    <h3 class="hw-title">Connected, wirelessly</h3>
+                    <ol class="hw-route"><li data-on="1678" data-off="1934">ESP32-S3</li><li data-on="1686" data-off="1934">Wi-Fi</li><li data-on="1838" data-off="1934">Laptop</li></ol>
+                    <p class="hw-desc">Packets leave the ESP32-S3 over Wi-Fi. The power bank only supplies USB power; there is no data cable to the laptop.</p>
+                </article>
+                <article class="hw-chapter" data-start="1948" data-end="2248" data-rail="Dashboard">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>08</span></p>
+                    <h3 class="hw-title">Signals become awareness</h3>
+                    <ol class="hw-route"><li data-on="1960" data-off="2234">EDA</li><li data-on="1990" data-off="2234">Skin temperature</li><li data-on="2020" data-off="2234">PPG</li><li data-on="2050" data-off="2234">Motion</li><li data-on="2080" data-off="2234">Environment</li></ol>
+                    <p class="hw-desc">Five traces side by side on the dashboard. The waveforms here are simulated, not live readings.</p>
+                </article>
+                <article class="hw-chapter" data-start="2248" data-end="2518" data-rail="Pipeline">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>09</span></p>
+                    <h3 class="hw-title">The complete pipeline</h3>
+                    <ol class="hw-route"><li data-on="2256" data-off="2504">Sensors</li><li data-on="2282" data-off="2504">ESP32-S3</li><li data-on="2308" data-off="2504">Wi-Fi</li><li data-on="2334" data-off="2504">Processing</li><li data-on="2360" data-off="2504">V4</li><li data-on="2386" data-off="2504">Dashboard</li></ol>
+                    <p class="hw-desc">The illustrated architecture end to end. This model does not run the V4 classifier or validate any medical capability.</p>
+                </article>
+                <article class="hw-chapter hw-chapter--final" data-start="2518" data-end="2881" data-rail="Reassembly">
+                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>10</span></p>
+                    <h3 class="hw-title">Stress you can’t see,<br><em>awareness you can.</em></h3>
+                    <p class="hw-desc">The rig comes back together. Below is the real breadboard build it was modelled on.</p>
+                    <a class="hw-cta" href="#product">See the real build &darr;</a>
+                </article>
+                </div>
+                <nav class="hw-rail" id="hwRail" aria-label="Chapters"></nav>
+                <div class="hw-scrub" aria-hidden="true"><span id="hwScrub"></span></div>
             </div>
-            <div class="prototype-tools">
-                <button id="prototypeExplore" type="button" disabled>Explore model</button>
-                <label>Identify a component <select id="prototypeComponent"><option value="">Choose a component</option></select></label>
-                <button id="prototypeReset" type="button" hidden>Reset view</button>
-            </div>
-            <div class="prototype-detail" id="prototypeDetail" role="status">Scroll to guide the camera. Select a component to learn more.</div>
-            <div class="prototype-explore-help" id="prototypeHelp" hidden>Drag to orbit · pinch or scroll over the model to zoom · arrow keys to orbit · + / − to zoom · Escape to return</div>
-            <div class="prototype-progress"><span id="prototypeProgress"></span></div>
-            <span class="prototype-counter" id="prototypeCounter">01 / 10</span>
-        </div>
-        <div class="prototype-chapters">
-            <article class="prototype-chapter" id="prototype-0" data-chapter="0">
-                <div class="prototype-card">
-                <span class="prototype-kicker">01 · Overview</span>
-                <h2>The whole rig.</h2><p>Finger electrodes, sensor modules, the ESP32-S3, a power bank and the laptop running the dashboard.</p><p class="prototype-note">Scroll to unfold the prototype</p>
-                </div>
-            </article>
-            <article class="prototype-chapter" id="prototype-1" data-chapter="1">
-                <div class="prototype-card">
-                <span class="prototype-kicker">02 · Exploded view</span>
-                <h2>Taking it apart.</h2><p>The ESP32-S3 rises first. Individual sensor modules follow, while their flexible connections stay attached.</p><p class="prototype-note">A representative prototype · not manufacturer CAD</p>
-                </div>
-            </article>
-            <article class="prototype-chapter" id="prototype-2" data-chapter="2">
-                <div class="prototype-card">
-                <span class="prototype-kicker">03 · The brain</span>
-                <h2>The ESP32-S3 runs the show.</h2><p>The ESP32-S3 coordinates acquisition, timestamps samples, manages storage, and transmits data wirelessly.</p><p class="prototype-note">Acquisition → coordination → storage → transmission</p>
-                </div>
-            </article>
-            <article class="prototype-chapter" id="prototype-3" data-chapter="3">
-                <div class="prototype-card">
-                <span class="prototype-kicker">04 · Sensor highway</span>
-                <h2>Five sensors, one bus.</h2><p>TMP117 → ADS1115 → MPU6050 → MAX30102 → BME280. Each peripheral has its own address on the shared I2C bus.</p><p class="prototype-note">SDA: GPIO8 · SCL: GPIO9 · ADS1115: 0x49</p>
-                </div>
-            </article>
-            <article class="prototype-chapter" id="prototype-4" data-chapter="4">
-                <div class="prototype-card">
-                <span class="prototype-kicker">05 · GSR data path</span>
-                <h2>From finger contact<br>to digital samples.</h2><p>Finger electrodes feed the GSR module. Its analog output goes to ADS1115 A0, then reaches the ESP32-S3 over I2C.</p><p class="prototype-note">Electrodes → GSR → ADS1115 A0 → I2C → ESP32-S3</p>
-                </div>
-            </article>
-            <article class="prototype-chapter" id="prototype-5" data-chapter="5">
-                <div class="prototype-card">
-                <span class="prototype-kicker">06 · Storage</span>
-                <h2>A local copy of everything.</h2><p>The separate microSD breakout and inserted card provide a local recording path. Storage uses dedicated SPI, separate from the I2C sensor bus.</p><p class="prototype-note">CLK 12 · MISO 13 · MOSI 11 · CS 10</p>
-                </div>
-            </article>
-            <article class="prototype-chapter" id="prototype-6" data-chapter="6">
-                <div class="prototype-card">
-                <span class="prototype-kicker">07 · Wireless</span>
-                <h2>Data goes over Wi-Fi.</h2><p>The ESP32-S3 sends data to the laptop over Wi-Fi. The power bank supplies USB power to the controller; there is no physical laptop data cable.</p><p class="prototype-note">Wireless visualization · illustrative data transfer</p>
-                </div>
-            </article>
-            <article class="prototype-chapter" id="prototype-7" data-chapter="7">
-                <div class="prototype-card">
-                <span class="prototype-kicker">08 · Dashboard</span>
-                <h2>Signals, side by side.</h2><p>EDA, skin temperature, PPG, motion, and environmental waveforms bring different perspectives into one view.</p><p class="prototype-note">Simulated signals · no live measurements or inference</p>
-                </div>
-            </article>
-            <article class="prototype-chapter" id="prototype-8" data-chapter="8">
-                <div class="prototype-card">
-                <span class="prototype-kicker">09 · Full pipeline</span>
-                <h2>The whole pipeline.</h2><p>Human sensors → sensor modules → ESP32-S3 → Wi-Fi → laptop → signal processing → V4 model → PATHOS dashboard.</p><p class="prototype-note">Illustrated architecture. This demo does not run a V4 model or validate medical capabilities.</p>
-                </div>
-            </article>
-            <article class="prototype-chapter" id="prototype-9" data-chapter="9">
-                <div class="prototype-card">
-                <span class="prototype-kicker">10 · Assembled</span>
-                <h2>Back together.</h2><p>Use Explore to orbit the model and pick out parts, or carry on to the first real build below.</p><p class="prototype-note">Representative geometry · assumed 3.3 V-compatible breakouts</p>
-                <a class="prototype-cta" href="#product">See the real build ↓</a>
-                </div>
-            </article>
         </div>
     </section>
+
     <!-- 05 The build -->
     <section id="product" class="section cv">
         <canvas class="edge-art" data-art="modules" data-side="left" data-rotate="1" data-speed="0.12" aria-hidden="true"></canvas>
@@ -568,7 +569,7 @@
 
     <script type="module" src="main.js"></script>
     <script type="module">
-        // Load the 3D prototype (Three.js + 3.3 MB model) only when it's close to the viewport.
+        // Load the 3D hardware section (Three.js + 2.2 MB model) only when it's close to the viewport.
         const section = document.getElementById('prototype');
         let started = false;
         const start = () => { if (started) return; started = true; import('./prototype.js'); };
