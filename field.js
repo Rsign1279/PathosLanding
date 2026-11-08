@@ -18,7 +18,7 @@
    and on screen; transform and opacity only.
    ========================================================================== */
 
-const section = document.getElementById('field');
+const section = document.querySelector('section.field');
 const track = document.getElementById('flTrack');
 const stage = document.getElementById('flStage');
 const cards = [...document.querySelectorAll('#flDeck .fl-card')];

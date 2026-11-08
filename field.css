@@ -1,5 +1,5 @@
 /* ==========================================================================
-   In the field: a scroll-driven deck of photo cards (field.js)
+   The build: MVP 1 and the field as a scroll-driven deck of photo cards (field.js)
    Cards ride a U-shaped path through a sticky stage. The centred card faces
    you; as cards move out along the arms they bank with the curve, turn, and
    flip to a marble back that carries their caption. field.js writes each
@@ -9,7 +9,7 @@
 .field { position: relative; z-index: 2; padding: 72px 0 24px; background: var(--bg); overflow-x: clip; }
 .field .sec-head { margin-bottom: 8px; }
 
-.fl-track { position: relative; height: 420svh; }
+.fl-track { position: relative; height: calc(100svh + (var(--n, 5) - 1) * 80svh); }
 .fl-stage {
   position: sticky; top: 64px;
   height: calc(100svh - 64px); min-height: 560px;
@@ -119,7 +119,7 @@
 
 @media (max-width: 800px) {
   .field { padding-top: 56px; }
-  .fl-track { height: 380svh; }
+  .fl-track { height: calc(100svh + (var(--n, 5) - 1) * 70svh); }
   .fl-stage { top: 56px; height: calc(100svh - 56px); min-height: 520px; }
   .fl-ui { bottom: 12px; width: calc(100% - 28px); flex-direction: column; align-items: stretch; gap: 10px; }
   .fl-caption { min-height: 4.4em; }

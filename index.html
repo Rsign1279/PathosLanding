@@ -322,43 +322,16 @@
         </div>
     </section>
 
-    <!-- 05 The build -->
-    <section id="product" class="section cv">
-        <canvas class="edge-art" data-art="modules" data-side="left" data-rotate="1" data-speed="0.12" aria-hidden="true"></canvas>
-        <canvas class="edge-art" data-art="hand" data-side="right" data-flip="1" data-speed="0.18" aria-hidden="true"></canvas>
+    <!-- 05 The build: MVP 1 and the field, as a scroll-driven photo deck -->
+    <section id="product" class="field" aria-label="The build: MVP 1, in photos">
         <div class="wrap">
             <header class="sec-head" data-reveal>
                 <p class="eyebrow">The build</p>
-                <h2>MVP 1, on a <span class="accent accent--mono">breadboard</span></h2>
-                <p>An ESP32-S3 and a BME280 streaming into a Streamlit dashboard. It only measures the room, but it proved the pipeline end to end.</p>
-            </header>
-            <div class="gallery" data-lightbox-group="mvp1" data-reveal-group>
-                <button type="button" class="shot" data-missing-label="assets/mvp1-dashboard.jpg">
-                    <img src="assets/mvp1-dashboard.webp" alt="The PATHOS dashboard showing live temperature, humidity and a model classification with its raw output." loading="lazy" decoding="async" width="1128" height="1414">
-                    <span class="shot-caption"><span class="shot-caption-text"><strong>The dashboard</strong><span>Serial in, classification out, raw output left visible.</span></span></span>
-                </button>
-                <button type="button" class="shot" data-missing-label="assets/mvp1-bench.jpg">
-                    <img src="assets/mvp1-bench.webp" alt="The breadboard prototype connected to a laptop running the PATHOS dashboard during a demo." loading="lazy" decoding="async" width="1134" height="1364">
-                    <span class="shot-caption"><span class="shot-caption-text"><strong>End to end</strong><span>Sensor, serial link and dashboard running together.</span></span></span>
-                </button>
-                <button type="button" class="shot" data-missing-label="assets/mvp1-demo.jpg">
-                    <img src="assets/mvp1-demo.webp" alt="A PATHOS team member demonstrating the device to an attendee at an Autism Involves Me event." loading="lazy" decoding="async" width="696" height="1010">
-                    <span class="shot-caption"><span class="shot-caption-text"><strong>At an AIM event</strong><span>Walking someone through what the readings mean.</span></span></span>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- 05b In the field: scroll-driven photo deck -->
-    <section id="field" class="field" aria-label="PATHOS in the field">
-        <div class="wrap">
-            <header class="sec-head" data-reveal>
-                <p class="eyebrow">In the field</p>
-                <h2>From the bench to the <span class="accent accent--mono">booth</span></h2>
-                <p>Keep scrolling to deal through the photos. Drag sideways to swipe, tap one to open it.</p>
+                <h2>MVP 1, from the bench to the <span class="accent accent--mono">booth</span></h2>
+                <p>An ESP32-S3 and a BME280 streaming into a Streamlit dashboard. It only measures the room, but it proved the pipeline end to end. Keep scrolling to deal through the photos; drag sideways to swipe, tap one to open it.</p>
             </header>
         </div>
-        <div class="fl-track" id="flTrack">
+        <div class="fl-track" id="flTrack" style="--n: 7">
             <div class="fl-stage" id="flStage">
                 <ol class="fl-deck" id="flDeck" data-lightbox-group="field">
                 <li class="fl-card" style="--ar: 977 / 1100">
@@ -372,13 +345,35 @@
                         <span class="fl-back-d">Every sensor, the ESP32 and the microSD on one breadboard, before it had a case.</span>
                     </div>
                 </li>
+                <li class="fl-card" style="--ar: 878 / 1100">
+                    <button type="button" class="shot fl-face fl-front">
+                        <img src="assets/field-dashboard.webp" srcset="assets/field-dashboard-sm.webp 560w, assets/field-dashboard.webp 1100w" sizes="(max-width: 800px) 80vw, 560px" alt="The PATHOS dashboard showing live temperature, humidity and a model classification with its raw output." decoding="async">
+                        <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>The dashboard</strong><span>Serial in, classification out, raw output left visible.</span></span></span>
+                    </button>
+                    <div class="fl-face fl-back" aria-hidden="true">
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;02</span>
+                        <span class="fl-back-t">The dashboard</span>
+                        <span class="fl-back-d">Serial in, classification out, raw output left visible.</span>
+                    </div>
+                </li>
+                <li class="fl-card" style="--ar: 915 / 1100">
+                    <button type="button" class="shot fl-face fl-front">
+                        <img src="assets/field-bench.webp" srcset="assets/field-bench-sm.webp 560w, assets/field-bench.webp 1100w" sizes="(max-width: 800px) 80vw, 560px" alt="The breadboard prototype connected to a laptop running the PATHOS dashboard during a demo." decoding="async">
+                        <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>End to end</strong><span>Sensor, serial link and dashboard running together.</span></span></span>
+                    </button>
+                    <div class="fl-face fl-back" aria-hidden="true">
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;03</span>
+                        <span class="fl-back-t">End to end</span>
+                        <span class="fl-back-d">Sensor, serial link and dashboard running together.</span>
+                    </div>
+                </li>
                 <li class="fl-card" style="--ar: 935 / 740">
                     <button type="button" class="shot fl-face fl-front">
                         <img src="assets/field-aim-fest.webp" srcset="assets/field-aim-fest-sm.webp 560w, assets/field-aim-fest.webp 1100w" sizes="(max-width: 800px) 80vw, 560px" alt="A PATHOS team member standing beside the PATHOS research poster at an outdoor AIM Fest booth, with the breadboard prototype and laptops on the table." decoding="async">
                         <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>AIM Fest</strong><span>Presenting the research poster and a live demo of the pipeline.</span></span></span>
                     </button>
                     <div class="fl-face fl-back" aria-hidden="true">
-                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;02</span>
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;04</span>
                         <span class="fl-back-t">AIM Fest</span>
                         <span class="fl-back-d">Presenting the research poster and a live demo of the pipeline.</span>
                     </div>
@@ -389,7 +384,7 @@
                         <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>Live at Autism Involves Me</strong><span>Walking a visitor through what the readings mean.</span></span></span>
                     </button>
                     <div class="fl-face fl-back" aria-hidden="true">
-                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;03</span>
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;05</span>
                         <span class="fl-back-t">Live at Autism Involves Me</span>
                         <span class="fl-back-d">Walking a visitor through what the readings mean.</span>
                     </div>
@@ -400,7 +395,7 @@
                         <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>With the AIM community</strong><span>The team with Autism Involves Me and the AIM sensory kit.</span></span></span>
                     </button>
                     <div class="fl-face fl-back" aria-hidden="true">
-                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;04</span>
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;06</span>
                         <span class="fl-back-t">With the AIM community</span>
                         <span class="fl-back-d">The team with Autism Involves Me and the AIM sensory kit.</span>
                     </div>
@@ -411,7 +406,7 @@
                         <span class="shot-caption fl-sr"><span class="shot-caption-text"><strong>Hands on</strong><span>A visitor tries the finger electrodes while the dashboard reads the signal.</span></span></span>
                     </button>
                     <div class="fl-face fl-back" aria-hidden="true">
-                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;05</span>
+                        <span class="fl-back-n">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;07</span>
                         <span class="fl-back-t">Hands on</span>
                         <span class="fl-back-d">A visitor tries the finger electrodes while the dashboard reads the signal.</span>
                     </div>
@@ -421,7 +416,7 @@
                     <p class="fl-caption" id="flCaption" aria-live="polite"><strong></strong><span></span></p>
                     <div class="fl-nav">
                         <button type="button" class="fl-btn" id="flPrev" aria-label="Previous photo">&larr;</button>
-                        <span class="fl-count" id="flCount">01 / 05</span>
+                        <span class="fl-count" id="flCount">01 / 07</span>
                         <button type="button" class="fl-btn" id="flNext" aria-label="Next photo">&rarr;</button>
                     </div>
                 </div>
