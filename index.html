@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="prototype.css">
     <link rel="stylesheet" href="field.css">
+    <link rel="stylesheet" href="play.css">
 
     <script type="importmap">
     {
@@ -131,22 +132,30 @@
                 <p>No single number tells you someone is stressed. PATHOS only flags a change when the signals agree.</p>
             </header>
             <div class="grid grid--4" data-reveal-group>
-                <article class="card">
+                <article class="card sig-card" data-signal="hr" role="button" tabindex="0" aria-pressed="false">
                     <p class="card-kicker">Heart rate goes up</p>
                     <p class="card-text">Stress, or coffee, or you just took the stairs.</p>
+                    <canvas class="sig-trace" aria-hidden="true"></canvas>
                 </article>
-                <article class="card">
+                <article class="card sig-card" data-signal="eda" role="button" tabindex="0" aria-pressed="false">
                     <p class="card-kicker">Skin gets sweaty</p>
                     <p class="card-text">Stress, or a warm room, or exercise.</p>
+                    <canvas class="sig-trace" aria-hidden="true"></canvas>
                 </article>
-                <article class="card">
+                <article class="card sig-card" data-signal="temp" role="button" tabindex="0" aria-pressed="false">
                     <p class="card-kicker">Fingers get colder</p>
                     <p class="card-text">Blood vessels tightening under stress, or the air conditioning.</p>
+                    <canvas class="sig-trace" aria-hidden="true"></canvas>
                 </article>
-                <article class="card">
+                <article class="card sig-card" data-signal="motion" role="button" tabindex="0" aria-pressed="false">
                     <p class="card-kicker">You're moving a lot</p>
                     <p class="card-text">Agitation, or walking to class.</p>
+                    <canvas class="sig-trace" aria-hidden="true"></canvas>
                 </article>
+            </div>
+            <div class="sig-meter" data-reveal>
+                <div class="sig-meter-bar" aria-hidden="true"><span class="sig-meter-fill"></span><i></i><i></i></div>
+                <p class="sig-meter-text" aria-live="polite"><strong>Tap the signals you'd see together.</strong> <span>See how PATHOS reads the combination.</span></p>
             </div>
             <p class="statement" data-reveal>When skin conductance climbs, heart rhythm shifts and skin temperature drops <em>while you're sitting still</em>, that's a much stronger sign.</p>
         </div>
@@ -164,11 +173,11 @@
             </header>
             <div class="panel" data-reveal>
                 <div class="sensor-row sensor-row--head" aria-hidden="true"><span>Signal</span><span>Part</span><span>Why we measure it</span><span>Status</span></div>
-                <div class="sensor-row"><h3>Skin conductance (EDA)</h3><code>GSR &rarr; ADS1115</code><p>Sweat glands react quickly under stress, sometimes before you notice it yourself.</p><span class="pill">MVP 2</span></div>
-                <div class="sensor-row"><h3>Heart rate &amp; HRV</h3><code>MAX30102</code><p>Not just how fast the heart beats, but how much the gap between beats varies.</p><span class="pill">MVP 2</span></div>
-                <div class="sensor-row"><h3>Skin temperature</h3><code>TMP117</code><p>Blood vessels in the hands tighten under stress, so the skin cools slightly.</p><span class="pill">MVP 2</span></div>
-                <div class="sensor-row"><h3>Motion</h3><code>MPU6050</code><p>Tells walking from sitting, so movement isn't mistaken for stress.</p><span class="pill">MVP 2</span></div>
-                <div class="sensor-row"><h3>Environment</h3><code>BME280</code><p>Room temperature, humidity and pressure, so a hot room doesn't look like a sweaty palm.</p><span class="pill pill--live">Working</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3>Skin conductance (EDA)</h3><canvas class="sig-trace sig-trace--row" data-signal="eda" aria-hidden="true"></canvas></div><code>GSR &rarr; ADS1115</code><p>Sweat glands react quickly under stress, sometimes before you notice it yourself.</p><span class="pill">MVP 2</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3>Heart rate &amp; HRV</h3><canvas class="sig-trace sig-trace--row" data-signal="hr" aria-hidden="true"></canvas></div><code>MAX30102</code><p>Not just how fast the heart beats, but how much the gap between beats varies.</p><span class="pill">MVP 2</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3>Skin temperature</h3><canvas class="sig-trace sig-trace--row" data-signal="temp" aria-hidden="true"></canvas></div><code>TMP117</code><p>Blood vessels in the hands tighten under stress, so the skin cools slightly.</p><span class="pill">MVP 2</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3>Motion</h3><canvas class="sig-trace sig-trace--row" data-signal="motion" aria-hidden="true"></canvas></div><code>MPU6050</code><p>Tells walking from sitting, so movement isn't mistaken for stress.</p><span class="pill">MVP 2</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3>Environment</h3><canvas class="sig-trace sig-trace--row" data-signal="env" aria-hidden="true"></canvas></div><code>BME280</code><p>Room temperature, humidity and pressure, so a hot room doesn't look like a sweaty palm.</p><span class="pill pill--live">Working</span></div>
             </div>
         </div>
     </section>
@@ -183,7 +192,7 @@
                 <h2>How PATHOS makes a <span class="accent accent--mono">call</span></h2>
                 <p>Aligned to <a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">WESAD</a>, a public research dataset recorded during a controlled lab stress test. Not yet validated on PATHOS hardware with real users.</p>
             </header>
-            <ol class="grid grid--4 steps" data-reveal-group>
+            <ol class="grid grid--4 steps pipeline" data-reveal-group>
                 <li class="card"><span class="step">01</span><h3>Sample</h3><p class="card-text">The ESP32-S3 reads each sensor and timestamps every sample.</p></li>
                 <li class="card"><span class="step">02</span><h3>Summarise</h3><p class="card-text">Short windows become features: levels, slopes and variability.</p></li>
                 <li class="card"><span class="step">03</span><h3>Classify</h3><p class="card-text">A scikit-learn voting ensemble runs locally, no internet needed.</p></li>
@@ -471,10 +480,10 @@
             </header>
             <div class="partners">
                 <div class="panel partner-list" data-reveal>
-                    <div><h3>Autism Involves Me</h3><p>Founder Paula George has backed the project since the first build. Through AIM's network, PATHOS has reached more than 2,000 people.</p></div>
+                    <div><h3>Autism Involves Me</h3><p>Founder Paula George has backed the project since the first build. Through AIM's network, PATHOS has reached more than <span class="count" data-count="2000">2,000</span> people.</p></div>
                     <div><h3>Alice Walton School of Medicine</h3><p>Mary Buschlen and Josiah Leong advise on wearable design, research methods and ethics.</p></div>
                     <div><h3>5NEWS</h3><p>Regional segment: &ldquo;Bentonville teens create AI tool to aid nonverbal autistic individuals.&rdquo;</p></div>
-                    <div><h3>@autism_feed</h3><p>250K+ followers. The post about PATHOS got 13.6K likes and 4,389 saves.</p></div>
+                    <div><h3>@autism_feed</h3><p><span class="count" data-count="250" data-suffix="K+">250K+</span> followers. The post about PATHOS got <span class="count" data-count="13.6" data-decimals="1" data-suffix="K">13.6K</span> likes and <span class="count" data-count="4389">4,389</span> saves.</p></div>
                     <div><h3>AIM2Give &amp; First National Bank</h3><p>A joint community pitch linking the project to local advocacy groups.</p></div>
                     <div><h3>SkillsUSA</h3><p>Where we compete with it.</p></div>
                 </div>
@@ -577,7 +586,7 @@
                     <p class="eyebrow">Contact</p>
                     <h2>Want to <span class="accent accent--mono">help</span>?</h2>
                     <p>Caregivers, researchers, teachers and builders: if you'd like to help, try PATHOS or ask a question, write to us.</p>
-                    <a class="contact-email" href="mailto:rsignsv1279@gmail.com">rsignsv1279@gmail.com</a>
+                    <span class="contact-email-row"><a class="contact-email" href="mailto:rsignsv1279@gmail.com">rsignsv1279@gmail.com</a><button type="button" class="copy-btn" data-copy="rsignsv1279@gmail.com" aria-label="Copy email address"><span>Copy</span></button></span>
                     <ul class="contact-links">
                         <li><a href="mailto:rsignsv1279@gmail.com?subject=PATHOS%20code">Ask about the code &rarr;</a></li>
                         <li><a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">About the WESAD dataset &rarr;</a></li>
@@ -640,6 +649,7 @@
     <script type="module" src="main.js"></script>
     <script type="module" src="tilt.js"></script>
     <script type="module" src="field.js"></script>
+    <script type="module" src="play.js"></script>
     <script type="module">
         // Load the 3D hardware section (Three.js + 2.2 MB model) only when it's close to the viewport.
         const section = document.getElementById('prototype');
