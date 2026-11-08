@@ -20,6 +20,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const FPS = 60, FIRST = 1, LAST = 2880;
 // The film's frame: 16:9 on a 36 mm-wide sensor.
@@ -36,6 +37,10 @@ const stage = document.getElementById('hwStage');
 const view = document.getElementById('hwView');
 const statusEl = document.getElementById('hwStatus');
 const tip = document.getElementById('hwTip');
+const labelEl = document.getElementById('hwLabel');
+const labelCard = labelEl.querySelector('.hw-label-card');
+const orbitBtn = document.getElementById('hw360');
+const orbitUi = document.getElementById('hwOrbitUi');
 const rail = document.getElementById('hwRail');
 const scrubEl = document.getElementById('hwScrub');
 const frameEl = document.getElementById('hwFrame');
@@ -140,6 +145,8 @@ function updateHud(f) {
   const current = chapters.findIndex(c => fi >= c.shotStart && fi < c.shotEnd);
   if (current !== activeChapter && current !== -1) {
     activeChapter = current;
+    // A pinned label belongs to its shot; the next shot starts clean.
+    if (pinned && mode === 'film') closeLabel();
     railButtons.forEach((b, i) => {
       b.classList.toggle('is-on', i === current);
       b.classList.toggle('is-past', i < current);
@@ -181,22 +188,33 @@ layoutFilm(view.clientWidth || 1, view.clientHeight || 1);
 const stats = { ready: false, frames: 0, drawCalls: 0, triangles: 0, quality: 0, model: MODEL, page: 0 };
 let renderer, scene, camera, mixer;
 let cur = FIRST, tgt = FIRST, visible = false, dirty = true, raf = 0, last = 0, slow = 0, quality = 1;
-const parallax = { x: 0, y: 0, tx: 0, ty: 0 };
-const qPar = new THREE.Quaternion(), ePar = new THREE.Euler();
 const pickables = [];
+const actions = [];
+// 360 view: 'film' follows the Blender camera; 'orbit' is the visitor's own.
+let mode = 'film', orbit = null, orbitCam = null, tween = null, tweenCam = null, zoomGoal = 0;
 const uFilm = { value: new THREE.Vector4(0, 0, 1, 1) }, uArt = { value: 1 };
 let screenMat = null, pageTex = [], shownPage = -1;
 
+// Parts you can click: [name, what it does]. Keys are node names in the GLB.
 const LABELS = {
-  ESP32_S3: 'ESP32-S3 · controller',
-  TMP117: 'TMP117 · skin temperature',
-  ADS1115: 'ADS1115 · 16-bit ADC',
-  MPU6050: 'MPU6050 · motion',
-  MAX30102: 'MAX30102 · pulse and HRV',
-  BME280: 'BME280 · environment',
-  GSR_Module: 'GSR module · skin conductance',
-  MicroSD_Breakout: 'microSD · local storage',
-  Laptop: 'MacBook · PATHOS Stress-Lysis Monitor',
+  ESP32_S3: ['ESP32-S3', 'The controller. Reads every sensor and streams the data over Wi-Fi.'],
+  TMP117: ['TMP117 · skin temperature', 'Blood vessels in the hands tighten under stress, so the skin cools slightly.'],
+  ADS1115: ['ADS1115 · 16-bit ADC', 'Turns the GSR module\u2019s analog signal into precise numbers for the ESP32.'],
+  MPU6050: ['MPU6050 · motion', 'Tells walking from sitting, so movement isn\u2019t mistaken for stress.'],
+  MAX30102: ['MAX30102 · heart rate and HRV', 'Not just how fast the heart beats, but how much the gap between beats varies.'],
+  BME280: ['BME280 · environment', 'Room temperature, humidity and pressure, so a hot room doesn\u2019t look like a sweaty palm.'],
+  GSR_Module: ['GSR module · skin conductance', 'Sweat glands react quickly under stress, sometimes before you notice it yourself.'],
+  MicroSD_Breakout: ['microSD · local storage', 'Every session is logged on the device, over its own SPI bus.'],
+  Electrode_Leads: ['Finger electrodes', 'Two leads on the fingertips carry skin conductance to the GSR module.'],
+  GSR_Analog: ['GSR analog line', 'The raw skin-conductance signal, on its way to the ADS1115.'],
+  I2C_SDA: ['I\u00b2C data (SDA)', 'The shared data line for the I\u00b2C sensors.'],
+  I2C_SCL: ['I\u00b2C clock (SCL)', 'The shared clock line for the I\u00b2C sensors.'],
+  SPI_Wires: ['SPI bus', 'A dedicated bus from the ESP32 to the microSD card.'],
+  Power_3V3: ['3.3 V power', 'Feeds every module from the ESP32\u2019s regulator.'],
+  Ground: ['Ground', 'The common return for every module.'],
+  USB_Cable: ['USB power cable', '5 V from the power bank to the board.'],
+  Laptop: ['MacBook · PATHOS dashboard', 'Receives the stream over Wi-Fi and runs the v1 software: live view, model study, source data and diagnostics.'],
+  PATHOS_ROOT__static: ['The PATHOS rig', 'Breadboard, power bank and finger electrodes. The parts budget is under $25.'],
 };
 
 function glowTexture() {
@@ -262,17 +280,130 @@ function setLens(lens) {
 }
 
 function apply(frame) {
-  mixer.setTime(frame / FPS);
+  // Seek every clip to exactly this time. (mixer.setTime can't do this for
+  // play-once clips: once one reaches its end three.js pauses it, and a later
+  // setTime rewinds it to 0 without advancing, snapping parts to their
+  // starting pose.)
+  const t = frame / FPS;
+  for (const a of actions) {
+    a.enabled = true;
+    a.paused = false;
+    a.time = Math.min(t, a.getClip().duration);
+  }
+  mixer.update(0);
   const fi = Math.round(frame);
   if (lensAt(fi) !== shownLens) setLens(lensAt(fi));
   showPage(pageAt(fi));
   uArt.value = artAt(fi);
-  if (parallax.x || parallax.y) {
-    ePar.set(parallax.y, parallax.x, 0, 'YXZ');
-    qPar.setFromEuler(ePar);
-    camera.quaternion.multiply(qPar);
-  }
   updateHud(frame);
+}
+
+/* ---------- 360 view ---------- */
+
+const v3 = new THREE.Vector3(), q4 = new THREE.Quaternion();
+function syncProjection(c) {
+  c.fov = camera.fov; c.aspect = camera.aspect; c.near = camera.near; c.far = camera.far;
+  if (camera.view && camera.view.enabled) {
+    const v = camera.view;
+    c.setViewOffset(v.fullWidth, v.fullHeight, v.offsetX, v.offsetY, v.width, v.height);
+  } else c.clearViewOffset();
+  c.updateProjectionMatrix();
+}
+function filmPose() {
+  camera.updateWorldMatrix(true, false);
+  return { p: camera.getWorldPosition(new THREE.Vector3()), q: camera.getWorldQuaternion(new THREE.Quaternion()) };
+}
+const easeInOut = x => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+function startTween(from, to, done) {
+  tweenCam = tweenCam || new THREE.PerspectiveCamera();
+  tween = { from, to, t: reduced ? 1 : 0, done };
+}
+function stepTween(dt) {
+  if (!tween) return false;
+  tween.t = Math.min(1, tween.t + dt / 0.65);
+  const k = easeInOut(tween.t), to = tween.to();
+  syncProjection(tweenCam);
+  tweenCam.position.lerpVectors(tween.from.p, to.p, k);
+  tweenCam.quaternion.slerpQuaternions(tween.from.q, to.q, k);
+  if (tween.t >= 1) { const d = tween.done; tween = null; d && d(); }
+  return true;
+}
+const activeCam = () => (tween ? tweenCam : mode === 'orbit' ? orbitCam : camera);
+
+function enterOrbit() {
+  if (mode === 'orbit' || !orbit) return;
+  closeLabel();
+  const from = filmPose();
+  // Start the orbit exactly where the film camera is, looking at the same
+  // point (the camera's focus target), so nothing jumps.
+  syncProjection(orbitCam);
+  orbitCam.position.copy(from.p);
+  orbitCam.quaternion.copy(from.q);
+  const focus = scene.getObjectByName('Camera_Focus');
+  const dist = focus ? focus.getWorldPosition(v3).distanceTo(from.p) : 0.5;
+  const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(from.q);
+  orbit.target.copy(from.p).addScaledVector(fwd, clamp(dist, orbit.minDistance, orbit.maxDistance));
+  orbit.update();
+  zoomGoal = orbitCam.position.distanceTo(orbit.target);
+  const to = { p: orbitCam.position.clone(), q: orbitCam.quaternion.clone() };
+  mode = 'orbit';
+  orbit.enabled = true;
+  renderer.domElement.style.touchAction = 'none';
+  stage.classList.add('is-orbit');
+  orbitBtn.setAttribute('aria-pressed', 'true');
+  orbitUi.hidden = false;
+  startTween(from, () => to);
+  wake();
+}
+function exitOrbit() {
+  if (mode !== 'orbit') return;
+  closeLabel();
+  const from = { p: orbitCam.position.clone(), q: orbitCam.quaternion.clone() };
+  mode = 'film';
+  orbit.enabled = false;
+  renderer.domElement.style.touchAction = 'pan-y';
+  stage.classList.remove('is-orbit');
+  orbitBtn.setAttribute('aria-pressed', 'false');
+  orbitUi.hidden = true;
+  // Glide back to wherever the film camera is now.
+  startTween(from, filmPose);
+  wake();
+}
+
+/* ---------- Click labels ---------- */
+
+let pinned = null;   // { obj, local: Vector3 }
+function closeLabel() {
+  if (!pinned) return;
+  pinned = null;
+  labelEl.hidden = true;
+}
+function placeLabel() {
+  if (!pinned) return;
+  const cam = activeCam();
+  v3.copy(pinned.local);
+  pinned.obj.localToWorld(v3);
+  v3.project(cam);
+  const w = view.clientWidth, h = view.clientHeight;
+  const x = (v3.x * 0.5 + 0.5) * w, y = (-v3.y * 0.5 + 0.5) * h;
+  const off = v3.z > 1 || x < 0 || x > w || y < 0 || y > h;
+  labelEl.classList.toggle('is-off', off);
+  labelEl.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+  // Keep the card inside the view: beside the dot when it fits, otherwise
+  // slid along the edge; below the dot unless that runs off the bottom.
+  const cw = labelCard.offsetWidth, ch = labelCard.offsetHeight, m = 8;
+  let cx = x + 16;
+  if (cx + cw > w - m) cx = x - 16 - cw;
+  if (cx < m) cx = clamp(x - cw / 2, m, Math.max(m, w - m - cw));
+  let cy = y + 14;
+  if (cy + ch > h - m) cy = y - 14 - ch;
+  if (cy < m) cy = m;
+  labelCard.style.left = (cx - x).toFixed(1) + 'px';
+  labelCard.style.top = (cy - y).toFixed(1) + 'px';
+}
+function labelFor(obj) {
+  for (let o = obj; o; o = o.parent) if (LABELS[o.name]) return o;
+  return null;
 }
 
 function render(now) {
@@ -285,13 +416,24 @@ function render(now) {
   const k = reduced ? 1 : 1 - Math.exp(-dt * 11);
   cur += (tgt - cur) * k;
   if (Math.abs(tgt - cur) < 0.08) cur = tgt;
-  parallax.x += (parallax.tx - parallax.x) * (reduced ? 1 : 1 - Math.exp(-dt * 6));
-  parallax.y += (parallax.ty - parallax.y) * (reduced ? 1 : 1 - Math.exp(-dt * 6));
-  const moving = cur !== tgt || Math.abs(parallax.tx - parallax.x) > 1e-4 || Math.abs(parallax.ty - parallax.y) > 1e-4;
+  let moving = cur !== tgt;
+  if (mode === 'orbit') {
+    syncProjection(orbitCam);
+    // Zoom buttons ease the distance; damping keeps every move gentle.
+    const off = v3.subVectors(orbitCam.position, orbit.target), d = off.length();
+    if (Math.abs(zoomGoal - d) > 1e-4) {
+      off.setLength(d + (zoomGoal - d) * (1 - Math.exp(-dt * 9)));
+      orbitCam.position.copy(orbit.target).add(off);
+      moving = true;
+    }
+    if (orbit.update()) moving = true;
+  }
+  if (stepTween(dt)) moving = true;
 
   if (moving || dirty) {
     apply(cur);
-    renderer.render(scene, camera);
+    placeLabel();
+    renderer.render(scene, activeCam());
     stats.frames++;
     stats.drawCalls = renderer.info.render.calls;
     stats.triangles = renderer.info.render.triangles;
@@ -460,6 +602,7 @@ async function init() {
     a.setLoop(THREE.LoopOnce, 1);
     a.clampWhenFinished = true;
     a.play();
+    actions.push(a);
   }
 
   view.appendChild(renderer.domElement);
@@ -488,6 +631,7 @@ async function init() {
   new IntersectionObserver(entries => {
     visible = entries[entries.length - 1].isIntersecting;
     if (visible) { dirty = true; wake(); }
+    else if (mode === 'orbit') { exitOrbit(); tween = null; }   // leaving the section ends the 360 view
   }, { rootMargin: '120px 0px' }).observe(stage);
   // Backstop for a missed observer callback: on scroll, confirm visibility directly.
   addEventListener('scroll', () => {
@@ -498,18 +642,74 @@ async function init() {
     wake();
   }, { passive: true });
 
-  // Pointer: gentle parallax + hover labels for the modules.
+  // Pointer. In the film nothing but scroll moves the picture: a click
+  // labels the part under it, hovering names it. The 360 view is the only
+  // mode in which dragging moves the camera.
+  const canvas = renderer.domElement;
+  canvas.style.touchAction = 'pan-y';
+  // The mouse wheel always scrolls the page (trackpad pinch, sent as
+  // ctrl+wheel, still zooms in the 360 view). Registered before the
+  // controls so it runs first.
+  canvas.addEventListener('wheel', e => { if (!e.ctrlKey || mode !== 'orbit') e.stopImmediatePropagation(); }, { passive: true });
+  orbitCam = new THREE.PerspectiveCamera();
+  orbit = new OrbitControls(orbitCam, canvas);
+  orbit.enabled = false;
+  orbit.enableDamping = true;
+  orbit.dampingFactor = 0.07;
+  orbit.rotateSpeed = 0.35;
+  orbit.zoomSpeed = 0.6;
+  orbit.enablePan = false;
+  orbit.minDistance = 0.14;
+  orbit.maxDistance = 1.5;
+  orbit.minPolarAngle = 0.12;
+  orbit.maxPolarAngle = Math.PI / 2 - 0.06;   // stay above the table
+  canvas.style.touchAction = 'pan-y';         // OrbitControls sets 'none'; only the 360 view needs it
+  orbit.addEventListener('change', wake);
+
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), box = new THREE.Box3(), hit = new THREE.Vector3();
-  let tipTimer = 0;
-  view.addEventListener('pointermove', e => {
+  const ndcAt = e => {
     const r = view.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
-    if (!reduced) { parallax.tx = (0.5 - nx) * 0.03; parallax.ty = (0.5 - ny) * 0.02; wake(); }
-    if (e.pointerType !== 'mouse' || tipTimer) return;
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -(((e.clientY - r.top) / r.height) * 2 - 1));
+    return r;
+  };
+  const pickTargets = [];
+  gltf.scene.traverse(o => { if (o.isMesh && !/^(DataPulse__|WiFi_packet_|Highlight__)/.test(o.name) && o.material !== table) pickTargets.push(o); });
+
+  let press = null, tipTimer = 0;
+  view.addEventListener('pointerdown', e => {
+    if (e.button !== 0 || e.target.closest('.hw-label, .hw-orbit-ui')) return;
+    press = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+  });
+  view.addEventListener('pointercancel', () => { press = null; });
+  view.addEventListener('pointerup', e => {
+    if (!press || e.target.closest('.hw-label, .hw-orbit-ui')) return;
+    const moved = Math.hypot(e.clientX - press.x, e.clientY - press.y), long = e.timeStamp - press.t;
+    press = null;
+    if (moved > 6 || long > 700) return;           // that was a drag, not a click
+    ndcAt(e);
+    const cam = activeCam();
+    ray.setFromCamera(ndc, cam);
+    let found = null;
+    for (const h of ray.intersectObjects(pickTargets, false)) {
+      if (!h.object.visible) continue;
+      const owner = labelFor(h.object);
+      if (owner) { found = { owner, point: h.point }; break; }
+    }
+    if (!found) { closeLabel(); return; }
+    const [title, desc] = LABELS[found.owner.name];
+    labelEl.querySelector('strong').textContent = title;
+    labelEl.querySelector('.hw-label-d').textContent = desc;
+    pinned = { obj: found.owner, local: found.owner.worldToLocal(found.point.clone()), shot: activeChapter };
+    labelEl.hidden = false;
+    placeLabel();
+    tip.hidden = true;
+  });
+  view.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse' || e.buttons || tipTimer) return;
     tipTimer = requestAnimationFrame(() => {
       tipTimer = 0;
-      ndc.set(nx * 2 - 1, -(ny * 2 - 1));
-      ray.setFromCamera(ndc, camera);
+      const r = ndcAt(e);
+      ray.setFromCamera(ndc, activeCam());
       let best = null, bestD = Infinity;
       for (const p of pickables) {
         box.setFromObject(p.obj);
@@ -518,14 +718,27 @@ async function init() {
           if (d < bestD) { bestD = d; best = p; }
         }
       }
-      if (best) {
-        tip.textContent = best.label;
+      view.classList.toggle('is-pointing', !!best);
+      if (best && !pinned) {
+        tip.textContent = best.label[0];
         tip.style.transform = `translate(${(e.clientX - r.left + 14).toFixed(0)}px, ${(e.clientY - r.top + 14).toFixed(0)}px)`;
         tip.hidden = false;
       } else tip.hidden = true;
     });
   });
-  view.addEventListener('pointerleave', () => { parallax.tx = parallax.ty = 0; tip.hidden = true; wake(); });
+  view.addEventListener('pointerleave', () => { tip.hidden = true; view.classList.remove('is-pointing'); });
+
+  labelEl.querySelector('.hw-label-x').addEventListener('click', closeLabel);
+  orbitBtn.hidden = false;
+  orbitBtn.addEventListener('click', () => (mode === 'orbit' ? exitOrbit() : enterOrbit()));
+  document.getElementById('hwExit360').addEventListener('click', exitOrbit);
+  document.getElementById('hwZoomIn').addEventListener('click', () => { zoomGoal = clamp(zoomGoal * 0.8, orbit.minDistance, orbit.maxDistance); wake(); });
+  document.getElementById('hwZoomOut').addEventListener('click', () => { zoomGoal = clamp(zoomGoal * 1.25, orbit.minDistance, orbit.maxDistance); wake(); });
+  addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (pinned) closeLabel();
+    else if (mode === 'orbit') exitOrbit();
+  });
 
   visible = true; wake();
 }
@@ -539,6 +752,8 @@ init().catch(err => {
 
 window.pathosPrototype = {
   stats, film,
-  get state() { return { frame: cur, target: tgt, chapter: activeChapter, visible, rendering: !!raf, page: shownPage, art: uArt.value }; },
+  get state() { return { frame: cur, target: tgt, chapter: activeChapter, visible, rendering: !!raf, page: shownPage, art: uArt.value, mode, tweening: !!tween, label: pinned ? LABELS[pinned.obj.name][0] : null }; },
   frameAt, progressAt, scrollProgress, scrollYForFrame,
+  get debug() { return { scene, camera, mixer, orbit, orbitCam }; },
+  enterOrbit: () => enterOrbit(), exitOrbit: () => exitOrbit(),
 };

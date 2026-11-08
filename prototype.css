@@ -145,6 +145,68 @@ body { overflow-x: clip; }
 .hw-view.is-compact .hw-line { --cap: 14px; }
 .hw-view.is-compact .hw-cta { position: static; height: 40px; margin-top: 10px; padding: 0 14px; font-size: 13.5px; }
 
+/* ---------- Click labels ---------- */
+
+.hw-view.is-pointing canvas { cursor: pointer; }
+.hw-label { position: absolute; left: 0; top: 0; z-index: 6; pointer-events: none; }
+.hw-label[hidden] { display: none; }
+.hw-label.is-off { visibility: hidden; }
+.hw-label-dot {
+  position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--gold-light); box-shadow: 0 0 0 4px rgba(210, 175, 112, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.4);
+  animation: hw-ping 1.6s var(--ease) 3;
+}
+@keyframes hw-ping { 0%, 100% { box-shadow: 0 0 0 4px rgba(210, 175, 112, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.4); } 50% { box-shadow: 0 0 0 9px rgba(210, 175, 112, 0), 0 0 0 1px rgba(0, 0, 0, 0.4); } }
+.hw-label-card {
+  position: absolute; left: 16px; top: 14px; width: max-content; max-width: 280px;
+  padding: 11px 34px 12px 14px; border-radius: 12px; pointer-events: auto;
+  background: rgba(15, 12, 10, 0.92); border: 1px solid rgba(210, 175, 112, 0.45);
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.8);
+  animation: hw-label-in 0.22s var(--ease);
+}
+@keyframes hw-label-in { from { opacity: 0; transform: translateY(4px) scale(0.98); } to { opacity: 1; transform: none; } }
+.hw-label-card strong { display: block; font-size: 14.5px; font-weight: 500; color: #f6efe7; }
+.hw-label-d { display: block; margin-top: 4px; font-size: 13px; line-height: 1.45; color: #cfc4b8; }
+.hw-label-x {
+  position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border: 0; border-radius: 6px;
+  background: transparent; color: #a39787; font-size: 17px; line-height: 1; cursor: pointer;
+}
+.hw-label-x:hover, .hw-label-x:focus-visible { background: rgba(255, 255, 255, 0.08); color: #f6efe7; }
+
+/* ---------- 360 view ---------- */
+
+.hw-360 {
+  display: inline-flex; align-items: center; gap: 7px; margin-left: 4px;
+  font-family: var(--font-body); font-size: 13px; color: #f6efe7;
+  padding: 5px 10px; border-radius: 7px; cursor: pointer;
+  background: transparent; border: 1px solid rgba(210, 175, 112, 0.45);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.hw-360[hidden] { display: none; }
+.hw-360:hover, .hw-360:focus-visible { background: rgba(210, 175, 112, 0.12); }
+.hw-360[aria-pressed="true"] { background: var(--gold-light); border-color: var(--gold-light); color: #15110d; }
+.hw-stage.is-orbit canvas { cursor: grab; }
+.hw-stage.is-orbit canvas:active { cursor: grabbing; }
+.hw-orbit-ui {
+  position: absolute; z-index: 6; left: 50%; top: 14px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 14px; border-radius: 12px;
+  background: rgba(15, 12, 10, 0.86); border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 13px; color: #cfc4b8; white-space: nowrap;
+  animation: hw-label-in 0.25s var(--ease);
+}
+.hw-orbit-ui[hidden] { display: none; }
+.hw-orbit-hint { margin-right: 6px; }
+.hw-orbit-btn, .hw-orbit-exit {
+  height: 32px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04); color: #f6efe7; cursor: pointer; font-family: var(--font-body);
+  transition: background 0.2s, border-color 0.2s;
+}
+.hw-orbit-btn { width: 32px; font-size: 17px; line-height: 1; }
+.hw-orbit-exit { padding: 0 12px; font-size: 13px; border-color: rgba(210, 175, 112, 0.5); }
+.hw-orbit-btn:hover, .hw-orbit-exit:hover, .hw-orbit-btn:focus-visible, .hw-orbit-exit:focus-visible { background: rgba(255, 255, 255, 0.1); }
+/* While looking around, the film's titles step back. */
+.hw-stage.is-orbit .hw-hud { opacity: 0.25; transition: opacity 0.3s; }
+
 /* ---------- Chapter rail + scrubber ---------- */
 
 .hw-rail { position: absolute; z-index: 4; right: 18px; top: 50%; transform: translateY(-46%); display: grid; gap: 2px; }
@@ -187,6 +249,11 @@ html:not(.hw-js) .hw-rail, html:not(.hw-js) .hw-scrub, html:not(.hw-js) .hw-stat
   .hw-skip { margin-left: auto; font-size: 12px; padding: 4px 8px; }
   .hw-view { inset: 40px 0 0 0; }
   .hw-rail { display: none; }
+  .hw-360 span { display: none; }
+  .hw-360 { padding: 5px 8px; }
+  .hw-orbit-ui { top: auto; bottom: 12px; padding: 5px; }
+  .hw-orbit-hint { display: none; }
+  .hw-label-card { max-width: 220px; }
 }
 
 @media (max-height: 680px) and (min-width: 801px) {
