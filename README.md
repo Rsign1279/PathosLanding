@@ -30,3 +30,21 @@ back with their caption. Sideways drag swipes, the arrows step, tapping a side
 card centres it and tapping the centre card opens it in the lightbox. With
 reduced motion or no JavaScript the photos show as a plain grid. The track
 length scales with the number of cards (`--n` on `#flTrack`).
+
+## Interactive explanations (`play.js`, `play.css`)
+
+- **One reading can mean anything:** each signal card shows a live trace in the
+  shape that signal really has (pulse, skin conductance, skin temperature,
+  motion). Tap the signals you'd see together and a meter reads the
+  combination: one signal could be anything, movement explains it away, and
+  heart rate + sweat + cold fingers while still is the strong sign.
+- **Sensor table:** a small live trace per sensor; hovering a row shows what
+  that signal looks like when it reacts.
+- **How PATHOS makes a call:** the four steps run in sequence while on screen;
+  hovering or focusing a step holds it.
+- **Project log:** a rail fills as you scroll and each milestone lights up.
+- Partner numbers count up when they come into view, and the contact email has
+  a copy button. Traces only draw while visible; reduced motion keeps
+  everything still.
+
+Test: `node deliverables/test-play.cjs`

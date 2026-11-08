@@ -1,0 +1,109 @@
+/* ==========================================================================
+   Interactive explanations (play.js)
+   ========================================================================== */
+
+/* ---------- Live signal traces ---------- */
+.sig-trace { display: block; width: 100%; height: 42px; margin-top: 14px; border-radius: 8px; background: rgba(8, 6, 5, 0.55); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+.sig-trace--row { height: 24px; margin-top: 7px; max-width: 170px; border-radius: 6px; }
+
+/* Sensor table: a fixed status column keeps every row's columns aligned
+   (each row is its own grid, and "Working" is wider than "MVP 2"). */
+@media (min-width: 961px) {
+  .sensor-row { grid-template-columns: 1.1fr 0.9fr 2fr 92px; }
+  .sensor-row > :last-child { justify-self: end; }
+}
+
+/* ---------- Signal explorer ---------- */
+.sig-card { display: flex; flex-direction: column; cursor: pointer; outline: none; -webkit-user-select: none; user-select: none; }
+.sig-card .sig-trace { margin-top: auto; }
+.sig-card .card-text { margin-bottom: 16px; }
+.sig-card .card-kicker { padding-right: 28px; }
+.sig-dot {
+  position: absolute; top: 18px; right: 18px; width: 18px; height: 18px; border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px rgba(246, 239, 231, 0.45);
+  transition: box-shadow 0.25s var(--ease), background 0.25s var(--ease), transform 0.3s var(--ease);
+}
+.sig-dot::after {
+  content: ""; position: absolute; left: 6px; top: 3.5px; width: 4px; height: 8px;
+  border: solid #15110d; border-width: 0 1.8px 1.8px 0; transform: rotate(45deg) scale(0); transition: transform 0.25s var(--ease);
+}
+.sig-card:hover .sig-dot { box-shadow: inset 0 0 0 1.5px rgba(246, 239, 231, 0.8); }
+.sig-card[aria-pressed="true"] { box-shadow: 0 0 0 1.5px rgba(240, 163, 187, 0.85), 0 18px 40px -22px rgba(40, 25, 10, 0.6); }
+.sig-card[aria-pressed="true"] .sig-dot { background: var(--pink); box-shadow: none; transform: scale(1.05); }
+.sig-card[aria-pressed="true"] .sig-dot::after { transform: rotate(45deg) scale(1); }
+.sig-card:focus-visible { box-shadow: 0 0 0 2px var(--gold-light); }
+
+.sig-meter { max-width: 560px; margin: 26px auto 0; text-align: center; }
+.sig-meter-bar { position: relative; height: 6px; border-radius: 6px; background: rgba(10, 8, 6, 0.09); overflow: hidden; }
+.sig-meter-fill {
+  position: absolute; inset: 0; border-radius: inherit; transform-origin: left; transform: scaleX(var(--fill, 0));
+  background: linear-gradient(90deg, var(--gold-light), #e2a07a 60%, var(--pink-deep, #d86a8d));
+  transition: transform 0.55s var(--ease), filter 0.3s;
+}
+.sig-meter[data-state^="motion"] .sig-meter-fill { filter: grayscale(0.85) brightness(1.1); }
+.sig-meter-bar i { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--bg); }
+.sig-meter-bar i:nth-of-type(1) { left: 33.333%; }
+.sig-meter-bar i:nth-of-type(2) { left: 66.666%; }
+.sig-meter-text { margin: 12px 0 0; font-size: 16px; line-height: 1.45; color: var(--muted); min-height: 2.9em; }
+.sig-meter-text strong { color: var(--ink); font-weight: 500; }
+.statement em { transition: background-size 0.6s var(--ease), color 0.3s; background: linear-gradient(rgba(240, 163, 187, 0.35), rgba(240, 163, 187, 0.35)) 0 88% / 0% 35% no-repeat; }
+.statement.is-lit em { background-size: 100% 35%; color: var(--ink); }
+
+/* ---------- Model pipeline ---------- */
+.pipeline > li { outline: none; transition: box-shadow 0.35s var(--ease), filter 0.45s var(--ease); }
+.pipeline.is-running > li:not(.is-active) { filter: brightness(0.72) saturate(0.85); }
+.step-bar {
+  position: absolute; left: 0; right: 0; top: 0; height: 3px; z-index: 2;
+  background: linear-gradient(90deg, var(--gold-light), var(--pink));
+  transform-origin: left; transform: scaleX(0);
+}
+.pipeline.is-running > li.is-done .step-bar { transform: scaleX(1); opacity: 0.35; }
+.pipeline.is-running > li.is-active .step-bar { animation: step-fill var(--step-ms, 1.7s) linear forwards; }
+.pipeline.is-held > li.is-active .step-bar { animation: none; transform: scaleX(1); opacity: 1; }
+@keyframes step-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.pipeline > li.is-active { box-shadow: 0 0 0 1.5px rgba(210, 175, 112, 0.8), 0 22px 44px -22px rgba(40, 25, 10, 0.7); }
+.pipeline > li .step { transition: color 0.3s; }
+.pipeline > li.is-active .step { color: var(--pink); }
+.pipeline > li:focus-visible { box-shadow: 0 0 0 2px var(--gold-light); }
+
+/* ---------- Project log rail ---------- */
+.log { position: relative; }
+.log li { position: relative; padding-left: 44px; }
+.log-rail { position: absolute; left: 21px; top: 30px; bottom: 30px; width: 2px; border-radius: 2px; background: var(--dark-line); }
+.log-rail-fill { position: absolute; inset: 0; border-radius: inherit; transform-origin: top; transform: scaleY(var(--fill, 0)); background: linear-gradient(180deg, var(--gold-light), var(--pink)); }
+.log li::before {
+  content: ""; position: absolute; left: 16px; top: 22px; width: 12px; height: 12px; border-radius: 50%; z-index: 1;
+  background: #1a1511; box-shadow: inset 0 0 0 2px rgba(246, 239, 231, 0.25);
+  transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.log li.is-reached::before { background: var(--gold-light); box-shadow: 0 0 0 4px rgba(210, 175, 112, 0.18); transform: scale(1.08); }
+.log li.is-now.is-reached::before { background: var(--pink); box-shadow: 0 0 0 4px rgba(240, 163, 187, 0.22); }
+.log li h3, .log li p { transition: color 0.35s; }
+.log li:not(.is-reached) h3 { color: var(--on-dark-3); }
+
+/* ---------- Counters ---------- */
+.count { display: inline-block; font-variant-numeric: tabular-nums; color: var(--on-dark); font-weight: 500; }
+
+/* ---------- Copy email ---------- */
+.contact-email-row { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.copy-btn {
+  display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border-radius: 8px; cursor: pointer;
+  font-family: var(--font-body); font-size: 13.5px; color: var(--on-dark);
+  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.16);
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+}
+.copy-btn:hover { background: rgba(255, 255, 255, 0.12); }
+.copy-btn:active { transform: scale(0.96); }
+.copy-btn.is-done { color: #b2e0ba; border-color: rgba(120, 190, 130, 0.5); background: rgba(120, 190, 130, 0.12); }
+.copy-btn:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+
+/* ---------- Founder photo depth (with tilt.js) ---------- */
+.founder-photo { transition: box-shadow 0.35s var(--ease); }
+.has-tilt .founder.is-tilting .founder-photo {
+  transform: translate3d(calc(var(--tilt-x, 0px) * -1.4), calc(var(--tilt-y, 0px) * -1.4), 0);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 26px 44px -18px rgba(0, 0, 0, 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sig-meter-fill, .statement em, .log li::before { transition: none; }
+}
