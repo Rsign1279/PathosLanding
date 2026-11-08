@@ -56,8 +56,15 @@ node optimize.mjs raw.glb assets/pathos-hardware-mobile.glb mobile   # phones, ~
   at the same positions, aims, colours and relative power).
 - Phones and touch devices load `pathos-hardware-mobile.glb`, the 800 px
   screenshots and the smaller marble, with a lower pixel-ratio cap.
-- Pointer parallax, module labels on hover, a chapter rail and a timeline
-  scrubber. Pixel ratio adapts if frames get slow.
+- In the film, only scroll moves anything. Clicking (or tapping) a part pins
+  a label to it with its name and what it does; hovering names it. Seeking sets
+  every clip's time directly, so scrubbing anywhere, including past the last
+  frame and back, is exact.
+- **360° view** (button in the window bar): orbit the scene at the current
+  frame with gentle, damped dragging, no panning, staying above the table, and
+  zoom with the + / − buttons or a pinch. The mouse wheel keeps scrolling the
+  page. "Back to the film", Esc, or scrolling away glides back to the film camera.
+- A chapter rail and a timeline scrubber. Pixel ratio adapts if frames get slow.
 - `assets/pathos-hardware-poster.webp` shows while the model loads and stays as
   the fallback if WebGL or the model is unavailable; titles still follow the scroll.
 
@@ -68,10 +75,14 @@ With the local server running on port 8000:
 ```sh
 node deliverables/test-prototype.cjs
 node deliverables/test-prototype-fallbacks.cjs
+node deliverables/test-prototype-interaction.cjs
+node deliverables/test-prototype-interaction-phone.cjs
 ```
 
 The first checks every shot (chapter, titles, frame counter), the title frames,
 the screen pages and table artwork on their keys, reverse scrubbing, rail
 navigation, the phone build (lighter model, small screenshots, stacked titles)
 and reduced motion, and writes captures plus `validation.json` to this folder.
-The second checks a missing model, a failed Draco decoder and no WebGL.
+The second checks a missing model, a failed Draco decoder and no WebGL. The
+interaction checks cover clicks and drags in the film, labels, the 360 view and
+the phone.

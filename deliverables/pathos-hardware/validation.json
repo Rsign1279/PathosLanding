@@ -1,6 +1,6 @@
 {
   "errors": [],
-  "loadMs": 1905,
+  "loadMs": 1412,
   "states": [
     {
       "chapter": 1,
@@ -107,7 +107,7 @@
   ],
   "stats": {
     "ready": true,
-    "frames": 449,
+    "frames": 452,
     "drawCalls": 221,
     "triangles": 437828,
     "quality": 0.6000000000000001,
@@ -134,6 +134,9 @@
     "visible": true,
     "rendering": false,
     "page": 0,
-    "art": 0
+    "art": 0,
+    "mode": "film",
+    "tweening": false,
+    "label": null
   }
 }

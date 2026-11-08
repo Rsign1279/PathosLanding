@@ -252,12 +252,23 @@
                 <div class="hw-bar">
                     <span class="hw-file"><i class="dot" aria-hidden="true"></i>pathos-hardware.glb</span>
                     <span class="hw-clock" aria-hidden="true"><span id="hwFrame">0001</span> / 2880</span>
+                    <button type="button" class="hw-360" id="hw360" aria-pressed="false" hidden><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><ellipse cx="10" cy="10" rx="8" ry="3.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14.6 5.6l2.2.9-.9 2.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>360&deg; view</span></button>
                     <a class="hw-skip" href="#product">Skip to the build &darr;</a>
                 </div>
                 <div class="hw-view" id="hwView">
                     <img class="hw-poster" id="hwPoster" src="assets/pathos-hardware-poster.webp" alt="The PATHOS prototype on a matte black table: the breadboard rig with its power bank and finger electrodes beside a midnight MacBook showing the PATHOS Stress-Lysis Monitor." width="1600" height="900" decoding="async">
                     <p class="hw-status" id="hwStatus" role="status">Loading the 3D model…</p>
                     <span class="hw-tip" id="hwTip" hidden></span>
+                    <div class="hw-label" id="hwLabel" role="status" hidden>
+                        <i class="hw-label-dot" aria-hidden="true"></i>
+                        <div class="hw-label-card"><strong></strong><span class="hw-label-d"></span><button type="button" class="hw-label-x" aria-label="Close label">&times;</button></div>
+                    </div>
+                    <div class="hw-orbit-ui" id="hwOrbitUi" hidden>
+                        <span class="hw-orbit-hint">Drag to look around &middot; tap a part to label it</span>
+                        <button type="button" class="hw-orbit-btn" id="hwZoomIn" aria-label="Zoom in">+</button>
+                        <button type="button" class="hw-orbit-btn" id="hwZoomOut" aria-label="Zoom out">&minus;</button>
+                        <button type="button" class="hw-orbit-exit" id="hwExit360">Back to the film</button>
+                    </div>
                     <div class="hw-hud" id="hwHud" aria-live="polite">
                         <article class="hw-chapter" data-shot-start="1" data-shot-end="298" data-start="1" data-end="286" data-rail="Overview">
                             <p class="hw-eyebrow">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;01</p>
