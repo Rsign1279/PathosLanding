@@ -14,7 +14,7 @@
     <link rel="preload" href="assets/halftone-board.bin" as="fetch" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Bodoni+Moda:wght@400&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="prototype.css">
@@ -243,7 +243,7 @@
             <header class="sec-head prototype-head" data-reveal>
                 <p class="eyebrow">Hardware in 3D</p>
                 <h2>Follow one signal through the <span class="accent accent--mono">rig</span></h2>
-                <p>A 3D study of the PATHOS prototype, modelled in Blender. Scroll to take it apart and follow each signal from the skin to the dashboard.</p>
+                <p>The PATHOS rig, modelled and animated in Blender. Scroll to take it apart, follow each signal from the skin to the dashboard, and watch the v1 software on the laptop.</p>
             </header>
         </div>
         <div class="hw-track" id="hwTrack">
@@ -254,72 +254,55 @@
                     <a class="hw-skip" href="#product">Skip to the build &darr;</a>
                 </div>
                 <div class="hw-view" id="hwView">
-                    <img class="hw-poster" id="hwPoster" src="assets/pathos-hardware-poster.webp" alt="The PATHOS prototype on a dark table: an ESP32-S3 and seven sensor modules wired across a breadboard, with finger electrodes and a laptop." width="1600" height="900" decoding="async">
+                    <img class="hw-poster" id="hwPoster" src="assets/pathos-hardware-poster.webp" alt="The PATHOS prototype on a matte black table: the breadboard rig with its power bank and finger electrodes beside a midnight MacBook showing the PATHOS Stress-Lysis Monitor." width="1600" height="900" decoding="async">
                     <p class="hw-status" id="hwStatus" role="status">Loading the 3D model…</p>
                     <span class="hw-tip" id="hwTip" hidden></span>
-                </div>
-                <div class="hw-hud" id="hwHud" aria-live="polite">
-                <article class="hw-chapter" data-start="1" data-end="298" data-rail="Overview">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>01</span></p>
-                    <h3 class="hw-title">PATHOS</h3>
-                    <ol class="hw-route"><li data-on="1" data-off="284">Physiological awareness, engineered.</li></ol>
-                    <p class="hw-desc">A working study of the PATHOS prototype: one breadboard, eight modules and every connection traced. Scroll to take it apart.</p>
-                </article>
-                <article class="hw-chapter" data-start="298" data-end="688" data-rail="Exploded">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>02</span></p>
-                    <h3 class="hw-title">Anatomy of awareness</h3>
-                    <ol class="hw-route"><li data-on="298" data-off="674">One breadboard.</li><li data-on="330" data-off="674">Eight connected modules.</li></ol>
-                    <ol class="hw-mods" aria-label="Modules, in lift order"><li data-on="298" data-off="404"><span>ESP32-S3</span></li><li data-on="326" data-off="431"><span>TMP117</span></li><li data-on="354" data-off="458"><span>ADS1115</span></li><li data-on="381" data-off="486"><span>MPU6050</span></li><li data-on="408" data-off="514"><span>MAX30102</span></li><li data-on="436" data-off="541"><span>BME280</span></li><li data-on="464" data-off="568"><span>microSD</span></li><li data-on="491" data-off="596"><span>GSR</span></li></ol>
-                    <p class="hw-desc">Each module lifts away in the order it was wired, and every lead stays attached.</p>
-                </article>
-                <article class="hw-chapter" data-start="688" data-end="898" data-rail="The brain">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>03</span></p>
-                    <h3 class="hw-title">The brain</h3>
-                    <ol class="hw-route"><li data-on="688" data-off="884">ESP32-S3</li><li data-on="712" data-off="884">Acquisition</li><li data-on="736" data-off="884">Control</li><li data-on="760" data-off="884">Wi-Fi</li></ol>
-                    <p class="hw-desc">The ESP32-S3 timestamps every sample, runs the shared bus, writes to storage and sends data over Wi-Fi.</p>
-                </article>
-                <article class="hw-chapter" data-start="898" data-end="1198" data-rail="Sensor bus">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>04</span></p>
-                    <h3 class="hw-title">The sensor highway</h3>
-                    <ol class="hw-route"><li data-on="896" data-off="956">TMP117</li><li data-on="941" data-off="1001">ADS1115</li><li data-on="986" data-off="1046">MPU6050</li><li data-on="1031" data-off="1091">MAX30102</li><li data-on="1076" data-off="1194">BME280</li></ol>
-                    <p class="hw-desc">Each sensor answers at its own address on one shared I2C bus. Data travels on SDA (gold), clock on SCL (pink).</p>
-                </article>
-                <article class="hw-chapter" data-start="1198" data-end="1498" data-rail="GSR path">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>05</span></p>
-                    <h3 class="hw-title">From contact to signal</h3>
-                    <ol class="hw-route"><li data-on="1216" data-off="1276">Electrodes</li><li data-on="1256" data-off="1321">GSR</li><li data-on="1276" data-off="1388">ADS1115 A0</li><li data-on="1354" data-off="1484">I2C</li><li data-on="1378" data-off="1484">ESP32-S3</li></ol>
-                    <p class="hw-desc">Finger electrodes feed the GSR front end. The ADS1115 digitises its analog output on A0, and the ESP32-S3 reads it over I2C.</p>
-                </article>
-                <article class="hw-chapter" data-start="1498" data-end="1678" data-rail="Storage">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>06</span></p>
-                    <h3 class="hw-title">Every signal, stored</h3>
-                    <ol class="hw-route"><li data-on="1498" data-off="1664">ESP32-S3</li><li data-on="1511" data-off="1664">Dedicated SPI</li><li data-on="1571" data-off="1664">microSD</li></ol>
-                    <p class="hw-desc">A separate SPI bus (CLK 12, MOSI 11, MISO 13, CS 10) records locally without touching the sensor bus.</p>
-                </article>
-                <article class="hw-chapter" data-start="1678" data-end="1948" data-rail="Wi-Fi">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>07</span></p>
-                    <h3 class="hw-title">Connected, wirelessly</h3>
-                    <ol class="hw-route"><li data-on="1678" data-off="1934">ESP32-S3</li><li data-on="1686" data-off="1934">Wi-Fi</li><li data-on="1838" data-off="1934">Laptop</li></ol>
-                    <p class="hw-desc">Packets leave the ESP32-S3 over Wi-Fi. The power bank only supplies USB power; there is no data cable to the laptop.</p>
-                </article>
-                <article class="hw-chapter" data-start="1948" data-end="2248" data-rail="Dashboard">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>08</span></p>
-                    <h3 class="hw-title">Signals become awareness</h3>
-                    <ol class="hw-route"><li data-on="1960" data-off="2234">EDA</li><li data-on="1990" data-off="2234">Skin temperature</li><li data-on="2020" data-off="2234">PPG</li><li data-on="2050" data-off="2234">Motion</li><li data-on="2080" data-off="2234">Environment</li></ol>
-                    <p class="hw-desc">Five traces side by side on the dashboard. The waveforms here are simulated, not live readings.</p>
-                </article>
-                <article class="hw-chapter" data-start="2248" data-end="2518" data-rail="Pipeline">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>09</span></p>
-                    <h3 class="hw-title">The complete pipeline</h3>
-                    <ol class="hw-route"><li data-on="2256" data-off="2504">Sensors</li><li data-on="2282" data-off="2504">ESP32-S3</li><li data-on="2308" data-off="2504">Wi-Fi</li><li data-on="2334" data-off="2504">Processing</li><li data-on="2360" data-off="2504">V4</li><li data-on="2386" data-off="2504">Dashboard</li></ol>
-                    <p class="hw-desc">The illustrated architecture end to end. This model does not run the V4 classifier or validate any medical capability.</p>
-                </article>
-                <article class="hw-chapter hw-chapter--final" data-start="2518" data-end="2881" data-rail="Reassembly">
-                    <p class="hw-eyebrow"><span>PATHOS</span><span>/</span><span>10</span></p>
-                    <h3 class="hw-title">Stress you can’t see,<br><em>awareness you can.</em></h3>
-                    <p class="hw-desc">The rig comes back together. Below is the real breadboard build it was modelled on.</p>
-                    <a class="hw-cta" href="#product">See the real build &darr;</a>
-                </article>
+                    <div class="hw-hud" id="hwHud" aria-live="polite">
+                        <article class="hw-chapter" data-shot-start="1" data-shot-end="298" data-start="1" data-end="286" data-rail="Overview">
+                            <p class="hw-eyebrow">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;01</p>
+                            <h3 class="hw-title hw-title--intro">PATHOS</h3>
+                            <div class="hw-plate hw-plate--short"><p class="hw-caption">PHYSIOLOGICAL AWARENESS, ENGINEERED.</p></div>
+                        </article>
+                        <article class="hw-chapter" data-shot-start="298" data-shot-end="688" data-start="298" data-end="676" data-rail="Exploded view">
+                            <p class="hw-eyebrow">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;02</p>
+                            <div class="hw-plate"><p class="hw-caption">ONE BREADBOARD. EIGHT CONNECTED MODULES.</p></div>
+                        </article>
+                        <article class="hw-chapter" data-shot-start="688" data-shot-end="898" data-start="688" data-end="886" data-rail="The brain">
+                            <p class="hw-eyebrow">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;03</p>
+                            <h3 class="hw-title">The brain</h3>
+                            <div class="hw-plate"><p class="hw-caption">ESP32-S3 / ACQUISITION, CONTROL AND WI-FI</p></div>
+                        </article>
+                        <article class="hw-chapter" data-shot-start="898" data-shot-end="1198" data-start="898" data-end="1194" data-rail="Sensor highway">
+                            <p class="hw-eyebrow">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;04</p>
+                            <div class="hw-plate"><p class="hw-caption">TMP117 / ADS1115 / MPU6050 / MAX30102 / BME280</p></div>
+                        </article>
+                        <article class="hw-chapter" data-shot-start="1198" data-shot-end="1498" data-start="1198" data-end="1486" data-rail="GSR data path">
+                            <p class="hw-eyebrow">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;05</p>
+                            <div class="hw-plate"><p class="hw-caption">ELECTRODES&nbsp;&nbsp;&gt;&nbsp;&nbsp;GSR&nbsp;&nbsp;&gt;&nbsp;&nbsp;ADS1115 A0&nbsp;&nbsp;&gt;&nbsp;&nbsp;I2C&nbsp;&nbsp;&gt;&nbsp;&nbsp;ESP32-S3</p></div>
+                        </article>
+                        <article class="hw-chapter" data-shot-start="1498" data-shot-end="1678" data-start="1498" data-end="1666" data-rail="Storage">
+                            <p class="hw-eyebrow">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;06</p>
+                            <div class="hw-plate"><p class="hw-caption">ESP32-S3&nbsp;&nbsp;&gt;&nbsp;&nbsp;DEDICATED SPI&nbsp;&nbsp;&gt;&nbsp;&nbsp;microSD</p></div>
+                        </article>
+                        <article class="hw-chapter" data-shot-start="1678" data-shot-end="1948" data-start="1678" data-end="1936" data-rail="Wi-Fi">
+                            <p class="hw-eyebrow">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;07</p>
+                            <h3 class="hw-title">Connected, wirelessly</h3>
+                            <div class="hw-plate"><p class="hw-caption">ESP32-S3&nbsp;&nbsp;&gt;&nbsp;&nbsp;WI-FI&nbsp;&nbsp;&gt;&nbsp;&nbsp;LAPTOP</p></div>
+                        </article>
+                        <article class="hw-chapter" data-shot-start="1948" data-shot-end="2248" data-start="0" data-end="0" data-rail="Laptop">
+                            <p class="hw-sr">The laptop shows the PATHOS v1 software: Live Instrument, Model Study, Source Data and Diagnostics.</p>
+                        </article>
+                        <article class="hw-chapter" data-shot-start="2248" data-shot-end="2518" data-start="2248" data-end="2506" data-rail="Full pipeline">
+                            <p class="hw-eyebrow">PATHOS&nbsp;&nbsp;/&nbsp;&nbsp;09</p>
+                            <h3 class="hw-title">The complete pipeline</h3>
+                            <div class="hw-plate"><p class="hw-caption">SENSORS &gt; ESP32-S3 &gt; WI-FI &gt; PROCESSING &gt; V4 &gt; DASHBOARD</p></div>
+                        </article>
+                        <article class="hw-chapter hw-chapter--final" data-shot-start="2518" data-shot-end="2881" data-start="2598" data-end="2881" data-rail="Reassembly">
+                            <h3 class="hw-title hw-title--final">PATHOS</h3>
+                            <div class="hw-plate hw-plate--final"><p class="hw-line hw-line--ink">Stress You Can&rsquo;t See,</p><p class="hw-line hw-line--gold">Awareness You Can.</p></div>
+                            <a class="hw-cta" href="#product">See the real build &darr;</a>
+                        </article>
+                    </div>
                 </div>
                 <nav class="hw-rail" id="hwRail" aria-label="Chapters"></nav>
                 <div class="hw-scrub" aria-hidden="true"><span id="hwScrub"></span></div>

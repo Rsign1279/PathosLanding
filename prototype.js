@@ -1,17 +1,20 @@
 /* ==========================================================================
-   PATHOS hardware in 3D: scroll-driven playback of the Blender scene
-   (deliverables/pathos-hardware/PATHOS_Hardware_Detail_1080p60.blend,
-   exported to assets/pathos-hardware.glb by export_web.py).
+   PATHOS hardware in 3D: scroll-driven playback of the finished Blender film
+   (deliverables/pathos-hardware/PATHOS_Final_Complete.blend, exported to
+   assets/pathos-hardware.glb and a lighter assets/pathos-hardware-mobile.glb).
 
-   - Scroll position maps to a timeline frame (1..2880 at 60 fps). Each chapter
-     gets a share of the scroll proportional to its length in the film, so
-     the camera's quick moves between shots stay quick and the holds breathe.
-   - The rendered frame eases toward the scroll target every animation frame,
-     so scrubbing is smooth in both directions and stops when it arrives.
-   - Titles are HTML, revealed on the exact frames the Blender HUD used; each
-     part of a chapter's signal route lights when its pulse reaches it.
-   - Renders only when something changed and only while the section is on
-     screen; pixel ratio adapts if frames get slow.
+   - Scroll position maps to a film frame (1..2880 at 60 fps). Each shot gets a
+     share of the scroll proportional to its length in the film.
+   - The rendered frame eases toward the scroll target, so scrubbing is smooth
+     in both directions and stops when it arrives.
+   - The titles are HTML copies of the film's HUD, placed in the same 16:9
+     frame and switched on the exact frames the film uses.
+   - The film's node-based materials are rebuilt here: the MacBook screen steps
+     through the four v1 screenshots on the film's frames, the wallpaper is the
+     marble artwork, and the table carries the marble panel at the right edge
+     of the frame during the opening and closing shots.
+   - Renders only when something changed and only while on screen; pixel
+     ratio adapts if frames get slow.
    ========================================================================== */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -19,13 +22,18 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const FPS = 60, FIRST = 1, LAST = 2880;
-const MODEL = './assets/pathos-hardware.glb';
+// The film's frame: 16:9 on a 36 mm-wide sensor.
+const FILM_ASPECT = 16 / 9;
+const MOBILE = innerWidth < 820 || matchMedia('(pointer: coarse)').matches;
+const MODEL = MOBILE ? './assets/pathos-hardware-mobile.glb' : './assets/pathos-hardware.glb';
+const SHOT = MOBILE ? '-sm' : '';
+const PAGES = ['live-instrument', 'model-study', 'source-data', 'diagnostics'].map(p => `./assets/v1-${p}${SHOT}.webp`);
+const MARBLE = MOBILE ? './assets/marble-sm.webp' : './assets/marble.webp';
 
 const section = document.getElementById('prototype');
 const track = document.getElementById('hwTrack');
 const stage = document.getElementById('hwStage');
 const view = document.getElementById('hwView');
-const poster = document.getElementById('hwPoster');
 const statusEl = document.getElementById('hwStatus');
 const tip = document.getElementById('hwTip');
 const rail = document.getElementById('hwRail');
@@ -34,23 +42,33 @@ const frameEl = document.getElementById('hwFrame');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const smooth = x => x * x * (3 - 2 * x);
+
+/* ---------- Film timing (from the Blender file) ---------- */
+
+// "Screen page" value on the MacBook display (constant interpolation).
+const pageAt = f => (f >= 2163 && f < 2520 ? 3 : f >= 2092 && f < 2520 ? 2 : f >= 2020 && f < 2520 ? 1 : 0);
+// The camera's focal length changes per shot (glTF can't carry lens animation).
+const LENS = [[2519, 44], [2249, 43], [1949, 47], [1679, 42], [1499, 72], [1199, 52], [899, 55], [689, 62], [299, 52], [1, 44]];
+const lensAt = f => LENS.find(([k]) => f >= k)[1];
+// Vertical half-angle tangent for a lens on the film's 36 mm-wide sensor.
+const tanHalf = lens => 18 / lens / FILM_ASPECT;
+// "Artwork timing": the marble panel on the table, opening and closing shots only.
+const artAt = f => (f <= 285 || f >= 2520 ? 1 : 0);
 
 /* ---------- Chapters (from the HTML) ---------- */
 
 const chapters = [...document.querySelectorAll('#hwHud .hw-chapter')].map((el, i) => ({
   el, i,
-  start: +el.dataset.start,
-  end: +el.dataset.end,
-  // The final card appears later in its shot, exactly as in the film (frame 2598).
-  in: el.classList.contains('hw-chapter--final') ? 2598 : +el.dataset.start,
-  parts: [...el.querySelectorAll('[data-on]')].map(p => ({ el: p, on: +p.dataset.on, off: +p.dataset.off })),
+  shotStart: +el.dataset.shotStart,
+  shotEnd: +el.dataset.shotEnd,
+  start: +el.dataset.start,      // titles on (0 = this shot has no titles)
+  end: +el.dataset.end,          // titles off
 }));
 document.documentElement.classList.add('hw-js');
 
-// Scroll share per chapter: proportional to its length, with a floor so short
+// Scroll share per shot: proportional to its length, with a floor so short
 // shots still get enough scroll to read their titles.
-const weights = chapters.map(c => Math.max(220, c.end - c.start));
+const weights = chapters.map(c => Math.max(220, c.shotEnd - c.shotStart));
 const totalW = weights.reduce((a, b) => a + b, 0);
 const cum = weights.reduce((acc, w) => (acc.push(acc[acc.length - 1] + w / totalW), acc), [0]);
 
@@ -60,12 +78,13 @@ function frameAt(p) {
   while (i < chapters.length - 1 && p > cum[i + 1]) i++;
   const u = (p - cum[i]) / (cum[i + 1] - cum[i] || 1);
   const c = chapters[i];
-  return clamp(c.start + u * (c.end - c.start), FIRST, LAST);
+  return clamp(c.shotStart + u * (c.shotEnd - c.shotStart), FIRST, LAST);
 }
 function progressAt(frame) {
-  const i = Math.max(0, chapters.findIndex(c => frame >= c.start && frame < c.end));
+  let i = chapters.findIndex(c => frame >= c.shotStart && frame < c.shotEnd);
+  if (i === -1) i = frame < FIRST + 1 ? 0 : chapters.length - 1;
   const c = chapters[i];
-  return cum[i] + ((frame - c.start) / (c.end - c.start)) * (cum[i + 1] - cum[i]);
+  return clamp(cum[i] + ((frame - c.shotStart) / (c.shotEnd - c.shotStart)) * (cum[i + 1] - cum[i]), 0, 1);
 }
 const scrollRange = () => Math.max(1, track.offsetHeight - stage.offsetHeight);
 const scrollProgress = () => clamp(-track.getBoundingClientRect().top / scrollRange(), 0, 1);
@@ -79,8 +98,9 @@ const railButtons = chapters.map(c => {
   b.innerHTML = `<span class="n">${String(c.i + 1).padStart(2, '0')}</span><span class="l">${c.el.dataset.rail}</span>`;
   b.setAttribute('aria-label', `Chapter ${c.i + 1}: ${c.el.dataset.rail}`);
   b.addEventListener('click', () => {
-    const p = progressAt(c.in + 24);
-    const top = track.getBoundingClientRect().top + scrollY + p * scrollRange() + 1;
+    // Land where the shot's titles are up (or a moment into a shot without titles).
+    const f = c.start ? Math.min(c.start + 40, c.end - 12) : c.shotStart + 40;
+    const top = track.getBoundingClientRect().top + scrollY + progressAt(f) * scrollRange() + 1;
     scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
   });
   rail.appendChild(b);
@@ -89,7 +109,7 @@ const railButtons = chapters.map(c => {
 const scrub = scrubEl.parentElement;
 chapters.slice(1).forEach(c => {
   const t = document.createElement('i');
-  t.style.left = (progressAt(c.start) * 100).toFixed(2) + '%';
+  t.style.left = (progressAt(c.shotStart) * 100).toFixed(2) + '%';
   scrub.appendChild(t);
 });
 
@@ -97,49 +117,71 @@ chapters.slice(1).forEach(c => {
 
 let shownFrame = -1, activeChapter = -1;
 function updateHud(f) {
-  const fi = Math.round(f);
+  // The film evaluates whole frames; so do the titles and the screen.
+  const fi = clamp(Math.round(f), FIRST, LAST);
   if (fi === shownFrame) return;
   shownFrame = fi;
   frameEl.textContent = String(fi).padStart(4, '0');
   scrubEl.style.transform = `scaleX(${progressAt(f).toFixed(4)})`;
 
-  let current = -1;
   for (const c of chapters) {
-    const on = f >= c.in && f < c.end;
-    if (on) current = c.i;
-    if (!on) {
-      if (c.el.classList.contains('is-on')) c.el.classList.remove('is-on');
-      continue;
-    }
-    // --t: frames since the titles came in; --x: 1 → 0 over the last 12 frames.
-    c.el.classList.add('is-on');
-    c.el.style.setProperty('--t', Math.min(90, f - c.in).toFixed(1));
-    c.el.style.setProperty('--x', clamp((c.end - 2 - f) / 12, 0, 1).toFixed(3));
-    for (const part of c.parts) {
-      const lit = f >= part.on;
-      part.el.classList.toggle('is-lit', lit);
-      part.el.classList.toggle('is-live', lit && f < Math.min(part.off, part.on + 70));
-      part.el.style.setProperty('--p', clamp((f - part.on) / Math.max(1, part.off - part.on), 0, 1).toFixed(3));
-    }
+    const on = c.start > 0 && fi >= c.start && fi < c.end;
+    c.el.classList.toggle('is-on', on);
+    if (!on) continue;
+    // --t: frames since the titles came in; --x: 1 → 0 over the last 3 frames.
+    c.el.style.setProperty('--t', Math.min(30, fi - c.start));
+    c.el.style.setProperty('--x', clamp((c.end - fi) / 3, 0, 1).toFixed(3));
   }
-  // The rail follows the shot, even while a chapter's titles are still hidden.
-  const shot = chapters.findIndex(c => f >= c.start && f < c.end);
-  if (shot !== -1) current = shot;
-  if (current !== activeChapter) {
+  // The rail follows the shot.
+  const current = chapters.findIndex(c => fi >= c.shotStart && fi < c.shotEnd);
+  if (current !== activeChapter && current !== -1) {
     activeChapter = current;
-    railButtons.forEach((b, i) => b.classList.toggle('is-on', i === current));
-    railButtons.forEach((b, i) => b.classList.toggle('is-past', i < current));
+    railButtons.forEach((b, i) => {
+      b.classList.toggle('is-on', i === current);
+      b.classList.toggle('is-past', i < current);
+    });
   }
 }
 
+/* ---------- Film frame: where the 16:9 picture sits in the view ---------- */
+
+// The whole film frame always stays in view (letterboxed by more of the
+// table when the view is taller or wider than 16:9). On phones the picture
+// is lifted so the titles fit underneath.
+const film = { x: 0, y: 0, w: 1, h: 1, zoom: 1, lift: 0, compact: false };
+const MAX_TAN = Math.tan(THREE.MathUtils.degToRad(84) / 2);
+function layoutFilm(w, h) {
+  const aspect = w / h;
+  // How much taller the view's field is than the film's (1 when the view is
+  // 16:9 or wider). The same for every lens, so the film frame never moves.
+  film.zoom = Math.min(MAX_TAN / tanHalf(42), Math.max(1, FILM_ASPECT / aspect));
+  const tH = 1, tW = FILM_ASPECT, tV = film.zoom;
+  film.w = w * tW / (tV * aspect);
+  film.h = h * tH / tV;
+  // Too small for the film's own title sizes: stack the titles under the picture.
+  film.compact = film.w < 880;
+  view.classList.toggle('is-compact', film.compact);
+  film.lift = film.compact ? Math.min(h * 0.2, Math.max(0, (h - film.h) / 2 - 8)) : 0;
+  film.x = (w - film.w) / 2;
+  film.y = (h - film.h) / 2 - film.lift;
+  const s = view.style;
+  s.setProperty('--fx', film.x.toFixed(1) + 'px');
+  s.setProperty('--fy', film.y.toFixed(1) + 'px');
+  s.setProperty('--fw', film.w.toFixed(1) + 'px');
+  s.setProperty('--fh', film.h.toFixed(1) + 'px');
+}
+layoutFilm(view.clientWidth || 1, view.clientHeight || 1);
+
 /* ---------- Three.js ---------- */
 
-const stats = { ready: false, frames: 0, drawCalls: 0, triangles: 0, quality: 0 };
-let renderer, scene, camera, mixer, baseFov = 26, baseAspect = 16 / 9;
+const stats = { ready: false, frames: 0, drawCalls: 0, triangles: 0, quality: 0, model: MODEL, page: 0 };
+let renderer, scene, camera, mixer;
 let cur = FIRST, tgt = FIRST, visible = false, dirty = true, raf = 0, last = 0, slow = 0, quality = 1;
 const parallax = { x: 0, y: 0, tx: 0, ty: 0 };
 const qPar = new THREE.Quaternion(), ePar = new THREE.Euler();
 const pickables = [];
+const uFilm = { value: new THREE.Vector4(0, 0, 1, 1) }, uArt = { value: 1 };
+let screenMat = null, pageTex = [], shownPage = -1;
 
 const LABELS = {
   ESP32_S3: 'ESP32-S3 · controller',
@@ -150,17 +192,7 @@ const LABELS = {
   BME280: 'BME280 · environment',
   GSR_Module: 'GSR module · skin conductance',
   MicroSD_Breakout: 'microSD · local storage',
-  Laptop: 'Laptop · PATHOS dashboard',
-};
-
-// Site palette for the scene's signal and studio materials.
-const RECOLOUR = {
-  'Signal • aqua': { color: 0xd2af70, emissive: 0xd2af70, intensity: 3.2 },   // gold: SDA / data
-  'Signal • blue': { color: 0xf0a3bb, emissive: 0xf0a3bb, intensity: 3.0 },   // pink: SCL / clock
-  'Signal • amber': { color: 0xeab873, emissive: 0xeab873, intensity: 2.6 },  // warm amber: SPI / analog
-  'Studio charcoal': { color: 0x0f0c0a, roughness: 0.62, metalness: 0.05 },
-  'Dashboard deep navy': { color: 0x0e0b09, emissive: 0x0e0b09, intensity: 0.5 },
-  'Dashboard panel': { color: 0x1a1511, emissive: 0x1a1511, intensity: 0.5 },
+  Laptop: 'MacBook · PATHOS Stress-Lysis Monitor',
 };
 
 function glowTexture() {
@@ -188,29 +220,49 @@ function fail(message) {
 }
 
 function resize() {
-  if (!renderer) return;
   const w = view.clientWidth, h = view.clientHeight;
   if (!w || !h) return;
-  const mobile = innerWidth < 800;
-  const dpr = Math.min(devicePixelRatio || 1, mobile ? 1.35 : 1.75) * quality;
+  layoutFilm(w, h);
+  if (!renderer) return;
+  const dpr = Math.min(devicePixelRatio || 1, MOBILE ? 1.35 : 1.75) * quality;
   renderer.setPixelRatio(Math.max(1, dpr));
   renderer.setSize(w, h, false);
-  const aspect = w / h;
-  camera.aspect = aspect;
-  // Keep the film's horizontal framing on narrower screens.
-  const hHalf = Math.atan(Math.tan(THREE.MathUtils.degToRad(baseFov) / 2) * baseAspect);
-  const fov = aspect < baseAspect ? 2 * Math.atan(Math.tan(hHalf) / aspect) : THREE.MathUtils.degToRad(baseFov);
-  camera.fov = Math.min(68, THREE.MathUtils.radToDeg(fov));
-  // Lift the subject above the titles on phones.
-  if (mobile) camera.setViewOffset(w, h, 0, h * 0.2, w, h);
+  camera.aspect = w / h;
+  setLens(lensAt(Math.round(cur)));
+  if (film.lift) camera.setViewOffset(w, h, 0, film.lift, w, h);
   else camera.clearViewOffset();
   camera.updateProjectionMatrix();
+  // Film frame in drawing-buffer pixels, origin bottom-left (gl_FragCoord).
+  const k = renderer.getDrawingBufferSize(new THREE.Vector2()).x / w;
+  uFilm.value.set(film.x * k, (h - film.y - film.h) * k, film.w * k, film.h * k);
+  stats.quality = quality;
   dirty = true;
   wake();
 }
 
+function showPage(n) {
+  if (!screenMat) return;
+  if (!pageTex[n]) n = 0;          // a later page still on its way: hold the first
+  if (n === shownPage || !pageTex[n]) return;
+  shownPage = stats.page = n;
+  screenMat.map = pageTex[n];
+  screenMat.color.setScalar(0.955); // emission + 4.5% glossy in the film
+  screenMat.needsUpdate = true;
+}
+
+let shownLens = 0;
+function setLens(lens) {
+  shownLens = lens;
+  camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(tanHalf(lens) * film.zoom));
+  camera.updateProjectionMatrix();
+}
+
 function apply(frame) {
   mixer.setTime(frame / FPS);
+  const fi = Math.round(frame);
+  if (lensAt(fi) !== shownLens) setLens(lensAt(fi));
+  showPage(pageAt(fi));
+  uArt.value = artAt(fi);
   if (parallax.x || parallax.y) {
     ePar.set(parallax.y, parallax.x, 0, 'YXZ');
     qPar.setFromEuler(ePar);
@@ -249,82 +301,145 @@ function render(now) {
 }
 function wake() { if (!raf && visible) raf = requestAnimationFrame(render); }
 
+const texLoader = new THREE.TextureLoader();
+function loadTexture(url, { flipY = false, wrap = THREE.ClampToEdgeWrapping } = {}) {
+  return texLoader.loadAsync(url).then(t => {
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.flipY = flipY;
+    t.wrapS = t.wrapT = wrap;
+    t.anisotropy = renderer ? Math.min(8, renderer.capabilities.getMaxAnisotropy()) : 1;
+    return t;
+  });
+}
+
+// Light from the film's five disc area lights: position (Blender, Z up),
+// aim direction, power in watts, colour.
+const LIGHTS = [
+  { name: 'Neutral overhead softbox', p: [-0.11, -0.07, 0.38], d: [0.271, 0.222, -0.937], w: 3.05, c: [1, 0.975, 0.94], shadow: true },
+  { name: 'Warm edge reflector', p: [0.27, 0, 0.22], d: [-0.795, 0.147, -0.589], w: 1.0, c: [1, 0.94, 0.83] },
+  { name: 'Soft front fill', p: [-0.18, -0.25, 0.14], d: [0.538, 0.777, -0.329], w: 0.79, c: [0.87, 0.925, 1] },
+  { name: 'Display lid rim', p: [0.04, 0.48, 0.3], d: [0.119, -0.559, -0.82], w: 1.15, c: [0.88, 0.94, 1] },
+  { name: 'Edge strip', p: [0.08, 0.3, 0.25], d: [-0.229, -0.716, -0.659], w: 0.95, c: [1, 0.85, 0.8] },
+];
+const LIGHT_SCALE = window.__hwTune?.light ?? 0.8;
+const yUp = ([x, y, z]) => new THREE.Vector3(x, z, -y);
+
 async function init() {
   if (!window.WebGLRenderingContext) throw new Error('WebGL unavailable');
   try {
     renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
   } catch (e) { throw new Error('WebGL unavailable'); }
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  // The film is graded with AgX at -0.12 EV.
+  renderer.toneMapping = THREE.AgXToneMapping;
+  renderer.toneMappingExposure = Math.pow(2, -0.12);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.setClearColor(0x0f0c0a, 1);
+  renderer.setClearColor(0x060607, 1);
   renderer.domElement.setAttribute('aria-hidden', 'true');
 
   scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
-  scene.environmentIntensity = 0.42;
+  scene.environmentIntensity = 0.22;
 
-  // Studio lighting in the site palette: warm key, gold rim, faint pink kicker.
-  const key = new THREE.DirectionalLight(0xfff1e0, 2.6);
-  key.position.set(-0.35, 0.9, 0.55);
-  key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
-  key.shadow.camera.left = key.shadow.camera.bottom = -0.45;
-  key.shadow.camera.right = key.shadow.camera.top = 0.45;
-  key.shadow.camera.near = 0.05; key.shadow.camera.far = 3;
-  key.shadow.bias = -0.0004; key.shadow.normalBias = 0.002; key.shadow.radius = 4;
-  const rim = new THREE.DirectionalLight(0xd2af70, 1.6);
-  rim.position.set(0.6, 0.35, -0.7);
-  const kick = new THREE.DirectionalLight(0xf0a3bb, 0.55);
-  kick.position.set(-0.8, 0.25, -0.4);
-  const fill = new THREE.HemisphereLight(0xf3e9e1, 0x0f0c0a, 0.35);
-  scene.add(key, key.target, rim, kick, fill);
+  for (const L of LIGHTS) {
+    const pos = yUp(L.p), dir = yUp(L.d).normalize();
+    const s = new THREE.SpotLight(new THREE.Color().setRGB(...L.c, THREE.LinearSRGBColorSpace), (L.w / Math.PI) * LIGHT_SCALE, 0, 1.3, 1, 2);
+    s.name = L.name;
+    s.position.copy(pos);
+    s.target.position.copy(pos).addScaledVector(dir, 0.4);
+    if (L.shadow) {
+      s.castShadow = true;
+      s.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048);
+      s.shadow.camera.near = 0.05; s.shadow.camera.far = 2;
+      s.shadow.focus = 0.62;
+      s.shadow.bias = -0.0003; s.shadow.normalBias = 0.0015; s.shadow.radius = 5;
+    }
+    scene.add(s, s.target);
+  }
 
   const draco = new DRACOLoader();
   draco.setDecoderPath('./assets/vendor/draco/');
   draco.setDecoderConfig({ type: 'wasm' });
   const loader = new GLTFLoader();
   loader.setDRACOLoader(draco);
-  const gltf = await loader.loadAsync(MODEL, e => {
-    if (e.total) statusEl.textContent = `Loading the 3D model · ${Math.round((e.loaded / e.total) * 100)}%`;
-  });
+  // Model, first screenshot and the marble artwork load together.
+  const [gltf, page0, marbleUV, marbleWin] = await Promise.all([
+    loader.loadAsync(MODEL, e => {
+      if (e.total) statusEl.textContent = `Loading the 3D model · ${Math.round((e.loaded / e.total) * 100)}%`;
+    }),
+    loadTexture(PAGES[0]),
+    loadTexture(MARBLE),
+    loadTexture(MARBLE, { flipY: true, wrap: THREE.MirroredRepeatWrapping }),
+  ]);
   draco.dispose();
+  pageTex[0] = page0;
 
   scene.add(gltf.scene);
   camera = gltf.cameras[0];
   if (!camera) throw new Error('Model has no camera');
-  baseFov = camera.fov; baseAspect = camera.aspect || 16 / 9;
   camera.near = 0.004; camera.far = 20;
 
+  // MacBook wallpaper: the marble, with the film's mapping (u' = 0.865u + 0.067).
+  marbleUV.repeat.set(0.8653846, 1);
+  marbleUV.offset.set(0.0673077, 0);
+  const wallpaper = new THREE.MeshBasicMaterial({ map: marbleUV, name: 'MacBook wallpaper' });
+  screenMat = new THREE.MeshBasicMaterial({ color: 0x000000, name: 'PATHOS dashboard window' });
+
+  // The table: near-black matte, with the marble panel in screen space at the
+  // right of the frame (window x > 0.82, sampled at x - 0.107) while it's on.
+  // The film's world is near black, so the table reflects only the lights.
+  const T = window.__hwTune || {};
+  const table = new THREE.MeshPhysicalMaterial({ name: 'Natural matte black tabletop', roughness: T.rough ?? 0.7, metalness: 0, specularIntensity: T.spec ?? 0.3, envMapIntensity: 0.05 });
+  table.color.setRGB(0.0032, 0.0032, 0.0032, THREE.LinearSRGBColorSpace);
+  table.onBeforeCompile = sh => {
+    sh.uniforms.uMarble = { value: marbleWin };
+    sh.uniforms.uFilm = uFilm;
+    sh.uniforms.uArt = uArt;
+    sh.fragmentShader = 'uniform sampler2D uMarble;\nuniform vec4 uFilm;\nuniform float uArt;\n' +
+      sh.fragmentShader.replace('#include <opaque_fragment>', `
+        vec2 wc = (gl_FragCoord.xy - uFilm.xy) / uFilm.zw;
+        float px = 0.75 / uFilm.z;
+        float art = uArt * smoothstep(0.82 - px, 0.82 + px, wc.x);
+        if (art > 0.0) outgoingLight = mix(outgoingLight, texture2D(uMarble, vec2(wc.x - 0.107, wc.y)).rgb * 0.85, art);
+        #include <opaque_fragment>`);
+  };
+
   const glow = glowTexture();
+  const found = { screen: false, wallpaper: false, table: false };
   gltf.scene.traverse(o => {
     if (LABELS[o.name]) pickables.push({ obj: o, label: LABELS[o.name] });
     if (!o.isMesh) return;
+    // GLTFLoader turns spaces in node names into underscores; compare without them.
+    const key = o.name.replace(/[\s_]+/g, ' ').trim();
+    if (key === 'PATHOS dashboard • inset rounded window') { o.material = screenMat; found.screen = true; }
+    else if (key === 'Liquid Retina active display') { o.material = wallpaper; found.wallpaper = true; }
+    else if (key === 'Dark studio sweep') { o.material = table; found.table = true; }
+    // Dark glossy parts (display glass, the notch, keys, epoxy) would mirror the
+    // bright studio environment; in the film they only mirror a near-black world.
+    for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
+      if (!m.isMeshStandardMaterial || m.userData.env) continue;
+      m.userData.env = true;
+      // Brushed-metal anisotropy needs mesh tangents the export doesn't carry;
+      // without them it blows out to white, so render those parts isotropic.
+      if (m.anisotropy) { m.anisotropy = 0; m.anisotropyMap = null; }
+      if (/black|glass|epoxy|lens/i.test(m.name) && !/Midnight/.test(m.name)) m.envMapIntensity = 0.15;
+      // Bare metals (RF shield, pins, solder) mirror the lights, not a bright room.
+      else if (/shield|nickel|tin|solder|Brushed|springs/i.test(m.name)) m.envMapIntensity = window.__hwTune?.metal ?? 0.35;
+    }
     const fx = /^(DataPulse__|WiFi_packet_|Highlight__)/.test(o.name);
     // Shape-keyed wires would need their morphs recomputed in the shadow pass too; skip them.
-    o.castShadow = !fx && !o.morphTargetInfluences && !/Dark studio sweep/.test(o.name);
-    o.receiveShadow = !fx;
+    o.castShadow = !fx && !o.morphTargetInfluences && o.material !== table && o.material !== screenMat && o.material !== wallpaper;
+    o.receiveShadow = !fx && o.material !== screenMat && o.material !== wallpaper;
     o.frustumCulled = !o.morphTargetInfluences;
-    for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
-      const r = RECOLOUR[m.name];
-      if (r && !m.userData.recoloured) {
-        m.userData.recoloured = true;
-        if (r.color !== undefined) m.color.setHex(r.color);
-        if (r.emissive !== undefined) { m.emissive.setHex(r.emissive); m.emissiveIntensity = r.intensity; }
-        if (r.roughness !== undefined) m.roughness = r.roughness;
-        if (r.metalness !== undefined) m.metalness = r.metalness;
-      }
-    }
     // Soft additive halo on travelling pulses and Wi-Fi packets.
     if (/^(DataPulse__|WiFi_packet_)/.test(o.name)) {
       o.geometry.computeBoundingSphere();
       const mat = Array.isArray(o.material) ? o.material[0] : o.material;
       const s = new THREE.Sprite(new THREE.SpriteMaterial({
         map: glow, color: mat.emissive || mat.color, transparent: true,
-        blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.85,
+        blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.8,
       }));
       const r = o.geometry.boundingSphere.radius * 7;
       s.scale.set(r, r, r);
@@ -332,6 +447,8 @@ async function init() {
       o.add(s);
     }
   });
+  stats.materials = found;
+  if (!found.screen || !found.wallpaper || !found.table) console.warn('PATHOS 3D: film materials not found', found);
 
   mixer = new THREE.AnimationMixer(gltf.scene);
   for (const clip of gltf.animations) {
@@ -342,10 +459,10 @@ async function init() {
   }
 
   view.appendChild(renderer.domElement);
+  resize();
   // Warm the GPU: compile shaders and upload geometry before the first scroll frame.
   apply(FIRST);
   renderer.compile(scene, camera);
-  resize();
   new ResizeObserver(resize).observe(view);
 
   cur = tgt = frameAt(scrollProgress());
@@ -355,11 +472,26 @@ async function init() {
   stage.classList.add('is-ready');
   statusEl.hidden = true;
 
+  // The other three screenshots arrive in the background, well before the
+  // laptop shot; the screen holds the first page until they do.
+  PAGES.slice(1).forEach((url, i) => loadTexture(url).then(t => {
+    pageTex[i + 1] = t;
+    renderer.initTexture(t);
+    shownPage = -1; dirty = true; wake();
+  }).catch(() => {}));
+
   new IntersectionObserver(([e]) => {
     visible = e.isIntersecting;
     if (visible) { dirty = true; wake(); }
   }, { rootMargin: '120px 0px' }).observe(stage);
-  addEventListener('scroll', wake, { passive: true });
+  // Backstop for a missed observer callback: on scroll, confirm visibility directly.
+  addEventListener('scroll', () => {
+    if (!visible) {
+      const r = stage.getBoundingClientRect();
+      if (r.bottom > -120 && r.top < innerHeight + 120) { visible = true; dirty = true; }
+    }
+    wake();
+  }, { passive: true });
 
   // Pointer: gentle parallax + hover labels for the modules.
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), box = new THREE.Box3(), hit = new THREE.Vector3();
@@ -367,7 +499,7 @@ async function init() {
   view.addEventListener('pointermove', e => {
     const r = view.getBoundingClientRect();
     const nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
-    if (!reduced) { parallax.tx = (0.5 - nx) * 0.045; parallax.ty = (0.5 - ny) * 0.03; wake(); }
+    if (!reduced) { parallax.tx = (0.5 - nx) * 0.03; parallax.ty = (0.5 - ny) * 0.02; wake(); }
     if (e.pointerType !== 'mouse' || tipTimer) return;
     tipTimer = requestAnimationFrame(() => {
       tipTimer = 0;
@@ -394,13 +526,14 @@ async function init() {
 }
 
 updateHud(FIRST);
+addEventListener('resize', () => { if (!renderer) layoutFilm(view.clientWidth || 1, view.clientHeight || 1); });
 init().catch(err => {
   console.warn('PATHOS 3D fallback:', err.message);
   fail('The interactive model could not load, so this is a still of it. The titles still follow your scroll.');
 });
 
 window.pathosPrototype = {
-  stats,
-  get state() { return { frame: cur, target: tgt, chapter: activeChapter, visible, rendering: !!raf }; },
+  stats, film,
+  get state() { return { frame: cur, target: tgt, chapter: activeChapter, visible, rendering: !!raf, page: shownPage, art: uArt.value }; },
   frameAt, progressAt,
 };

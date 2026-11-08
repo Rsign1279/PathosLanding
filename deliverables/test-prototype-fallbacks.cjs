@@ -14,7 +14,7 @@ async function check(browser, mode) {
   });
   await page.goto('http://127.0.0.1:8000/#prototype');
   await page.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
-  await page.waitForFunction(() => /could not load/.test(document.getElementById('hwStatus').textContent), { timeout: 120000 });
+  await page.waitForFunction(() => /could not load/.test(document.getElementById('hwStatus').textContent), undefined, { timeout: 120000 });
   const posterVisible = await page.$eval('#hwPoster', i => i.complete && i.naturalWidth > 0 && getComputedStyle(i).opacity !== '0');
   await page.evaluate(() => {
     const tr = document.getElementById('hwTrack'), st = document.getElementById('hwStage');

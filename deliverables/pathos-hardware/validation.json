@@ -1,61 +1,139 @@
 {
   "errors": [],
-  "loadMs": 1846,
+  "loadMs": 1395,
   "states": [
     {
       "chapter": 1,
-      "frame": 41.34
+      "frame": 41.24,
+      "page": 0,
+      "art": 1
     },
     {
       "chapter": 2,
-      "frame": 338.22
+      "frame": 338.45,
+      "page": 0,
+      "art": 0
     },
     {
       "chapter": 3,
-      "frame": 728.2
+      "frame": 728.42,
+      "page": 0,
+      "art": 0
     },
     {
       "chapter": 4,
-      "frame": 938.41
+      "frame": 938.32,
+      "page": 0,
+      "art": 0
     },
     {
       "chapter": 5,
-      "frame": 1238.25
+      "frame": 1238.49,
+      "page": 0,
+      "art": 0
     },
     {
       "chapter": 6,
-      "frame": 1538.33
+      "frame": 1538.26,
+      "page": 0,
+      "art": 0
     },
     {
       "chapter": 7,
-      "frame": 1718.37
+      "frame": 1718.27,
+      "page": 0,
+      "art": 0
     },
     {
       "chapter": 8,
-      "frame": 1988.29
+      "frame": 1988.19,
+      "page": 0,
+      "art": 0
     },
     {
       "chapter": 9,
-      "frame": 2288.45
+      "frame": 2288.36,
+      "page": 3,
+      "art": 0
     },
     {
       "chapter": 10,
-      "frame": 2638.26
+      "frame": 2638.17,
+      "page": 0,
+      "art": 1
+    }
+  ],
+  "screen": [
+    {
+      "frame": 1990,
+      "page": 0,
+      "art": 0
+    },
+    {
+      "frame": 2050,
+      "page": 1,
+      "art": 0
+    },
+    {
+      "frame": 2120,
+      "page": 2,
+      "art": 0
+    },
+    {
+      "frame": 2200,
+      "page": 3,
+      "art": 0
+    },
+    {
+      "frame": 2500,
+      "page": 3,
+      "art": 0
+    },
+    {
+      "frame": 2540,
+      "page": 0,
+      "art": 1
+    },
+    {
+      "frame": 150,
+      "page": 0,
+      "art": 1
+    },
+    {
+      "frame": 1000,
+      "page": 0,
+      "art": 0
     }
   ],
   "stats": {
     "ready": true,
-    "frames": 372,
-    "drawCalls": 204,
-    "triangles": 387791,
-    "quality": 0
+    "frames": 459,
+    "drawCalls": 221,
+    "triangles": 437828,
+    "quality": 0.6000000000000001,
+    "model": "./assets/pathos-hardware.glb",
+    "page": 0,
+    "materials": {
+      "screen": true,
+      "wallpaper": true,
+      "table": true
+    }
   },
   "overflow": false,
+  "mobile": {
+    "model": "./assets/pathos-hardware-mobile.glb",
+    "compact": true,
+    "plateInside": true,
+    "overflow": false,
+    "smallShots": true
+  },
   "reduced": {
-    "frame": 1600.2245435634713,
-    "target": 1600.2245435634713,
+    "frame": 1600.3945468298723,
+    "target": 1600.3945468298723,
     "chapter": 5,
     "visible": true,
-    "rendering": false
+    "rendering": false,
+    "page": 0,
+    "art": 0
   }
 }
