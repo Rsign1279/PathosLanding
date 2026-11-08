@@ -777,3 +777,37 @@ body { font-size: 18px; }
 @media print {
   .nav-wrap, .lightbox, .prototype, .halftone, .device-section { display: none !important; }
 }
+
+/* ==========================================================================
+   Marble cards you can turn (tilt.js)
+   The marble layer is oversized and slides against the tilt (--tilt-x/y),
+   so it reads as sitting under the card's face. A soft light follows the
+   pointer (--light-x/y, strength --light). Everything here is transform or
+   opacity; the springs live in JS, so no transitions fight the pointer.
+   ========================================================================== */
+
+.has-tilt :is(.card, .panel, .callout, .is-isnt p, .shot) {
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+.has-tilt :is(.card, .panel, .callout, .is-isnt p, .shot)::before {
+  inset: -14px;
+  transform: translate3d(var(--tilt-x, 0px), var(--tilt-y, 0px), 0);
+  transition: none;
+}
+.has-tilt :is(.card, .shot):hover::before { transform: translate3d(var(--tilt-x, 0px), var(--tilt-y, 0px), 0); }
+.has-tilt :is(.card, .panel, .callout, .is-isnt p, .shot)::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at var(--light-x, 50%) var(--light-y, 50%), rgba(255, 244, 228, 0.16), rgba(255, 244, 228, 0.05) 28%, transparent 58%);
+  opacity: var(--light, 0);
+}
+/* The card takes over its own transform while it moves. */
+.has-tilt .is-tilting { z-index: 1; transition: box-shadow 0.35s var(--ease); will-change: transform; }
+.has-tilt .is-dragging {
+  z-index: 2; cursor: grabbing; user-select: none; -webkit-user-select: none;
+  box-shadow: 0 2px 4px rgba(40, 25, 10, 0.1), 0 34px 60px -30px rgba(40, 25, 10, 0.6);
+}
+.has-tilt .is-dragging * { cursor: grabbing; }
+.has-tilt .shot.is-missing::before { inset: auto; transform: none; }
