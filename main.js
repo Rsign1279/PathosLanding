@@ -309,7 +309,7 @@ function heroObstacles(hero) {
   const out = [];
   const lines = el => { const r = document.createRange(); r.selectNodeContents(el); return [...r.getClientRects()]; };
   hero.querySelectorAll('.hero-title, .hero-sub').forEach(el => lines(el).forEach(q => q.width && out.push(q)));
-  hero.querySelectorAll('.announce, .hero-cta .btn, .logos li').forEach(el => out.push(el.getBoundingClientRect()));
+  hero.querySelectorAll('.hero-status, .hero-cta > *, .hero-proof').forEach(el => out.push(el.getBoundingClientRect()));
   return out;
 }
 function heroFit(canvas, hero, d, side) {
