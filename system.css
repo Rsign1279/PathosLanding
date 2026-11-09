@@ -1,0 +1,138 @@
+/* ==========================================================================
+   PATHOS design system (see DESIGN.md)
+   Tokens and named text styles from the landing-page-design skill. Loaded
+   last. Sections move onto these one pass at a time; new work uses only
+   these values.
+   ========================================================================== */
+
+:root {
+  /* Spacing (B2) */
+  --sp-0: 0; --sp-25: 2px; --sp-50: 4px; --sp-75: 8px; --sp-100: 12px; --sp-200: 16px;
+  --sp-300: 24px; --sp-400: 32px; --sp-500: 40px; --sp-600: 48px; --sp-700: 64px; --sp-800: 80px; --sp-900: 96px;
+  /* Radius (B3, Tailwind steps) */
+  --r-sm: 2px; --r: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px; --r-2xl: 16px; --r-3xl: 24px; --r-full: 9999px;
+  /* Motion (B7) */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-move: 500ms; --t-fade: 300ms;
+}
+
+/* ---------- Named text styles (B1) ---------- */
+.heading-1 { font-size: 60px; line-height: 60px; font-weight: 600; }
+.heading-2 { font-size: 48px; line-height: 48px; font-weight: 600; }
+.heading-3 { font-size: 36px; line-height: 40px; font-weight: 600; }
+.heading-4 { font-size: 30px; line-height: 36px; font-weight: 600; }
+.heading-5 { font-size: 24px; line-height: 32px; font-weight: 600; }
+.heading-6 { font-size: 20px; line-height: 28px; font-weight: 600; }
+.title-1 { font-size: 20px; line-height: 28px; font-weight: 500; }
+.title-2 { font-size: 18px; line-height: 28px; font-weight: 500; }
+.title-3 { font-size: 16px; line-height: 24px; font-weight: 500; }
+.title-4 { font-size: 14px; line-height: 20px; font-weight: 500; }
+.body-2 { font-size: 16px; line-height: 24px; font-weight: 500; }
+.body-3 { font-size: 16px; line-height: 24px; font-weight: 400; }
+.body-5 { font-size: 14px; line-height: 20px; font-weight: 500; }
+.body-6 { font-size: 14px; line-height: 20px; font-weight: 400; }
+.button-md { font-size: 16px; line-height: 24px; font-weight: 600; }
+.button-sm { font-size: 14px; line-height: 20px; font-weight: 600; }
+.caption-2 { font-size: 14px; line-height: 20px; font-weight: 400; }
+.caption-4 { font-size: 12px; line-height: 16px; font-weight: 500; }
+:is(.heading-1, .heading-2, .heading-3, .heading-4, .heading-5, .heading-6) { letter-spacing: -0.025em; text-wrap: balance; }
+:is(.title-1, .title-2, .body-3, .body-6, .caption-2) { text-wrap: pretty; }
+
+/* ---------- Buttons (B2, B3, B9) ---------- */
+.btn.button-md {
+  min-height: 0; padding: var(--sp-75) var(--sp-100); border-radius: var(--r-lg);
+  transition: transform var(--t-move) var(--ease), background-color var(--t-fade) var(--ease);
+}
+.btn.button-md:hover { transform: translateY(-1px); }
+.btn.button-md:active { transform: scale(0.98); }
+.btn.button-md:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.text-link {
+  display: inline-flex; align-items: center; gap: var(--sp-50); color: var(--text); text-decoration: none;
+  border-radius: var(--r);
+  text-decoration: underline 1px transparent; text-underline-offset: 4px;
+  transition: color var(--t-fade) var(--ease), text-decoration-color var(--t-fade) var(--ease);
+}
+.text-link:hover { color: var(--ink); text-decoration-color: currentColor; }
+.text-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.text-link svg { transition: transform var(--t-move) var(--ease); }
+.text-link:hover svg { transform: translateX(2px); }
+
+/* ==========================================================================
+   1. Hero (pass 1)
+   One primary action, a quiet text link, an honest status line and a plain
+   text proof line. Heading and subheading capped at 680px (B5).
+   ========================================================================== */
+.hero { padding: var(--sp-900) var(--gutter) var(--sp-700); }
+.hero-inner { max-width: 680px; }
+.hero-status {
+  display: inline-flex; align-items: center; gap: var(--sp-75); margin: 0;
+  padding: var(--sp-50) var(--sp-100); border-radius: var(--r-full);
+  color: var(--text); box-shadow: inset 0 0 0 1px var(--line-strong); background: var(--surface);
+}
+.hero-status i { width: 6px; height: 6px; border-radius: var(--r-full); background: var(--gold); }
+.hero-title {
+  margin: var(--sp-300) auto 0; max-width: 680px; letter-spacing: -0.03em;
+  /* B5: the one permitted gradient, on hero heading text only. */
+  background: linear-gradient(90deg, #000000, #666666);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-sub { margin: var(--sp-300) auto 0; max-width: 680px; color: var(--text); }
+.hero-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--sp-300); margin-top: var(--sp-400); }
+.hero-proof { margin: var(--sp-300) 0 0; color: var(--muted); }
+.hero-proof span + span::before { content: "\00b7"; margin: 0 var(--sp-75); color: var(--faint); }
+
+/* Hero entrance: opacity and transform only (B7), 24px rise. */
+.js [data-intro] { filter: none; transform: translateY(var(--sp-300)); transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
+.js.ready [data-intro] { transform: none; }
+
+/* Heading steps down so it never crowds a small screen. */
+@media (max-width: 1023px) {
+  .hero-title.heading-1 { font-size: 48px; line-height: 48px; }
+}
+@media (max-width: 639px) {
+  .hero { padding-top: var(--sp-900); }
+  .hero-title.heading-1 { font-size: 36px; line-height: 40px; }
+  .hero-sub.title-1 { font-size: 18px; line-height: 28px; }
+  .hero-cta { gap: var(--sp-200); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js [data-intro] { transform: none; transition: opacity var(--t-fade) var(--ease); }
+}
+
+/* ==========================================================================
+   QA pass: contrast, form states, legal links, nav location
+   ========================================================================== */
+
+/* Text greys that pass WCAG AA (4.5:1) on every page surface:
+   --muted 5.17:1 on --bg, 4.91:1 on --surface-2; --faint 4.74:1 / 4.5:1. */
+:root { --muted: #6b5f55; --faint: #70655b; }
+
+/* Contact form */
+.form-group select {
+  width: 100%; padding: var(--sp-75) var(--sp-100); appearance: none;
+  background: #16120e url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23d2af70' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+  color: var(--bg); border: 1px solid #332b24; border-radius: var(--r-lg); font: inherit;
+  transition: border-color var(--t-fade) var(--ease), box-shadow var(--t-fade) var(--ease);
+}
+.form-group select:focus { outline: none; border-color: var(--gold-light); box-shadow: 0 0 0 3px rgba(210, 175, 112, 0.18); }
+.form-group select:invalid { color: #a39787; }
+.form-group select option { color: var(--ink); background: #fff; }
+.form-group .optional { color: #8a7f73; }
+.field-error { margin: var(--sp-50) 0 0; font-size: 14px; line-height: 20px; color: var(--pink); }
+.field-error[hidden] { display: none; }
+.form-status { font-size: 14px; line-height: 20px; }
+.contact .btn-dark:disabled { opacity: 0.7; cursor: progress; transform: none; }
+.form-intro a { color: var(--gold-light); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+/* Footer legal link */
+.foot-legal { display: flex; align-items: center; gap: var(--sp-200); }
+.foot-legal > a:not(.foot-top) { font-size: 14px; color: var(--on-dark); text-decoration: underline 1px transparent; text-underline-offset: 4px; transition: text-decoration-color var(--t-fade) var(--ease); }
+.foot-legal > a:not(.foot-top):hover { text-decoration-color: currentColor; }
+
+/* Problem chart: visible note that it's an illustration */
+.pl-note { flex-basis: 100%; font-size: 12px; line-height: 16px; color: var(--on-dark-3); }
+
+/* Navigation: show where you are */
+.nav-link[aria-current="true"] { background: var(--surface-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }

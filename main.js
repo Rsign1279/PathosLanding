@@ -1,7 +1,7 @@
 /* ==========================================================================
    PATHOS — page behaviour
    Small on purpose: nav menu, intro + scroll reveals, halftone hero art,
-   device tilt, lightbox and the mailto contact form. The 3D prototype
+   device tilt, lightbox and the contact form. The 3D prototype
    (prototype.js) is loaded separately, only when it nears the viewport.
    ========================================================================== */
 
@@ -309,7 +309,7 @@ function heroObstacles(hero) {
   const out = [];
   const lines = el => { const r = document.createRange(); r.selectNodeContents(el); return [...r.getClientRects()]; };
   hero.querySelectorAll('.hero-title, .hero-sub').forEach(el => lines(el).forEach(q => q.width && out.push(q)));
-  hero.querySelectorAll('.announce, .hero-cta .btn, .logos li').forEach(el => out.push(el.getBoundingClientRect()));
+  hero.querySelectorAll('.hero-status, .hero-cta > *, .hero-proof').forEach(el => out.push(el.getBoundingClientRect()));
   return out;
 }
 function heroFit(canvas, hero, d, side) {
@@ -712,32 +712,72 @@ function initLightbox() {
   });
 }
 
-/* ---------- Contact form (mailto) ---------- */
+/* ---------- Contact form ----------
+   Posts to the form's action (FormSubmit's AJAX endpoint, which emails the
+   PATHOS inbox). Each field gets its own inline error; "sent" is shown only
+   after the service confirms delivery, otherwise a specific error with the
+   email address as a fallback. */
+
+const FIELD_ERRORS = {
+  name: () => 'Enter your name.',
+  email: f => (f.value.trim() ? 'Enter an email address like name@example.org.' : 'Enter your email address.'),
+  interest: () => 'Choose the type of interest.',
+  message: () => 'Write a short message so we know how to help.',
+};
 
 function initContactForm() {
   const form = document.getElementById('contactForm');
   if (!form) return;
   const status = document.getElementById('formStatus');
-  const fields = Array.from(form.querySelectorAll('input, textarea'));
+  const button = form.querySelector('button[type="submit"]');
+  const label = button.textContent;
+  const fields = Array.from(form.querySelectorAll('input[required], select[required], textarea[required]'));
   const show = (msg, type) => { status.textContent = msg; status.className = `form-status ${type}`; status.hidden = false; };
+  const setError = (f, msg) => {
+    const err = document.getElementById(`${f.id}Error`);
+    f.setAttribute('aria-invalid', String(!!msg));
+    if (err) { err.textContent = msg || ''; err.hidden = !msg; }
+  };
+  const check = f => {
+    const ok = f.value.trim() !== '' && f.checkValidity();
+    setError(f, ok ? '' : FIELD_ERRORS[f.name](f));
+    return ok;
+  };
+  // Once a field has been flagged, re-check it as the visitor fixes it.
+  fields.forEach(f => f.addEventListener(f.tagName === 'SELECT' ? 'change' : 'input', () => { if (f.getAttribute('aria-invalid') === 'true') check(f); }));
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    const invalid = fields.filter(f => !f.checkValidity());
-    fields.forEach(f => f.setAttribute('aria-invalid', String(!f.checkValidity())));
+    const invalid = fields.filter(f => !check(f));
     if (invalid.length) {
-      show('Please fill in every field with a valid email address.', 'error');
+      show(invalid.length === 1 ? 'One field needs attention.' : `${invalid.length} fields need attention.`, 'error');
       invalid[0].focus();
       return;
     }
-    const name = form.elements.name.value.trim();
-    const email = form.elements.email.value.trim();
-    const message = form.elements.message.value.trim();
-    const subject = encodeURIComponent(`PATHOS inquiry from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-    location.href = `mailto:rsignsv1279@gmail.com?subject=${subject}&body=${body}`;
-    show('Your email app should now be open with the message ready to send.', 'success');
-    form.reset();
+    const data = Object.fromEntries(new FormData(form));
+    if (data._honey) return;                       // bots fill the hidden field
+    const payload = {
+      name: data.name.trim(), email: data.email.trim(), organization: (data.organization || '').trim() || 'Not given',
+      interest: data.interest, message: data.message.trim(),
+      _subject: `PATHOS: ${data.interest} from ${data.name.trim()}`, _replyto: data.email.trim(), _template: 'table',
+    };
+    button.disabled = true; button.textContent = 'Sending…';
+    status.hidden = true;
+    try {
+      const res = await fetch(form.action, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload) });
+      const out = await res.json().catch(() => ({}));
+      if (res.ok && String(out.success) === 'true') {
+        show(`Thanks, ${payload.name}. Your message was sent, and we'll reply to ${payload.email}.`, 'success');
+        form.reset();
+        fields.forEach(f => setError(f, ''));
+      } else {
+        show('Your message could not be sent. Please email rsignsv1279@gmail.com instead.', 'error');
+      }
+    } catch (_) {
+      show('Your message could not be sent because the connection failed. Please try again, or email rsignsv1279@gmail.com.', 'error');
+    } finally {
+      button.disabled = false; button.textContent = label;
+    }
   });
 }
 
