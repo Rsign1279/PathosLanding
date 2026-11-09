@@ -51,7 +51,7 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   ok(r2 > r1, `log milestones light with scroll (${r1} -> ${r2})`);
   await p.screenshot({ path: `${require('os').tmpdir()}/play-journey.png` });
   // Counters
-  await go('.partner-list', 120); await p.waitForTimeout(1500);
+  await go('.partner-rows', 120); await p.waitForTimeout(1500);
   const counts = await p.evaluate(() => [...document.querySelectorAll('.count')].map(c => c.textContent));
   ok(JSON.stringify(counts) === JSON.stringify(['2,000', '13.6K', '2,000', '250K+', '13.6K', '4,389']), 'counters end on the real numbers ' + counts.join(' '));
   // Copy

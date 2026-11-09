@@ -9,6 +9,8 @@
   /* Spacing (B2) */
   --sp-0: 0; --sp-25: 2px; --sp-50: 4px; --sp-75: 8px; --sp-100: 12px; --sp-200: 16px;
   --sp-300: 24px; --sp-400: 32px; --sp-500: 40px; --sp-600: 48px; --sp-700: 64px; --sp-800: 80px; --sp-900: 96px;
+  /* Section rhythm: desktop padding was 56px (off scale), now Spacing-700. */
+  --section-pad: var(--sp-700);
   /* Page gutter: was 20px (off scale), now Spacing-300. */
   --gutter: var(--sp-300);
   /* Radius (B3, Tailwind steps) */
@@ -229,3 +231,51 @@
   .step-btn { height: 100%; padding: var(--sp-75) var(--sp-50); font-size: 12px; line-height: 16px; white-space: normal; text-align: center; }
   .device-captions { height: 96px; }                               /* four lines */
 }
+
+/* ==========================================================================
+   Shared section heading for passed sections (.sys-head): heading-2 that
+   steps to heading-3 / heading-4, a body-3 lead, tokens only. No accent word.
+   ========================================================================== */
+.sys-head { max-width: 680px; margin: 0 auto var(--sp-600); text-align: center; }
+.sys-head h2.heading-2 { margin: 0; font-size: 48px; line-height: 48px; letter-spacing: -0.03em; color: var(--ink); }
+.sys-head p.body-3 { max-width: 560px; margin: var(--sp-200) auto 0; font-size: 16px; line-height: 24px; color: var(--text); }
+@media (max-width: 1023px) { .sys-head h2.heading-2 { font-size: 36px; line-height: 40px; } }
+@media (max-width: 639px) { .sys-head { margin-bottom: var(--sp-400); } .sys-head h2.heading-2 { font-size: 30px; line-height: 36px; } }
+
+/* ==========================================================================
+   4. Partners (pass 4)
+   Six partners on one light panel (all sides bordered), each with its role,
+   name and involvement; the press screenshot and the $25 note beside it.
+   No dark marble tint, no one-sided dividers.
+   ========================================================================== */
+.partners-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--sp-300); align-items: start; max-width: 1080px; margin: 0 auto; }
+.partner-rows, .partners-note {
+  margin: 0; list-style: none; border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+}
+.partner-rows { padding: var(--sp-400); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-400); }
+.partner-rows li { display: flex; flex-direction: column; min-width: 0; }
+.partner-role { margin: 0; color: var(--gold); }
+.partner-rows h3.title-2 { margin: var(--sp-50) 0 var(--sp-75); color: var(--ink); text-shadow: none; }
+.partner-rows p.body-6, .partners-note p.body-6 { margin: 0; color: var(--text); text-shadow: none; text-wrap: pretty; }
+.partner-rows .count { color: inherit; font-weight: 600; }
+.partners-aside { display: grid; gap: var(--sp-300); }
+.partners-note { padding: var(--sp-300); }
+.partners-note p.body-6 { margin-top: var(--sp-75); }
+.partners-section .press-strip { max-width: none; }
+
+@media (max-width: 959px) {
+  .partners-grid { grid-template-columns: 1fr; }
+  .partners-aside { grid-template-columns: minmax(0, 220px) minmax(0, 1fr); align-items: start; }
+}
+@media (max-width: 639px) {
+  .partner-rows { grid-template-columns: 1fr; padding: var(--sp-300); gap: var(--sp-300); }
+  .partners-aside { grid-template-columns: 1fr; }
+  .partners-section .press-strip { max-width: 280px; margin: 0 auto; width: 100%; }
+}
+
+/* Section rhythm (global): 64px desktop; phones keep 40px (Spacing-500). */
+.section { padding-top: var(--section-pad); padding-bottom: var(--section-pad); }
+@media (max-width: 720px) { .section { padding-top: var(--sp-500); padding-bottom: var(--sp-500); } }
+.partners-section .shot-caption { padding: var(--sp-100) var(--sp-200) var(--sp-200); }
+.partners-section .shot-caption-text strong { font-size: 16px; line-height: 24px; font-weight: 500; }
+.partners-section .shot-caption-text span { font-size: 14px; line-height: 20px; }
