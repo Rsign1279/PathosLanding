@@ -1,64 +1,64 @@
 {
   "errors": [],
-  "loadMs": 1412,
+  "loadMs": 4446,
   "states": [
     {
       "chapter": 1,
-      "frame": 41.19,
+      "frame": 41.21,
       "page": 0,
       "art": 1
     },
     {
       "chapter": 2,
-      "frame": 338.4,
+      "frame": 338.42,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 3,
-      "frame": 728.37,
+      "frame": 728.39,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 4,
-      "frame": 938.27,
+      "frame": 938.28,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 5,
-      "frame": 1238.44,
+      "frame": 1238.45,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 6,
-      "frame": 1538.21,
+      "frame": 1538.23,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 7,
-      "frame": 1718.22,
+      "frame": 1718.24,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 8,
-      "frame": 1988.47,
+      "frame": 1988.49,
       "page": 0,
       "art": 0
     },
     {
       "chapter": 9,
-      "frame": 2288.31,
+      "frame": 2288.32,
       "page": 3,
       "art": 0
     },
     {
       "chapter": 10,
-      "frame": 2638.45,
+      "frame": 2638.47,
       "page": 0,
       "art": 1
     }
@@ -107,7 +107,7 @@
   ],
   "stats": {
     "ready": true,
-    "frames": 452,
+    "frames": 460,
     "drawCalls": 221,
     "triangles": 437828,
     "quality": 0.6000000000000001,
@@ -128,8 +128,8 @@
     "smallShots": true
   },
   "reduced": {
-    "frame": 1600.3945468298723,
-    "target": 1600.3945468298723,
+    "frame": 1600.2528774412049,
+    "target": 1600.2528774412049,
     "chapter": 5,
     "visible": true,
     "rendering": false,

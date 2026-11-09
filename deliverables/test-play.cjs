@@ -35,7 +35,7 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   // Pipeline
   await go('#ai'); await p.mouse.move(5, 5); await p.waitForTimeout(2600);
   const act1 = await p.evaluate(() => [...document.querySelectorAll('.pipeline > li')].findIndex(l => l.classList.contains('is-active')));
-  await p.waitForTimeout(1800);
+  await p.waitForFunction(a => [...document.querySelectorAll('.pipeline > li')].findIndex(l => l.classList.contains('is-active')) !== a, act1, { timeout: 4000 }).catch(() => {});
   const act2 = await p.evaluate(() => [...document.querySelectorAll('.pipeline > li')].findIndex(l => l.classList.contains('is-active')));
   ok(act1 >= 0 && act2 === (act1 + 1) % 4, `pipeline advances (${act1} -> ${act2})`);
   await p.hover('.pipeline > li:nth-child(3)'); await p.waitForTimeout(2500);
@@ -53,7 +53,7 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   // Counters
   await go('.partner-list', 120); await p.waitForTimeout(1500);
   const counts = await p.evaluate(() => [...document.querySelectorAll('.count')].map(c => c.textContent));
-  ok(JSON.stringify(counts) === JSON.stringify(['2,000', '250K+', '13.6K', '4,389']), 'counters end on the real numbers ' + counts.join(' '));
+  ok(JSON.stringify(counts) === JSON.stringify(['2,000', '13.6K', '2,000', '250K+', '13.6K', '4,389']), 'counters end on the real numbers ' + counts.join(' '));
   // Copy
   await go('#contact');
   await p.click('.copy-btn'); await p.waitForTimeout(300);
