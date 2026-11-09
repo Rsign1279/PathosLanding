@@ -43,6 +43,9 @@ button above the fold; a secondary action is a plain text link.
 | caption-2 | 14 / 20 | 400 |
 | caption-4 | 12 / 16 | 500 |
 
+Section headings use `.sys-head`: heading-2 (48) from 1024px, heading-3 (36)
+from 640px, heading-4 (30) below, with a body-3 lead.
+
 Hero heading steps down by viewport: heading-3 under 640px, heading-2 from
 640px, heading-1 from 1024px.
 
@@ -54,7 +57,8 @@ Hero heading steps down by viewport: heading-3 under 640px, heading-2 from
 - Lines `--line` rgba(10, 8, 6, 0.09), `--line-strong` rgba(10, 8, 6, 0.16)
 - Hero heading only: text gradient #000000 to #666666, left to right. No other gradients.
 
-**Spacing.** Only 0, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96 px
+**Spacing.** Section padding is 64px on desktop and 40px on phones (`--section-pad`).
+Only 0, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96 px
 (`--sp-0` … `--sp-900` in `system.css`). Page gutter `--gutter` is 24px
 (Spacing-300); the old 20px is rejected.
 
@@ -82,6 +86,8 @@ ESP32-S3 and Wi-Fi are exempt). Headings balanced, body text pretty-wrapped.
 - Gradient fills on objects (the old iPad bezel and its radial floor shadow).
 - A visual section with no heading telling visitors what they are looking at.
 - Stats without a stated source.
+- Dark marble gradient tint behind lists of text (partners now sit on a light panel).
+- The same eyebrow on two sections.
 
 - Competing calls to action above the fold (was: announcement link plus two buttons).
 - Partner names drawn as imitation logos in invented type styles (Georgia
@@ -117,4 +123,5 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | Final CTA (contact) | Done (form) | Button reads "Explore a partnership". Form posts to FormSubmit (AJAX) for the PATHOS inbox, with Organization and Type of interest, inline errors per field, a sending state, and success only after the service confirms. The first submission triggers FormSubmit's one-time activation email. |
 | Proof band | Done (pass 2) | One panel bordered on all sides (radius 16, padding 32/24) instead of one-sided dividers. Each stat: number (heading-3, 30/36 on phones), meaning (body-6), source (caption-4). Phones list one stat per row, number beside its text. No orphans from 360 to 1920px. Copy tightened, facts unchanged. |
 | Software tour | Done (pass 3) | Heading added ("What the dashboard actually shows", heading-2/3/4 by width) saying these are real v1 screenshots. Scroll timing measured on a new track so the heading never shifts it. Flat bezel instead of a gradient, floor shadow without a gradient, radii 24/12/8 (16/8/6 on phones) by the nested formula. Steps: button-sm with aria-current, labels wrap on phones; captions body-3 in a fixed three or four line box. |
-| Partners and the rest | Pending | One section per pass. |
+| Partners | Done (pass 4) | Eyebrow "Partners" (was a duplicate "Results so far"); heading without the accent word, in the shared `.sys-head` style. Six partners on one light panel bordered on all sides, each with a role (caption-4), name (title-2) and involvement (body-6); press screenshot and the $25 note beside it. SkillsUSA line states the result instead of "Where we compete with it". Official name "Alice L. Walton School of Medicine" used site-wide. |
+| Project log and the rest | Pending | One section per pass. |

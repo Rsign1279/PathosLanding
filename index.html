@@ -146,33 +146,34 @@
     </section>
 
     <!-- 2c. Results: who it has reached -->
-    <section id="impact" class="section cv">
+    <section id="impact" class="section cv partners-section" aria-labelledby="impactTitle">
         <canvas class="edge-art" data-art="modules" data-side="left" data-rotate="1" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="electrodes" data-side="right" data-speed="0.12" aria-hidden="true"></canvas>
         <div class="wrap">
-            <header class="sec-head" data-reveal>
-                <p class="eyebrow">Results so far</p>
-                <h2>Built <span class="accent accent--mono">with</span> people, not for them</h2>
+            <header class="sec-head sys-head" data-reveal>
+                <p class="eyebrow">Partners</p>
+                <h2 class="heading-2" id="impactTitle">Built with people, not for them</h2>
+                <p class="body-3">The organizations and people who have shaped PATHOS, and how each one is involved.</p>
             </header>
-            <div class="partners">
-                <div class="panel partner-list" data-reveal>
-                    <div><h3>Autism Involves Me</h3><p>Founder Paula George has backed the project since the first build. Through AIM's network, PATHOS has reached more than <span class="count" data-count="2000">2,000</span> people.</p></div>
-                    <div><h3>Alice Walton School of Medicine</h3><p>Mary Buschlen and Josiah Leong advise on wearable design, research methods and ethics.</p></div>
-                    <div><h3>5NEWS</h3><p>Regional segment: &ldquo;Bentonville teens create AI tool to aid nonverbal autistic individuals.&rdquo;</p></div>
-                    <div><h3>@autism_feed</h3><p><span class="count" data-count="250" data-suffix="K+">250K+</span> followers. The post about PATHOS got <span class="count" data-count="13.6" data-decimals="1" data-suffix="K">13.6K</span> likes and <span class="count" data-count="4389">4,389</span> shares.</p></div>
-                    <div><h3>AIM2Give &amp; First National Bank</h3><p>A joint community pitch linking the project to local advocacy groups.</p></div>
-                    <div><h3>SkillsUSA</h3><p>Where we compete with it.</p></div>
-                </div>
-                <div class="partners-side" data-reveal>
+            <div class="partners-grid">
+                <ul class="partner-rows" data-reveal>
+                    <li><p class="partner-role caption-4">Community partner</p><h3 class="title-2">Autism Involves Me</h3><p class="body-6">Founder Paula George has backed the project since the first build. Through AIM&rsquo;s network, PATHOS has reached more than <span class="count" data-count="2000">2,000</span> people.</p></li>
+                    <li><p class="partner-role caption-4">Medical mentors</p><h3 class="title-2">Alice L. Walton School of Medicine</h3><p class="body-6">Mary Buschlen and Josiah Leong advise on wearable design, research methods and ethics.</p></li>
+                    <li><p class="partner-role caption-4">Media coverage</p><h3 class="title-2">5NEWS</h3><p class="body-6">Regional segment: &ldquo;Bentonville teens create AI tool to aid nonverbal autistic individuals.&rdquo;</p></li>
+                    <li><p class="partner-role caption-4">Social media coverage</p><h3 class="title-2">@autism_feed</h3><p class="body-6"><span class="count" data-count="250" data-suffix="K+">250K+</span> followers. The post about PATHOS got <span class="count" data-count="13.6" data-decimals="1" data-suffix="K">13.6K</span> likes and <span class="count" data-count="4389">4,389</span> shares.</p></li>
+                    <li><p class="partner-role caption-4">Community pitch</p><h3 class="title-2">AIM2Give &amp; First National Bank</h3><p class="body-6">A joint community pitch linking the project to local advocacy groups.</p></li>
+                    <li><p class="partner-role caption-4">Competition</p><h3 class="title-2">SkillsUSA</h3><p class="body-6">PATHOS was a top 10 national finalist at SkillsUSA NLSC 2026.</p></li>
+                </ul>
+                <div class="partners-aside" data-reveal>
                     <div class="press-strip" data-lightbox-group="press">
                         <button type="button" class="shot shot--portrait" data-missing-label="assets/press-instagram.jpg">
                             <img src="assets/press-instagram-optimized.jpg" alt="Instagram post from @autism_feed featuring PATHOS, with 13.6K likes and 4,389 shares." loading="lazy" decoding="async" width="952" height="1652">
                             <span class="shot-caption"><span class="shot-caption-text"><strong>@autism_feed</strong><span>13.6K likes, 4,389 shares</span></span></span>
                         </button>
                     </div>
-                    <aside class="callout">
-                        <p class="callout-label">Why the $25 limit</p>
-                        <p>Wearables that measure this usually cost $200 or more. Most of the families we built it with can't spend that, so the parts budget is a hard constraint.</p>
+                    <aside class="partners-note">
+                        <p class="partner-role caption-4">Why the $25 limit</p>
+                        <p class="body-6">Wearables that measure this usually cost $200 or more. Most of the families we built it with can&rsquo;t spend that, so the parts budget is a hard constraint.</p>
                     </aside>
                 </div>
             </div>
@@ -191,7 +192,7 @@
             <ol class="log panel" data-reveal>
                 <li><time>Dec 2025</time><div><h3>Started</h3><p>An ESP32-C3, a thermometer and a question: can you see stress building from the body's own signals?</p></div></li>
                 <li><time>Jan 2026</time><div><h3>First working build</h3><p>Under $25 in parts. Shown to families through AIM, covered by 5NEWS, and shared by @autism_feed.</p></div></li>
-                <li><time>Feb 2026</time><div><h3>Admitted the gap</h3><p>Room sensors alone can't measure stress. We started working with mentors at the Alice Walton School of Medicine and moved to WESAD.</p></div></li>
+                <li><time>Feb 2026</time><div><h3>Admitted the gap</h3><p>Room sensors alone can't measure stress. We started working with mentors at the Alice L. Walton School of Medicine and moved to WESAD.</p></div></li>
                 <li class="is-now"><time>Now</time><div><h3>Adding the body sensors</h3><p>Integrating EDA, pulse and skin temperature, and planning a proper validation study.</p></div></li>
             </ol>
         </div>
@@ -668,7 +669,7 @@
                     </a>
                 </div>
             </article>
-            <p class="fine" data-reveal>Medical mentors: Mary Buschlen and Josiah Leong, Alice Walton School of Medicine. Community partner: Paula George, Autism Involves Me.</p>
+            <p class="fine" data-reveal>Medical mentors: Mary Buschlen and Josiah Leong, Alice L. Walton School of Medicine. Community partner: Paula George, Autism Involves Me.</p>
         </div>
     </section>
 
