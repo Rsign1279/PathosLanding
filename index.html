@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PATHOS is a low-cost stress sensor built by a student team in Bentonville, Arkansas. It reads skin conductance, heart rhythm, skin temperature and motion. A wellness and research project, not a medical device.">
+    <meta name="description" content="PATHOS is a research prototype that reads skin conductance, pulse, skin temperature and motion to explore stress patterns. Not a medical device.">
     <meta name="theme-color" content="#f3e9e1">
     <title>PATHOS · stress awareness from the body's own signals</title>
+    <link rel="canonical" href="https://pathos-landing-tau.vercel.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PATHOS">
+    <meta property="og:url" content="https://pathos-landing-tau.vercel.app/">
+    <meta property="og:title" content="PATHOS · stress awareness from the body&#x27;s own signals">
+    <meta property="og:description" content="PATHOS is a research prototype that reads skin conductance, pulse, skin temperature and motion to explore stress patterns. Not a medical device.">
+    <meta property="og:image" content="https://pathos-landing-tau.vercel.app/assets/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="PATHOS: see stress building before it spills over. A render of the breadboard rig beside a laptop running the PATHOS dashboard.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PATHOS · stress awareness from the body&#x27;s own signals">
+    <meta name="twitter:description" content="PATHOS is a research prototype that reads skin conductance, pulse, skin temperature and motion to explore stress patterns. Not a medical device.">
+    <meta name="twitter:image" content="https://pathos-landing-tau.vercel.app/assets/og-image.jpg">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is PATHOS a medical device?", "acceptedAnswer": {"@type": "Answer", "text": "No. It’s a wellness awareness project. It doesn’t diagnose anything and it isn’t a substitute for care."}}, {"@type": "Question", "name": "What works today?", "acceptedAnswer": {"@type": "Answer", "text": "MVP 1 reads the room (temperature, humidity and pressure) and runs the whole pipeline end to end: sensing, the model on the device, and the dashboard. MVP 2 adds the body sensors: skin conductance, pulse and skin temperature."}}, {"@type": "Question", "name": "How accurate is it?", "acceptedAnswer": {"@type": "Answer", "text": "The model is aligned to WESAD, a public dataset recorded during a controlled lab stress test. It hasn’t been validated on PATHOS hardware with real users yet; a proper validation study is next. We threw out an early model that scored R² = 0.9977 because it was trained on data we generated ourselves."}}, {"@type": "Question", "name": "Where does the data go?", "acceptedAnswer": {"@type": "Answer", "text": "The model runs on the device, with no internet needed. In MVP 2, caregivers get alerts over the network while the model keeps running on the device."}}, {"@type": "Question", "name": "Why under $25?", "acceptedAnswer": {"@type": "Answer", "text": "Wearables that measure these signals usually cost $200 or more. Most of the families we built PATHOS with can’t spend that, so the parts budget is a hard limit."}}, {"@type": "Question", "name": "Who is it for?", "acceptedAnswer": {"@type": "Answer", "text": "Nonverbal and neurodivergent people, and the caregivers, educators and therapists around them. It’s built with families from Autism Involves Me."}}, {"@type": "Question", "name": "Can I try it or help?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Write to us to try a demo, bring PATHOS to your community or help build it. We also run workshops for students, caregivers and teachers."}}]}</script>
     <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -66,7 +81,7 @@
         <div class="hero-inner">
             <p class="hero-status caption-4" data-intro="0"><i aria-hidden="true"></i>Research prototype &middot; MVP 2 in development</p>
             <h1 class="hero-title heading-1" data-intro="1">See stress building<br> before it spills over</h1>
-            <p class="hero-sub title-1" data-intro="2">PATHOS reads the body&rsquo;s early signals for under $25 in parts, without a $200 wearable or sending anything to the cloud. Built with families from Autism Involves Me.</p>
+            <p class="hero-sub title-1" data-intro="2">PATHOS reads the body&rsquo;s early signals with under $25 in parts instead of a $200 wearable, and its model runs on the device. Built with families from Autism Involves Me.</p>
             <div class="hero-cta" data-intro="3">
                 <a href="#contact" class="btn btn-dark button-md">Explore a partnership</a>
                 <a href="#how" class="text-link body-2">See how it works <svg width="14" height="14" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -80,7 +95,7 @@
         <div class="wrap">
             <ul class="proof-stats" data-reveal-group>
                 <li><span class="proof-n"><span class="count" data-count="2000">2,000</span>+</span><span class="proof-l">people reached through Autism Involves Me</span></li>
-                <li><span class="proof-n"><span class="count" data-count="13.6" data-decimals="1" data-suffix="K">13.6K</span></span><span class="proof-l">likes on the @autism_feed post, with 4,389 saves</span></li>
+                <li><span class="proof-n"><span class="count" data-count="13.6" data-decimals="1" data-suffix="K">13.6K</span></span><span class="proof-l">likes on the @autism_feed post, with 4,389 shares</span></li>
                 <li><span class="proof-n">Top&nbsp;10</span><span class="proof-l">finalist at SkillsUSA nationals (NLSC)</span></li>
                 <li><span class="proof-n">1st</span><span class="proof-l">Arkansas State &amp; Regional Science Fair</span></li>
             </ul>
@@ -132,15 +147,15 @@
                     <div><h3>Autism Involves Me</h3><p>Founder Paula George has backed the project since the first build. Through AIM's network, PATHOS has reached more than <span class="count" data-count="2000">2,000</span> people.</p></div>
                     <div><h3>Alice Walton School of Medicine</h3><p>Mary Buschlen and Josiah Leong advise on wearable design, research methods and ethics.</p></div>
                     <div><h3>5NEWS</h3><p>Regional segment: &ldquo;Bentonville teens create AI tool to aid nonverbal autistic individuals.&rdquo;</p></div>
-                    <div><h3>@autism_feed</h3><p><span class="count" data-count="250" data-suffix="K+">250K+</span> followers. The post about PATHOS got <span class="count" data-count="13.6" data-decimals="1" data-suffix="K">13.6K</span> likes and <span class="count" data-count="4389">4,389</span> saves.</p></div>
+                    <div><h3>@autism_feed</h3><p><span class="count" data-count="250" data-suffix="K+">250K+</span> followers. The post about PATHOS got <span class="count" data-count="13.6" data-decimals="1" data-suffix="K">13.6K</span> likes and <span class="count" data-count="4389">4,389</span> shares.</p></div>
                     <div><h3>AIM2Give &amp; First National Bank</h3><p>A joint community pitch linking the project to local advocacy groups.</p></div>
                     <div><h3>SkillsUSA</h3><p>Where we compete with it.</p></div>
                 </div>
                 <div class="partners-side" data-reveal>
                     <div class="press-strip" data-lightbox-group="press">
                         <button type="button" class="shot shot--portrait" data-missing-label="assets/press-instagram.jpg">
-                            <img src="assets/press-instagram-optimized.jpg" alt="Instagram post from @autism_feed featuring PATHOS, with 13.6K likes and 4,389 saves." loading="lazy" decoding="async" width="952" height="1652">
-                            <span class="shot-caption"><span class="shot-caption-text"><strong>@autism_feed</strong><span>13.6K likes, 4,389 saves</span></span></span>
+                            <img src="assets/press-instagram-optimized.jpg" alt="Instagram post from @autism_feed featuring PATHOS, with 13.6K likes and 4,389 shares." loading="lazy" decoding="async" width="952" height="1652">
+                            <span class="shot-caption"><span class="shot-caption-text"><strong>@autism_feed</strong><span>13.6K likes, 4,389 shares</span></span></span>
                         </button>
                     </div>
                     <aside class="callout">
@@ -185,6 +200,7 @@
                         <span class="pl pl--body">What the body shows</span>
                         <span class="pl pl--seen">What people see</span>
                         <span class="pl pl--gap">The window that gets missed</span>
+                        <span class="pl-note">Illustration, not measured data</span>
                     </figcaption>
                     <p class="sr-only">Illustration: the body&rsquo;s stress signals start rising well before visible behaviour changes; the gap between them is the window that gets missed.</p>
                 </figure>
@@ -208,7 +224,7 @@
             <div class="grid grid--4 feats" data-reveal-group>
                 <a class="card feat" href="#philosophy"><span class="feat-viz"><svg viewBox="0 0 120 56" aria-hidden="true"><g class="fv-waves"><path class="fv-w1" d="M0 30 Q10 17 20 30 Q30 43 40 30 Q50 17 60 30 Q70 43 80 30 Q90 17 100 30 Q110 43 120 30 Q130 17 140 30 Q150 43 160 30 Q170 17 180 30 Q190 43 200 30 Q210 17 220 30 Q230 43 240 30 Q250 17 260 30 Q270 43 280 30 Q290 17 300 30 Q310 43 320 30 Q330 17 340 30 Q350 43 360 30"/><path class="fv-w2" d="M0 34 Q15 24 30 34 Q45 44 60 34 Q75 24 90 34 Q105 44 120 34 Q135 24 150 34 Q165 44 180 34 Q195 24 210 34 Q225 44 240 34 Q255 24 270 34 Q285 44 300 34 Q315 24 330 34 Q345 44 360 34"/><path class="fv-w3" d="M0 26 Q20 19 40 26 Q60 33 80 26 Q100 19 120 26 Q140 33 160 26 Q180 19 200 26 Q220 33 240 26 Q260 19 280 26 Q300 33 320 26 Q340 19 360 26"/></g><line class="fv-now" x1="96" y1="6" x2="96" y2="50"/></svg></span><span class="step">01</span><h3>Reads five signals together</h3><p class="card-text">Fewer false alarms: one odd reading never raises a flag on its own.</p><span class="feat-more">See how &rarr;</span></a>
                 <a class="card feat" href="#sensors"><span class="feat-viz"><svg viewBox="0 0 120 56" aria-hidden="true"><text class="fv-t" x="0" y="13">$200+</text><rect class="fv-bar fv-bar--grey" x="0" y="18" width="120" height="9" rx="3"/><text class="fv-t fv-t--gold" x="0" y="42">under $25</text><rect class="fv-bar fv-bar--gold" x="0" y="46" width="14" height="9" rx="3"/></svg></span><span class="step">02</span><h3>Under $25 of parts</h3><p class="card-text">One shared bus and off-the-shelf sensors, so a family can actually afford one.</p><span class="feat-more">See how &rarr;</span></a>
-                <a class="card feat" href="#ai"><span class="feat-viz"><svg viewBox="0 0 120 56" aria-hidden="true"><g class="fv-chip"><rect x="42" y="10" width="36" height="36" rx="5"/><path d="M48 4v6M56 4v6M64 4v6M72 4v6M48 46v6M56 46v6M64 46v6M72 46v6M36 16h6M36 24h6M36 32h6M36 40h6M78 16h6M78 24h6M78 32h6M78 40h6"/></g><circle class="fv-ring" cx="60" cy="28" r="9"/><circle class="fv-ring fv-ring--2" cx="60" cy="28" r="9"/><circle class="fv-core" cx="60" cy="28" r="4"/></svg></span><span class="step">03</span><h3>Runs on the device</h3><p class="card-text">The model works with no internet, so readings stay where they’re taken.</p><span class="feat-more">See how &rarr;</span></a>
+                <a class="card feat" href="#ai"><span class="feat-viz"><svg viewBox="0 0 120 56" aria-hidden="true"><g class="fv-chip"><rect x="42" y="10" width="36" height="36" rx="5"/><path d="M48 4v6M56 4v6M64 4v6M72 4v6M48 46v6M56 46v6M64 46v6M72 46v6M36 16h6M36 24h6M36 32h6M36 40h6M78 16h6M78 24h6M78 32h6M78 40h6"/></g><circle class="fv-ring" cx="60" cy="28" r="9"/><circle class="fv-ring fv-ring--2" cx="60" cy="28" r="9"/><circle class="fv-core" cx="60" cy="28" r="4"/></svg></span><span class="step">03</span><h3>Runs on the device</h3><p class="card-text">The model works with no internet connection, right on the device.</p><span class="feat-more">See how &rarr;</span></a>
                 <a class="card feat" href="#hardware"><span class="feat-viz"><svg viewBox="0 0 120 56" aria-hidden="true"><g class="fv-list"><path class="fv-tick fv-tick--1" d="M4 10l4 4 7-8"/><rect x="22" y="8" width="70" height="5" rx="2.5"/><path class="fv-tick fv-tick--2" d="M4 27l4 4 7-8"/><rect x="22" y="25" width="56" height="5" rx="2.5"/><circle class="fv-open" cx="9" cy="45" r="5"/><rect class="fv-dim" x="22" y="42" width="78" height="5" rx="2.5"/></g></svg></span><span class="step">04</span><h3>Honest about what works</h3><p class="card-text">You always know what’s real today and what’s still being built.</p><span class="feat-more">See how &rarr;</span></a>
                 <a class="card feat" href="#prototype"><span class="feat-viz"><div class="fv-cube" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></span><span class="step">05</span><h3>Every part, in 3D</h3><p class="card-text">Take the rig apart on screen and follow one signal from skin to dashboard.</p><span class="feat-more">See how &rarr;</span></a>
                 <a class="card feat" href="#product"><span class="feat-viz"><div class="fv-deck" aria-hidden="true"><i style="background-image:url(assets/field-aim-demo-sm.webp)"></i><i style="background-image:url(assets/field-hands-on-sm.webp)"></i><i style="background-image:url(assets/field-aim-team-sm.webp)"></i></div></span><span class="step">06</span><h3>Tested with real people</h3><p class="card-text">Shaped at Autism Involves Me events, with the people it’s for.</p><span class="feat-more">See how &rarr;</span></a>
@@ -679,13 +695,25 @@
                         <li><a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">About the WESAD dataset &rarr;</a></li>
                     </ul>
                 </div>
-                <form class="contact-form" id="contactForm" novalidate>
-                    <div class="form-group"><label for="contactName">Name</label><input id="contactName" name="name" type="text" autocomplete="name" required></div>
-                    <div class="form-group"><label for="contactEmail">Email</label><input id="contactEmail" name="email" type="email" autocomplete="email" required></div>
-                    <div class="form-group"><label for="contactMessage">Message</label><textarea id="contactMessage" name="message" rows="4" required></textarea></div>
+                <form class="contact-form" id="contactForm" action="https://formsubmit.co/ajax/rsignsv1279@gmail.com" method="post" novalidate>
+                    <div class="form-group"><label for="contactName">Name</label><input id="contactName" name="name" type="text" autocomplete="name" required aria-describedby="contactNameError"><p class="field-error" id="contactNameError" hidden></p></div>
+                    <div class="form-group"><label for="contactEmail">Email</label><input id="contactEmail" name="email" type="email" autocomplete="email" required aria-describedby="contactEmailError"><p class="field-error" id="contactEmailError" hidden></p></div>
+                    <div class="form-group"><label for="contactOrg">Organization <span class="optional">(optional)</span></label><input id="contactOrg" name="organization" type="text" autocomplete="organization"></div>
+                    <div class="form-group"><label for="contactInterest">Type of interest</label>
+                        <select id="contactInterest" name="interest" required aria-describedby="contactInterestError">
+                            <option value="">Choose one</option>
+                            <option>Research collaboration</option>
+                            <option>Pilot or demonstration</option>
+                            <option>Nonprofit partnership</option>
+                            <option>Sponsorship</option>
+                            <option>Media inquiry</option>
+                            <option>General inquiry</option>
+                        </select><p class="field-error" id="contactInterestError" hidden></p></div>
+                    <div class="form-group"><label for="contactMessage">Message</label><textarea id="contactMessage" name="message" rows="4" required aria-describedby="contactMessageError"></textarea><p class="field-error" id="contactMessageError" hidden></p></div>
+                    <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
                     <p id="formStatus" class="form-status" role="status" aria-live="polite" hidden></p>
-                    <button class="btn btn-dark" type="submit">Open in email</button>
-                    <p class="form-intro">Opens your email app with the message filled in.</p>
+                    <button class="btn btn-dark button-md" type="submit">Explore a partnership</button>
+                    <p class="form-intro">We use your details only to reply. Messages are delivered by FormSubmit; see the <a href="privacy.html">privacy notice</a>.</p>
                 </form>
             </div>
         </div>
@@ -719,12 +747,12 @@
                     <a href="#impact">Partners</a><a href="#journey">Project log</a><a href="#roadmap">Roadmap</a><a href="#workshops">Workshops</a><a href="#team">Founder</a>
                 </nav>
                 <nav class="foot-col" aria-label="Resources"><h3>Resources</h3>
-                    <a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">WESAD dataset</a><a href="https://autisminvolvesme.org" target="_blank" rel="noopener noreferrer">Autism Involves Me</a><a href="mailto:rsignsv1279@gmail.com?subject=PATHOS%20code">Ask about the code</a><a href="https://www.linkedin.com/in/rahulnviswanath/" target="_blank" rel="noopener noreferrer">Founder on LinkedIn</a>
+                    <a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">WESAD dataset</a><a href="https://autisminvolvesme.org" target="_blank" rel="noopener noreferrer">Autism Involves Me</a><a href="mailto:rsignsv1279@gmail.com?subject=PATHOS%20code">Ask about the code</a><a href="privacy.html">Privacy notice</a><a href="https://www.linkedin.com/in/rahulnviswanath/" target="_blank" rel="noopener noreferrer">Founder on LinkedIn</a>
                 </nav>
             </div>
             <div class="foot-base">
                 <p class="footer-fine">A wellness awareness project from Bentonville High School. Not a medical device; it does not diagnose. &copy; <span id="copyrightYear">2026</span> Rahul Viswanath.</p>
-                <a class="foot-top" href="#hero">Back to top &uarr;</a>
+                <nav class="foot-legal" aria-label="Legal"><a href="privacy.html">Privacy notice</a><a class="foot-top" href="#hero">Back to top &uarr;</a></nav>
             </div>
         </div>
     </footer>
@@ -738,7 +766,7 @@
             <button type="button" class="lightbox-btn lightbox-prev" id="lightboxPrev" aria-label="Previous image">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-            <img id="lightboxImage" src="" alt="">
+            <img id="lightboxImage" alt="">
             <figcaption class="lightbox-caption">
                 <strong id="lightboxTitle"></strong>
                 <span id="lightboxDesc"></span>

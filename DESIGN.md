@@ -48,7 +48,8 @@ Hero heading steps down by viewport: heading-3 under 640px, heading-2 from
 
 **Colors** (existing brand tokens, kept):
 - Background `--bg` #f3e9e1, surfaces `--surface` #fbf7f2 and `--surface-2` #efe3d8
-- Text `--ink` #0a0806, `--text` #4a4038, `--muted` #7d7166, `--faint` #a2978b
+- Text `--ink` #0a0806, `--text` #4a4038, `--muted` #6b5f55 (5.17:1), `--faint` #70655b (4.74:1).
+  Both pass WCAG AA on every page surface; the old #7d7166 and #a2978b are rejected.
 - Accents `--gold` #7b5d23, `--gold-light` #d2af70, `--pink` #f0a3bb, `--pink-deep` #b8577a
 - Lines `--line` rgba(10, 8, 6, 0.09), `--line-strong` rgba(10, 8, 6, 0.16)
 - Hero heading only: text gradient #000000 to #666666, left to right. No other gradients.
@@ -88,19 +89,24 @@ ESP32-S3 and Wi-Fi are exempt). Headings balanced, body text pretty-wrapped.
 - Off-scale sizes (16.5, 15.5, 19.5, 56px and others) and off-token spacing
   (20, 26, 14, 18, 22, 28, 56px and others).
 
-## Facts awaiting verification (do not add or expand until confirmed)
+## Facts
 
-- @autism_feed numbers: the site says 13.6K likes and 4,389 saves; the brief
-  says about 13,500 likes and 1,003 reposts.
-- "More than 2,000 people reached through AIM": not in the brief.
-- Exact wording for Autism Involves Me, the Alice L. Walton School of Medicine
-  and the named mentors, SkillsUSA NLSC 2026, and the state science fair.
-- Model metrics (90.96% LOSO and others): version, dataset, protocol, limits.
+Confirmed by the founder (November 9, 2026): every claim on the page as it
+stands, including the AIM reach, partner and mentor names, SkillsUSA and
+science fair results.
+
+Corrected from the @autism_feed screenshot: 13.6K likes, 1,009 reposts and
+4,389 shares (the paper plane count). It was wrongly labelled "saves".
+
+Wording rules: say the model runs on the device; make no claims about the
+cloud, encryption or retention. Illustrative charts carry a visible
+"Illustration, not measured data" note.
 
 ## Section log
 
 | Section | Status | Notes |
 |---|---|---|
 | Hero | Done (pass 1) | One primary CTA ("Explore a partnership"), text link secondary, honest status line ("Research prototype"), plain text proof line limited to facts in the brief (5NEWS feature, AIM Fest demonstration), imitation logo strip removed, heading-1 / title-1 / button-md, 680px caps, tokens only, entrance animates opacity and transform only. Nav CTA renamed to match. |
-| Final CTA (contact) | Pending | Its button still says "Open in email" and the form only opens a mail app; must match "Explore a partnership" and submit to a real destination (needs your provider choice). |
+| QA fixes | Done | Shares not saves; device wording; chart note; contrast tokens; meta, canonical, Open Graph and Twitter tags with a 1200x630 image; FAQ structured data; nav shows the current section; privacy notice and rebuilt 404. |
+| Final CTA (contact) | Done (form) | Button reads "Explore a partnership". Form posts to FormSubmit (AJAX) for the PATHOS inbox, with Organization and Type of interest, inline errors per field, a sending state, and success only after the service confirms. The first submission triggers FormSubmit's one-time activation email. |
 | Proof band and the rest | Pending | One section per pass. |

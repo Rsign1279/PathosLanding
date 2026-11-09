@@ -382,4 +382,26 @@ addEventListener('hashchange', () => {
 // Any direct input ends a correction at once.
 addEventListener('pointerdown', () => { aimRun++; document.documentElement.style.scrollBehavior = ''; document.documentElement.classList.remove('cv-open'); }, { passive: true });
 
+/* ---------- Current section in the navigation ----------
+   The nav link for the section in the middle of the screen gets
+   aria-current="true" (and a visible style). */
+{
+  const links = [...document.querySelectorAll('#navLinks a[href^="#"]')];
+  // Sections that belong to a nav item (the feature deep dives count as Features).
+  const GROUP = { problem: 'problem', solution: 'solution', philosophy: 'solution', sensors: 'solution', ai: 'solution',
+    hardware: 'solution', prototype: 'solution', 'pathos-iot': 'solution', roadmap: 'solution', workshops: 'solution',
+    product: 'product', how: 'how', faq: 'faq', contact: 'contact' };
+  const setCurrent = id => links.forEach(a => {
+    if (id && a.getAttribute('href') === '#' + id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+  });
+  const visible = new Map();
+  const sections = Object.keys(GROUP).map(id => document.getElementById(id)).filter(Boolean);
+  const io = new IntersectionObserver(es => {
+    for (const e of es) visible.set(e.target.id, e.isIntersecting);
+    const on = sections.filter(s => visible.get(s.id));
+    setCurrent(on.length ? GROUP[on[on.length - 1].id] : '');
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach(s => io.observe(s));
+}
+
 window.pathosStory = { get faqOpen() { return [...document.querySelectorAll('.faq-item')].filter(d => d.open).length; } };

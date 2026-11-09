@@ -1,0 +1,13 @@
+/* Standalone pages (privacy notice, 404) on the shared system (DESIGN.md). */
+body.page { min-height: 100vh; display: flex; flex-direction: column; background: var(--bg); color: var(--text); }
+.page-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-200); max-width: 720px; width: 100%; margin: 0 auto; padding: var(--sp-300) var(--sp-300) 0; box-sizing: border-box; }
+.page-main { flex: 1; width: 100%; max-width: 720px; margin: 0 auto; padding: var(--sp-700) var(--sp-300) var(--sp-900); box-sizing: border-box; }
+.page-main h1 { margin: 0; color: var(--ink); }
+.page-main h2 { margin: var(--sp-500) 0 var(--sp-75); color: var(--ink); }
+.page-main p, .page-main li { margin: 0 0 var(--sp-200); }
+.page-main ul { padding-left: var(--sp-300); margin: 0 0 var(--sp-200); }
+.page-main a:not(.btn) { color: var(--gold); text-underline-offset: 3px; }
+.page-meta { margin-top: var(--sp-200); color: var(--muted); }
+.page-foot { max-width: 720px; width: 100%; margin: 0 auto; padding: var(--sp-300); box-sizing: border-box; border-top: 1px solid var(--line); color: var(--muted); }
+.error-code { margin: 0 0 var(--sp-200); font-family: var(--font-mono); color: var(--gold); }
+.page-actions { margin-top: var(--sp-400); }
