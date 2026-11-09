@@ -55,7 +55,8 @@ Hero heading steps down by viewport: heading-3 under 640px, heading-2 from
 - Hero heading only: text gradient #000000 to #666666, left to right. No other gradients.
 
 **Spacing.** Only 0, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96 px
-(`--sp-0` … `--sp-900` in `system.css`).
+(`--sp-0` … `--sp-900` in `system.css`). Page gutter `--gutter` is 24px
+(Spacing-300); the old 20px is rejected.
 
 **Radius.** Tailwind steps only: 2, 4, 6, 8, 12, 16, 24 px, full. Nested
 shapes with a gap under 32px use inner = outer − gap (only if the result is
@@ -76,6 +77,9 @@ opacity only. Reduced motion: opacity only.
 ESP32-S3 and Wi-Fi are exempt). Headings balanced, body text pretty-wrapped.
 
 ## Rejected
+
+- One-sided borders used as dividers (the old proof band).
+- Stats without a stated source.
 
 - Competing calls to action above the fold (was: announcement link plus two buttons).
 - Partner names drawn as imitation logos in invented type styles (Georgia
@@ -109,4 +113,5 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | Hero | Done (pass 1) | One primary CTA ("Explore a partnership"), text link secondary, honest status line ("Research prototype"), plain text proof line limited to facts in the brief (5NEWS feature, AIM Fest demonstration), imitation logo strip removed, heading-1 / title-1 / button-md, 680px caps, tokens only, entrance animates opacity and transform only. Nav CTA renamed to match. |
 | QA fixes | Done | Shares not saves; device wording; chart note; contrast tokens; meta, canonical, Open Graph and Twitter tags with a 1200x630 image; FAQ structured data; nav shows the current section; privacy notice and rebuilt 404. |
 | Final CTA (contact) | Done (form) | Button reads "Explore a partnership". Form posts to FormSubmit (AJAX) for the PATHOS inbox, with Organization and Type of interest, inline errors per field, a sending state, and success only after the service confirms. The first submission triggers FormSubmit's one-time activation email. |
-| Proof band and the rest | Pending | One section per pass. |
+| Proof band | Done (pass 2) | One panel bordered on all sides (radius 16, padding 32/24) instead of one-sided dividers. Each stat: number (heading-3, 30/36 on phones), meaning (body-6), source (caption-4). Phones list one stat per row, number beside its text. No orphans from 360 to 1920px. Copy tightened, facts unchanged. |
+| Software tour and the rest | Pending | One section per pass. |

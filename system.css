@@ -9,6 +9,8 @@
   /* Spacing (B2) */
   --sp-0: 0; --sp-25: 2px; --sp-50: 4px; --sp-75: 8px; --sp-100: 12px; --sp-200: 16px;
   --sp-300: 24px; --sp-400: 32px; --sp-500: 40px; --sp-600: 48px; --sp-700: 64px; --sp-800: 80px; --sp-900: 96px;
+  /* Page gutter: was 20px (off scale), now Spacing-300. */
+  --gutter: var(--sp-300);
   /* Radius (B3, Tailwind steps) */
   --r-sm: 2px; --r: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px; --r-2xl: 16px; --r-3xl: 24px; --r-full: 9999px;
   /* Motion (B7) */
@@ -136,3 +138,38 @@
 
 /* Navigation: show where you are */
 .nav-link[aria-current="true"] { background: var(--surface-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+
+/* ==========================================================================
+   2. Proof band (pass 2)
+   One bordered panel (all four sides), four stats: number (heading-3,
+   heading-4 on phones), what it means (body-6) and where it comes from
+   (caption-4). Spacing from tokens; no one-sided dividers.
+   ========================================================================== */
+.proof { position: relative; z-index: 2; padding: 0 0 var(--sp-700); background: var(--bg); }
+.proof-panel {
+  max-width: 1080px; margin: 0 auto; padding: var(--sp-400);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+}
+.proof-title { margin: 0 0 var(--sp-300); color: var(--muted); }
+.proof-stats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-400); }
+.proof-stats li { display: flex; flex-direction: column; gap: var(--sp-75); min-width: 0; }
+.proof-stats p { margin: 0; }
+.proof-n { color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.proof-n .count { color: inherit; font-weight: inherit; }
+.proof-l { color: var(--text); max-width: 24ch; }
+.proof-src { margin-top: auto; padding-top: var(--sp-50); color: var(--muted); }
+.proof-l, .proof-src { text-wrap: balance; }
+
+@media (max-width: 959px) {
+  .proof-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-400) var(--sp-300); }
+}
+@media (max-width: 639px) {
+  .proof-panel { padding: var(--sp-300); }
+  /* One stat per row: the number on the left, its meaning and source beside it. */
+  .proof-stats { grid-template-columns: 1fr; gap: var(--sp-300); }
+  .proof-stats li { display: grid; grid-template-columns: 112px minmax(0, 1fr); column-gap: var(--sp-100); row-gap: var(--sp-50); align-items: baseline; }
+  .proof-n { grid-row: span 2; }
+  .proof-n.heading-3 { font-size: 30px; line-height: 36px; }
+  .proof-l { max-width: none; }
+  .proof-src { margin-top: 0; padding-top: 0; }
+}
