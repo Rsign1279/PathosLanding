@@ -173,3 +173,59 @@
   .proof-l { max-width: none; }
   .proof-src { margin-top: 0; padding-top: 0; }
 }
+
+/* ==========================================================================
+   3. Software tour (pass 3)
+   A heading says what this is. The tall scroll track (not the section)
+   holds the pinned stage. Flat bezel (no gradients), Tailwind radii with
+   the nested formula, button-sm steps, body-3 captions, tokens only.
+   ========================================================================== */
+.device-section { height: auto; }
+.device-track { position: relative; height: 340vh; }
+.tour-head { margin: 0 auto; padding-top: var(--sp-900); text-align: center; }
+.tour-head h2.heading-2 { margin: 0; font-size: 48px; line-height: 48px; letter-spacing: -0.03em; }
+.tour-head p.body-3 { max-width: 560px; margin: var(--sp-200) auto 0; font-size: 16px; line-height: 24px; color: var(--text); }
+
+.device-stage { padding: var(--sp-800) var(--gutter) var(--sp-300); }
+.device {
+  padding: var(--sp-100); border-radius: var(--r-3xl);            /* 24 */
+  background: #24201c;                                             /* flat bezel */
+  box-shadow: 0 0 0 1px #0a0806, inset 0 0 0 1px rgba(255, 255, 255, 0.09), 0 24px 48px -32px rgba(40, 25, 10, 0.55);
+}
+.device-screen { border-radius: var(--r-xl); }                     /* 24 - 12 */
+.screen-window { border-radius: var(--r-lg); }                     /* gap over 32px: own radius */
+.device-shadow {                                                   /* soft floor shadow, no gradient */
+  width: min(720px, 80%); height: var(--sp-300); margin-top: calc(var(--sp-300) * -1);
+  border-radius: var(--r-full); background: rgba(40, 25, 10, 0.22); filter: blur(var(--sp-200));
+}
+
+.device-meta { margin-top: var(--sp-200); gap: var(--sp-100); }
+.device-steps { padding: var(--sp-50); gap: var(--sp-25); border-radius: var(--r-xl); border: 1px solid var(--line-strong); }
+.step-btn {
+  height: auto; padding: var(--sp-75) var(--sp-100); gap: var(--sp-75); border-radius: var(--r-lg);   /* 12 - 4 */
+  font-size: 14px; line-height: 20px; font-weight: 600; color: var(--text);
+  transition: background-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease), transform var(--t-move) var(--ease);
+}
+.step-btn span { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--muted); }
+.step-btn:hover { background: var(--surface-2); color: var(--ink); }
+.step-btn:active { transform: scale(0.98); }
+.step-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.step-btn.is-on, .step-btn.is-on:hover { background: var(--ink); color: var(--bg); }
+.device-captions { max-width: 640px; height: 72px; }               /* three lines of body-3 */
+.device-caption { font-size: 16px; line-height: 24px; text-wrap: balance; }
+
+@media (max-width: 1023px) {
+  .tour-head h2.heading-2 { font-size: 36px; line-height: 40px; }
+}
+@media (max-width: 639px) {
+  .device-track { height: 300vh; }
+  .tour-head { padding-top: var(--sp-700); }
+  .tour-head h2.heading-2 { font-size: 30px; line-height: 36px; }
+  .device-stage { padding-top: var(--sp-800); }
+  .device { padding: var(--sp-75); border-radius: var(--r-2xl); }  /* 16 */
+  .device-screen { border-radius: var(--r-lg); }                   /* 16 - 8 */
+  .screen-window { border-radius: var(--r-md); }
+  .device-steps li { display: flex; }
+  .step-btn { height: 100%; padding: var(--sp-75) var(--sp-50); font-size: 12px; line-height: 16px; white-space: normal; text-align: center; }
+  .device-captions { height: 96px; }                               /* four lines */
+}

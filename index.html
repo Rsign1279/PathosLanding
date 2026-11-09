@@ -106,13 +106,21 @@
     </section>
 
     <!-- 2b. Visual proof: scroll-driven tour of the real version-one software -->
-    <section class="device-section" id="device-tour" aria-label="PATHOS version one software">
+    <section class="device-section" id="device-tour" aria-labelledby="tourTitle">
+        <div class="wrap">
+            <header class="sec-head tour-head" data-reveal>
+                <p class="eyebrow">The software</p>
+                <h2 class="heading-2" id="tourTitle">What the dashboard actually shows</h2>
+                <p class="body-3">Real screenshots of PATHOS version one, not mockups. Keep scrolling to step through its four screens.</p>
+            </header>
+        </div>
+        <div class="device-track" id="deviceTrack">
         <div class="device-stage">
             <div class="device" id="device">
                 <div class="device-screen">
                     <div class="screen-window">
                         <img class="screen-shot is-on" src="assets/v1-live-instrument.webp" srcset="assets/v1-live-instrument-sm.webp 800w, assets/v1-live-instrument.webp 1600w" sizes="(max-width: 720px) 92vw, 960px" width="1600" height="1100" alt="PATHOS version one software, Live instrument tab: The BME280 feed with temperature, humidity and pressure, labelled as simulated when no board is plugged in." decoding="async">
-                        <img class="screen-shot" src="assets/v1-model-study.webp" srcset="assets/v1-model-study-sm.webp 800w, assets/v1-model-study.webp 1600w" sizes="(max-width: 720px) 92vw, 960px" width="1600" height="1100" alt="PATHOS version one software, Model study tab: Sliders drive the original three-input network directly, bypassing the sensor." decoding="async" loading="lazy">
+                        <img class="screen-shot" src="assets/v1-model-study.webp" srcset="assets/v1-model-study-sm.webp 800w, assets/v1-model-study.webp 1600w" sizes="(max-width: 720px) 92vw, 960px" width="1600" height="1100" alt="PATHOS version one software, Model study tab: Sliders drive the original network&rsquo;s three inputs directly, bypassing the sensor." decoding="async" loading="lazy">
                         <img class="screen-shot" src="assets/v1-source-data.webp" srcset="assets/v1-source-data-sm.webp 800w, assets/v1-source-data.webp 1600w" sizes="(max-width: 720px) 92vw, 960px" width="1600" height="1100" alt="PATHOS version one software, Source data tab: The synthetic Stress-Lysis dataset that model was trained on. Not clinical data." decoding="async" loading="lazy">
                         <img class="screen-shot" src="assets/v1-diagnostics.webp" srcset="assets/v1-diagnostics-sm.webp 800w, assets/v1-diagnostics.webp 1600w" sizes="(max-width: 720px) 92vw, 960px" width="1600" height="1100" alt="PATHOS version one software, Diagnostics tab: Dataset hash, training seed and architecture, all inspectable, nothing hidden." decoding="async" loading="lazy">
                     </div>
@@ -121,18 +129,19 @@
             <div class="device-shadow" aria-hidden="true"></div>
             <div class="device-meta">
                 <ol class="device-steps" aria-label="Screens">
-                    <li><button type="button" class="step-btn is-on" data-step="0"><span>01</span>Live instrument</button></li>
-                    <li><button type="button" class="step-btn" data-step="1"><span>02</span>Model study</button></li>
-                    <li><button type="button" class="step-btn" data-step="2"><span>03</span>Source data</button></li>
-                    <li><button type="button" class="step-btn" data-step="3"><span>04</span>Diagnostics</button></li>
+                    <li><button type="button" class="step-btn button-sm is-on" data-step="0" aria-current="step"><span>01</span>Live instrument</button></li>
+                    <li><button type="button" class="step-btn button-sm" data-step="1"><span>02</span>Model study</button></li>
+                    <li><button type="button" class="step-btn button-sm" data-step="2"><span>03</span>Source data</button></li>
+                    <li><button type="button" class="step-btn button-sm" data-step="3"><span>04</span>Diagnostics</button></li>
                 </ol>
                 <div class="device-captions" aria-live="polite">
-                    <p class="device-caption is-on" data-step="0">The BME280 feed with temperature, humidity and pressure, labelled as simulated when no board is plugged in.</p>
-                    <p class="device-caption" data-step="1">Sliders drive the original three-input network directly, bypassing the sensor.</p>
-                    <p class="device-caption" data-step="2">The synthetic Stress-Lysis dataset that model was trained on. Not clinical data.</p>
-                    <p class="device-caption" data-step="3">Dataset hash, training seed and architecture, all inspectable, nothing hidden.</p>
+                    <p class="device-caption body-3 is-on" data-step="0">The BME280 feed with temperature, humidity and pressure, labelled as simulated when no board is plugged in.</p>
+                    <p class="device-caption body-3" data-step="1">Sliders drive the original network&rsquo;s three inputs directly, bypassing the sensor.</p>
+                    <p class="device-caption body-3" data-step="2">The synthetic Stress-Lysis dataset that model was trained on. Not clinical data.</p>
+                    <p class="device-caption body-3" data-step="3">Dataset hash, training seed and architecture, all inspectable, nothing hidden.</p>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 

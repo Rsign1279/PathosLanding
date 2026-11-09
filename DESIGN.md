@@ -79,6 +79,8 @@ ESP32-S3 and Wi-Fi are exempt). Headings balanced, body text pretty-wrapped.
 ## Rejected
 
 - One-sided borders used as dividers (the old proof band).
+- Gradient fills on objects (the old iPad bezel and its radial floor shadow).
+- A visual section with no heading telling visitors what they are looking at.
 - Stats without a stated source.
 
 - Competing calls to action above the fold (was: announcement link plus two buttons).
@@ -114,4 +116,5 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | QA fixes | Done | Shares not saves; device wording; chart note; contrast tokens; meta, canonical, Open Graph and Twitter tags with a 1200x630 image; FAQ structured data; nav shows the current section; privacy notice and rebuilt 404. |
 | Final CTA (contact) | Done (form) | Button reads "Explore a partnership". Form posts to FormSubmit (AJAX) for the PATHOS inbox, with Organization and Type of interest, inline errors per field, a sending state, and success only after the service confirms. The first submission triggers FormSubmit's one-time activation email. |
 | Proof band | Done (pass 2) | One panel bordered on all sides (radius 16, padding 32/24) instead of one-sided dividers. Each stat: number (heading-3, 30/36 on phones), meaning (body-6), source (caption-4). Phones list one stat per row, number beside its text. No orphans from 360 to 1920px. Copy tightened, facts unchanged. |
-| Software tour and the rest | Pending | One section per pass. |
+| Software tour | Done (pass 3) | Heading added ("What the dashboard actually shows", heading-2/3/4 by width) saying these are real v1 screenshots. Scroll timing measured on a new track so the heading never shifts it. Flat bezel instead of a gradient, floor shadow without a gradient, radii 24/12/8 (16/8/6 on phones) by the nested formula. Steps: button-sm with aria-current, labels wrap on phones; captions body-3 in a fixed three or four line box. |
+| Partners and the rest | Pending | One section per pass. |
