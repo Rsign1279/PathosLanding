@@ -555,6 +555,9 @@ function initDevice() {
   const section = document.getElementById('device-tour');
   const device = document.getElementById('device');
   if (!section || !device) return;
+  // The heading sits above the tall track that holds the pinned stage, so
+  // scroll timing is measured on the track, not the whole section.
+  const track = document.getElementById('deviceTrack') || section;
   const shots = Array.from(device.querySelectorAll('.screen-shot'));
   const steps = Array.from(section.querySelectorAll('.step-btn'));
   const caps = Array.from(section.querySelectorAll('.device-caption'));
@@ -565,16 +568,19 @@ function initDevice() {
     if (i === index) return;
     index = i;
     shots.forEach((el, k) => el.classList.toggle('is-on', k === i));
-    steps.forEach((el, k) => el.classList.toggle('is-on', k === i));
+    steps.forEach((el, k) => {
+      el.classList.toggle('is-on', k === i);
+      if (k === i) el.setAttribute('aria-current', 'step'); else el.removeAttribute('aria-current');
+    });
     caps.forEach((el, k) => el.classList.toggle('is-on', k === i));
   }
 
   // Scroll range during which the stage is pinned.
-  const range = () => Math.max(1, section.offsetHeight - innerHeight);
-  const progress = () => Math.min(1, Math.max(0, -section.getBoundingClientRect().top / range()));
+  const range = () => Math.max(1, track.offsetHeight - innerHeight);
+  const progress = () => Math.min(1, Math.max(0, -track.getBoundingClientRect().top / range()));
 
   steps.forEach((btn, i) => btn.addEventListener('click', () => {
-    const top = section.getBoundingClientRect().top + scrollY + range() * ((i + 0.5) / n);
+    const top = track.getBoundingClientRect().top + scrollY + range() * ((i + 0.5) / n);
     scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
   }));
 
@@ -584,7 +590,7 @@ function initDevice() {
   let running = false, visible = false;
 
   function computeTargets() {
-    const rect = section.getBoundingClientRect();
+    const rect = track.getBoundingClientRect();
     const vh = innerHeight;
     // Entry: from first sight until the stage pins, the device tilts flat.
     const enter = smooth(Math.min(1, Math.max(0, 1 - rect.top / vh)));
