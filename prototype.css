@@ -76,11 +76,11 @@ body { overflow-x: clip; }
   left: var(--fx, 0px); top: var(--fy, 0px); width: var(--fw, 100%); height: var(--fh, 100%);
   container-type: size;
 }
-.hw-js .hw-chapter { position: absolute; inset: 0; visibility: hidden; }
-.hw-js .hw-chapter.is-on { visibility: visible; }
+.js .hw-chapter { position: absolute; inset: 0; visibility: hidden; }
+.js .hw-chapter.is-on { visibility: visible; }
 /* The film pops each element in over two frames; a four-frame fade is the
    scroll-friendly equivalent, and it leaves on the exact frame. */
-.hw-js .hw-chapter > * { opacity: calc(clamp(0, (var(--t, 0) + 1) / 4, 1) * var(--x, 1)); }
+.js .hw-chapter > * { opacity: calc(clamp(0, (var(--t, 0) + 1) / 4, 1) * var(--x, 1)); }
 
 /* A text line whose box runs exactly from cap top to baseline. */
 .hw-eyebrow, .hw-title, .hw-caption, .hw-line {
@@ -232,10 +232,10 @@ body { overflow-x: clip; }
 
 /* ---------- Static fallback (no JS) ---------- */
 
-html:not(.hw-js) .hw-track { height: auto; }
-html:not(.hw-js) .hw-stage { position: relative; top: 0; height: auto; }
-html:not(.hw-js) .hw-view { position: relative; inset: auto; aspect-ratio: 16 / 9; margin-top: 46px; }
-html:not(.hw-js) .hw-rail, html:not(.hw-js) .hw-scrub, html:not(.hw-js) .hw-status, html:not(.hw-js) .hw-hud { display: none; }
+html:not(.js) .hw-track { height: auto; }
+html:not(.js) .hw-stage { position: relative; top: 0; height: auto; }
+html:not(.js) .hw-view { position: relative; inset: auto; aspect-ratio: 16 / 9; margin-top: 46px; }
+html:not(.js) .hw-rail, html:not(.js) .hw-scrub, html:not(.js) .hw-status, html:not(.js) .hw-hud { display: none; }
 
 /* ---------- Narrow screens ---------- */
 

@@ -31,6 +31,30 @@ card centres it and tapping the centre card opens it in the lightbox. With
 reduced motion or no JavaScript the photos show as a plain grid. The track
 length scales with the number of cards (`--n` on `#flTrack`).
 
+## Page structure
+
+The page tells one story, in this order:
+
+1. **Hero** (`#hero`): the result people want ("See stress building before it
+   spills over") without the thing they fear (a $200 wearable, the cloud).
+2. **Proof**: partner logos, a results band (`#proof`), the v1 software tour
+   (`#device-tour`), partners (`#impact`) and the project log (`#journey`).
+3. **Problem** (`#problem`): a live chart of the gap between what the body
+   shows and what people see, plus the real cost of missing it.
+4. **Solution** (`#solution`): eight feature cards, each with a benefit and a
+   live mini visual, linking to the deep dives that follow (`#philosophy`,
+   `#sensors`, `#ai`, `#hardware`, `#prototype`, `#product`, `#pathos-iot`,
+   `#roadmap`, `#workshops`).
+5. **How it works** (`#how`): the three-step demo flow (place, verify,
+   observe) with a live scene that plays each step.
+6. **Founder** (`#team`) and **FAQ** (`#faq`).
+7. **Final call to action** (`#contact`) and the illustrated footer.
+
+`story.js` also makes in-page links land exactly: sections render lazily, so
+it renders them for a moment before aiming and corrects if needed.
+
+Test: `node deliverables/test-story.cjs`
+
 ## Interactive explanations (`play.js`, `play.css`)
 
 - **One reading can mean anything:** each signal card shows a live trace in the
