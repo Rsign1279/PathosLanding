@@ -105,25 +105,18 @@ function draw(tr, t) {
     pts.push([x * w, pad + (1 - v) * (h - pad * 2)]);
   }
   const col = tr.signal === 'env' ? COLORS.env : mix(COLORS.calm, COLORS.active, tr.a);
-  // Soft fill under the line, fading down.
-  const g = ctx.createLinearGradient(0, 0, 0, h);
-  g.addColorStop(0, `rgba(${col}, ${0.16 + tr.a * 0.1})`);
-  g.addColorStop(1, `rgba(${col}, 0)`);
+  // Flat, faint fill under the line (no gradient).
   ctx.beginPath();
   ctx.moveTo(pts[0][0], h);
   for (const [x, y] of pts) ctx.lineTo(x, y);
   ctx.lineTo(w, h);
   ctx.closePath();
-  ctx.fillStyle = g;
+  ctx.fillStyle = `rgba(${col}, ${0.12 + tr.a * 0.08})`;
   ctx.fill();
-  // The trace, brighter toward "now" on the right.
-  const lg = ctx.createLinearGradient(0, 0, w, 0);
-  lg.addColorStop(0, `rgba(${col}, 0.35)`);
-  lg.addColorStop(0.7, `rgba(${col}, 0.85)`);
-  lg.addColorStop(1, `rgba(${col}, 1)`);
+  // The trace, one solid color.
   ctx.beginPath();
   pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
-  ctx.strokeStyle = lg;
+  ctx.strokeStyle = `rgb(${col})`;
   ctx.lineWidth = 1.8;
   ctx.lineJoin = 'round';
   ctx.stroke();
