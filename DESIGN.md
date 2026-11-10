@@ -77,7 +77,8 @@ over 2).
 position, 300ms for color and opacity, never under 200ms. Transform and
 opacity only. Reduced motion: opacity only.
 
-**Copy.** Sentence case. No hyphens inside sentences (product names such as
+**Copy.** Sentence case. Keep proper names and handles on one line with non-breaking
+spaces ("Alice L. Walton", "by @autism_feed"). No hyphens inside sentences (product names such as
 ESP32-S3 and Wi-Fi are exempt). Headings balanced, body text pretty-wrapped.
 
 ## Rejected
@@ -124,4 +125,5 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | Proof band | Done (pass 2) | One panel bordered on all sides (radius 16, padding 32/24) instead of one-sided dividers. Each stat: number (heading-3, 30/36 on phones), meaning (body-6), source (caption-4). Phones list one stat per row, number beside its text. No orphans from 360 to 1920px. Copy tightened, facts unchanged. |
 | Software tour | Done (pass 3) | Heading added ("What the dashboard actually shows", heading-2/3/4 by width) saying these are real v1 screenshots. Scroll timing measured on a new track so the heading never shifts it. Flat bezel instead of a gradient, floor shadow without a gradient, radii 24/12/8 (16/8/6 on phones) by the nested formula. Steps: button-sm with aria-current, labels wrap on phones; captions body-3 in a fixed three or four line box. |
 | Partners | Done (pass 4) | Eyebrow "Partners" (was a duplicate "Results so far"); heading without the accent word, in the shared `.sys-head` style. Six partners on one light panel bordered on all sides, each with a role (caption-4), name (title-2) and involvement (body-6); press screenshot and the $25 note beside it. SkillsUSA line states the result instead of "Where we compete with it". Official name "Alice L. Walton School of Medicine" used site-wide. |
-| Project log and the rest | Pending | One section per pass. |
+| Project log | Done (pass 5) | Shared `.sys-head` heading with a lead line, no accent word. Light panel bordered on all sides instead of the dark marble panel with one-sided dividers. Each milestone: date (caption-4, mono as a timestamp), title (title-2), detail (body-6). Timeline drawn as one segment per milestone, dot to dot, lighting as the reader scrolls; verified to meet each dot exactly. Proper names and handles kept together with non-breaking spaces. |
+| Problem and the rest | Pending | One section per pass. |

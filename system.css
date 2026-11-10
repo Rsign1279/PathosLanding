@@ -279,3 +279,46 @@
 .partners-section .shot-caption { padding: var(--sp-100) var(--sp-200) var(--sp-200); }
 .partners-section .shot-caption-text strong { font-size: 16px; line-height: 24px; font-weight: 500; }
 .partners-section .shot-caption-text span { font-size: 14px; line-height: 20px; }
+
+/* ==========================================================================
+   5. Project log (pass 5)
+   A light panel bordered on all sides. Each milestone: date (caption-4, mono
+   because it is a timestamp), title (title-2), detail (body-6). The timeline
+   is drawn as one segment per milestone, from its dot to the next dot, and
+   lights up as the reader scrolls past (play.js marks .is-reached).
+   ========================================================================== */
+.journey-section .log-panel {
+  position: relative; margin: 0; padding: var(--sp-100) var(--sp-400);
+  list-style: none; border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+}
+.journey-section .log-rail { display: none; }
+.journey-section .log-panel li {
+  position: relative; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--sp-200);
+  padding: var(--sp-300) 0 var(--sp-300) var(--sp-500); border: 0;
+}
+.journey-section .log-panel time { padding: 0; font-family: var(--font-mono); font-size: 12px; line-height: 16px; color: var(--muted); }
+.journey-section .log-panel h3.title-2 { font-size: 18px; line-height: 28px; font-weight: 500; margin: 0 0 var(--sp-50); color: var(--ink); text-shadow: none; transition: color var(--t-fade) var(--ease); }
+.journey-section .log-panel p.body-6 { font-size: 14px; line-height: 20px; margin: 0; color: var(--text); text-shadow: none; text-wrap: pretty; }
+.journey-section .log-panel li:not(.is-reached) h3.title-2 { color: var(--muted); }
+/* Dot */
+.journey-section .log-panel li::before {
+  left: 0; top: calc(var(--sp-300) + var(--sp-50)); width: 12px; height: 12px;
+  background: var(--surface); box-shadow: inset 0 0 0 2px var(--line-strong);
+}
+.journey-section .log-panel li.is-reached::before { background: var(--gold); box-shadow: 0 0 0 4px rgba(123, 93, 35, 0.14); }
+.journey-section .log-panel li.is-now.is-reached::before { background: var(--pink-deep); box-shadow: 0 0 0 4px rgba(184, 87, 122, 0.16); }
+/* Segment from this dot to the next one */
+.journey-section .log-panel li:not(:last-child)::after {
+  content: ""; position: absolute; left: 5px; top: calc(var(--sp-300) + var(--sp-50) + 12px); width: 2px; height: calc(100% - 12px);
+  border-radius: var(--r-full); background: var(--line-strong); transition: background-color var(--t-move) var(--ease);
+}
+.journey-section .log-panel li.is-reached:has(+ li.is-reached)::after { background: var(--gold); }
+.journey-section .log .is-now time { color: var(--gold); }
+.journey-section .log .is-now time::after { background: var(--pink-deep); }
+
+@media (max-width: 639px) {
+  .journey-section .log-panel { padding: var(--sp-75) var(--sp-300); }
+  .journey-section .log-panel li { grid-template-columns: 1fr; gap: var(--sp-50); padding-left: var(--sp-400); }
+  .journey-section .log-panel li::before { top: var(--sp-300); }
+  .journey-section .log-panel li:not(:last-child)::after { top: calc(var(--sp-300) + 12px); }
+}
