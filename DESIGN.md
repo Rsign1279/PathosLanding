@@ -56,6 +56,7 @@ Hero heading steps down by viewport: heading-3 under 640px, heading-2 from
 - Accents `--gold` #7b5d23, `--gold-light` #d2af70, `--pink` #f0a3bb, `--pink-deep` #b8577a
 - Lines `--line` rgba(10, 8, 6, 0.09), `--line-strong` rgba(10, 8, 6, 0.16)
 - Hero heading only: text gradient #000000 to #666666, left to right. No other gradients.
+- Dark surfaces, where a section needs one (charts, instrument scenes): #131209, flat.
 
 **Spacing.** Section padding is 64px on desktop and 40px on phones (`--section-pad`).
 Only 0, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96 px
@@ -84,6 +85,8 @@ ESP32-S3 and Wi-Fi are exempt). Headings balanced, body text pretty-wrapped.
 ## Rejected
 
 - One-sided borders used as dividers (the old proof band).
+- Gradient patterns used to fake dashes or stripes (use solid shapes).
+- Monospace for ordinal numbers (01, 02); keep it for timestamps, part numbers and data.
 - Gradient fills on objects (the old iPad bezel and its radial floor shadow).
 - A visual section with no heading telling visitors what they are looking at.
 - Stats without a stated source.
@@ -126,4 +129,5 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | Software tour | Done (pass 3) | Heading added ("What the dashboard actually shows", heading-2/3/4 by width) saying these are real v1 screenshots. Scroll timing measured on a new track so the heading never shifts it. Flat bezel instead of a gradient, floor shadow without a gradient, radii 24/12/8 (16/8/6 on phones) by the nested formula. Steps: button-sm with aria-current, labels wrap on phones; captions body-3 in a fixed three or four line box. |
 | Partners | Done (pass 4) | Eyebrow "Partners" (was a duplicate "Results so far"); heading without the accent word, in the shared `.sys-head` style. Six partners on one light panel bordered on all sides, each with a role (caption-4), name (title-2) and involvement (body-6); press screenshot and the $25 note beside it. SkillsUSA line states the result instead of "Where we compete with it". Official name "Alice L. Walton School of Medicine" used site-wide. |
 | Project log | Done (pass 5) | Shared `.sys-head` heading with a lead line, no accent word. Light panel bordered on all sides instead of the dark marble panel with one-sided dividers. Each milestone: date (caption-4, mono as a timestamp), title (title-2), detail (body-6). Timeline drawn as one segment per milestone, dot to dot, lighting as the reader scrolls; verified to meet each dot exactly. Proper names and handles kept together with non-breaking spaces. |
-| Problem and the rest | Pending | One section per pass. |
+| Problem | Done (pass 6) | Shared heading without the accent word. Chart on a flat dark surface (#131209, from the skill's dark palette) instead of the marble gradient; legend caption-2 with a solid-dash swatch instead of a gradient pattern; chart labels 14px. Three points on light panels bordered on all sides: number (caption-4, Geist, not mono), title (title-2), detail (body-6). |
+| Features overview and the rest | Pending | One section per pass. |

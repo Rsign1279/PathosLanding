@@ -322,3 +322,27 @@
   .journey-section .log-panel li::before { top: var(--sp-300); }
   .journey-section .log-panel li:not(:last-child)::after { top: calc(var(--sp-300) + 12px); }
 }
+
+/* ==========================================================================
+   6. Problem (pass 6)
+   Shared heading. The chart keeps a dark ground (it is an instrument style
+   drawing) but as a flat surface from the skill's dark palette, not the
+   marble gradient. The three points sit on light panels bordered on all
+   sides: number (caption-4), title (title-2), detail (body-6).
+   ========================================================================== */
+.problem .problem-grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: var(--sp-200); max-width: 1080px; margin: 0 auto; }
+.problem .problem-chart {
+  margin: 0; padding: var(--sp-300); border-radius: var(--r-2xl); background: #131209;
+  box-shadow: 0 24px 48px -32px rgba(40, 25, 10, 0.55); isolation: auto;
+}
+.problem .problem-legend { gap: var(--sp-75) var(--sp-200); margin-top: var(--sp-100); font-size: 14px; line-height: 20px; color: #ddd2c6; }
+.problem .pl::before { margin-right: var(--sp-75); border-radius: var(--r-sm); }
+.problem .pl--seen::before { width: 4px; background: #f6efe7; box-shadow: 7px 0 0 #f6efe7; margin-right: var(--sp-200); }  /* dashes, no gradient */
+.problem .pl-note { color: #b7ab9c; }
+.problem .problem-cards { gap: var(--sp-200); }
+.problem-point { padding: var(--sp-300); border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface); }
+.problem-point .problem-n { margin: 0; color: var(--gold); }
+.problem-point h3.title-2 { margin: var(--sp-50) 0 var(--sp-75); font-size: 18px; line-height: 28px; font-weight: 500; color: var(--ink); }
+.problem-point p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+@media (max-width: 959px) { .problem .problem-grid { grid-template-columns: 1fr; } }
+@media (max-width: 639px) { .problem .problem-chart { padding: var(--sp-200); } }

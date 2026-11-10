@@ -92,7 +92,7 @@ if (chart) {
       const la = smooth(0.45, 0.6, p);
       if (la > 0) {
         ctx.globalAlpha = fade * la;
-        ctx.font = `500 13px ${FONT}`; ctx.fillStyle = `rgb(${C.gold})`; ctx.textAlign = 'center';
+        ctx.font = `500 14px ${FONT}`; ctx.fillStyle = `rgb(${C.gold})`; ctx.textAlign = 'center';
         ctx.fillText('The window that gets missed', (gx0 + X(GAP[1])) / 2, T - 4);
         ctx.globalAlpha = fade;
       }
@@ -116,7 +116,7 @@ if (chart) {
       ctx.globalAlpha = fade * a;
       ctx.beginPath(); ctx.arc(X(x), Y(v), 5.5, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(${C.cream},0.9)`; ctx.lineWidth = 1.5; ctx.stroke();
-      ctx.font = `13px ${FONT}`; ctx.fillStyle = `rgba(${C.cream},0.92)`; ctx.textAlign = align;
+      ctx.font = `14px ${FONT}`; ctx.fillStyle = `rgba(${C.cream},0.92)`; ctx.textAlign = align;
       ctx.fillText(label, X(x) + (align === 'left' ? 10 : -10), Y(v) - 10);
       ctx.globalAlpha = fade;
     };
