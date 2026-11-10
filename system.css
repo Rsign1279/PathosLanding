@@ -346,3 +346,46 @@
 .problem-point p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
 @media (max-width: 959px) { .problem .problem-grid { grid-template-columns: 1fr; } }
 @media (max-width: 639px) { .problem .problem-chart { padding: var(--sp-200); } }
+
+/* ==========================================================================
+   7. Features overview (pass 7)
+   Shared heading without the accent word. The eight features were dark
+   marble cards with tilt; they are now light panels bordered on all sides,
+   each with a flat dark inset for its small animation (#131209, the same
+   dark surface as the problem chart). Number caption-4 (Geist), title
+   title-2, detail body-6, link body-5. Animations pause off screen.
+   ========================================================================== */
+.solution .feats { gap: var(--sp-200); }
+.solution .feat {
+  display: flex; flex-direction: column; min-height: 0; padding: var(--sp-300);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+  color: var(--text); text-decoration: none; text-shadow: none;
+  transition: transform var(--t-move) var(--ease), border-color var(--t-fade) var(--ease), box-shadow var(--t-fade) var(--ease);
+}
+.js .solution .feat[data-reveal].in {
+  transition: opacity 700ms var(--ease) var(--d, 0ms), transform var(--t-move) var(--ease), border-color var(--t-fade) var(--ease), box-shadow var(--t-fade) var(--ease);
+}
+.solution .feat:hover { transform: translateY(-2px); border-color: rgba(10, 8, 6, 0.28); box-shadow: 0 16px 32px -24px rgba(40, 25, 10, 0.45); }
+.solution .feat:active { transform: scale(0.98); }
+.solution .feat:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.solution .feat-viz {
+  height: 80px; margin: 0 0 var(--sp-200); border-radius: var(--r-lg);
+  background: #131209; box-shadow: none;
+}
+.solution .feat-viz svg { width: 100%; max-width: 168px; height: 48px; }
+.solution .feat-n { margin: 0; color: var(--gold); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.solution .feat h3.title-2 { margin: var(--sp-50) 0 var(--sp-75); font-size: 18px; line-height: 28px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; text-wrap: balance; }
+.solution .feat p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+.solution .feat-more {
+  margin-top: auto; padding-top: var(--sp-200); font-size: 14px; line-height: 20px; font-weight: 500;
+  color: var(--gold); opacity: 1; transition: transform var(--t-move) var(--ease), color var(--t-fade) var(--ease);
+}
+.solution .feat:hover .feat-more, .solution .feat:focus-visible .feat-more { color: var(--ink); transform: translateX(var(--sp-50)); }
+@media (max-width: 720px) {
+  .solution .feat { padding: var(--sp-200); }
+  .solution .feat-viz { height: 64px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .solution .feat, .solution .feat-more { transition: border-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease); }
+  .solution .feat:hover, .solution .feat:active, .solution .feat:hover .feat-more, .solution .feat:focus-visible .feat-more { transform: none; }
+}

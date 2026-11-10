@@ -91,6 +91,7 @@ ESP32-S3 and Wi-Fi are exempt). Headings balanced, body text pretty-wrapped.
 - A visual section with no heading telling visitors what they are looking at.
 - Stats without a stated source.
 - Dark marble gradient tint behind lists of text (partners now sit on a light panel).
+- Dark marble tilt cards for the feature overview (now light bordered panels).
 - The same eyebrow on two sections.
 
 - Competing calls to action above the fold (was: announcement link plus two buttons).
@@ -130,4 +131,5 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | Partners | Done (pass 4) | Eyebrow "Partners" (was a duplicate "Results so far"); heading without the accent word, in the shared `.sys-head` style. Six partners on one light panel bordered on all sides, each with a role (caption-4), name (title-2) and involvement (body-6); press screenshot and the $25 note beside it. SkillsUSA line states the result instead of "Where we compete with it". Official name "Alice L. Walton School of Medicine" used site-wide. |
 | Project log | Done (pass 5) | Shared `.sys-head` heading with a lead line, no accent word. Light panel bordered on all sides instead of the dark marble panel with one-sided dividers. Each milestone: date (caption-4, mono as a timestamp), title (title-2), detail (body-6). Timeline drawn as one segment per milestone, dot to dot, lighting as the reader scrolls; verified to meet each dot exactly. Proper names and handles kept together with non-breaking spaces. |
 | Problem | Done (pass 6) | Shared heading without the accent word. Chart on a flat dark surface (#131209, from the skill's dark palette) instead of the marble gradient; legend caption-2 with a solid-dash swatch instead of a gradient pattern; chart labels 14px. Three points on light panels bordered on all sides: number (caption-4, Geist, not mono), title (title-2), detail (body-6). |
-| Features overview and the rest | Pending | One section per pass. |
+| Features overview | Done (pass 7) | Shared `.sys-head` heading ("Meet PATHOS", no mono accent); lead says "inexpensive" instead of the hyphenated "low-cost". Eight features moved from dark marble tilt cards to light panels bordered on all sides (radius 16, padding 24, 16 on phones, gap 16): flat #131209 inset (radius 8) for each small animation, number caption-4 in Geist, title title-2, detail body-6, "See how" body-5 in gold. Hover lifts 2px over 500ms, active scale(0.98), gold focus ring; reduced motion keeps color only. Hyphens removed ("standard sensors", "a case to wear all day"); animations still pause off screen. |
+| Deep dives and the rest | Pending | One section per pass, starting with Why five signals. |
