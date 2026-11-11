@@ -898,3 +898,146 @@
    ========================================================================== */
 .eyebrow { gap: var(--sp-75); margin-bottom: var(--sp-100); font-family: var(--font-body); font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
 #contact .contact--sys .eyebrow { margin: 0; }
+
+/* ==========================================================================
+   Marble restored (founder's decision, November 2026)
+   The marble surface returns everywhere it was removed in passes 4 to 21:
+   the original dark ground, marble image and tint, dark border and soft
+   shadow. Layout, type sizes, spacing and radii from the passes stay; only
+   the surface and the text colours on it change back. `--panel` is the
+   steadier tint used under long lists; `--contact` is the contact crop.
+   Surface properties use !important because each pass's own selector set
+   a light ground with higher specificity.
+   ========================================================================== */
+.marble {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: #16120e !important; border-color: rgba(10, 8, 6, 0.5) !important;
+  color: var(--on-dark-2) !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 1px 2px rgba(40, 25, 10, 0.08), 0 16px 34px -22px rgba(40, 25, 10, 0.55);
+}
+.marble::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; display: block;
+  background:
+    linear-gradient(135deg, rgba(14, 10, 7, 0.9) 0%, rgba(14, 10, 7, 0.76) 52%, rgba(14, 10, 7, 0.42) 100%),
+    url('assets/marble-sm.webp') var(--mp, 50% 40%) / cover no-repeat;
+  transition: transform 700ms var(--ease);
+}
+.marble--panel::before {
+  background:
+    linear-gradient(180deg, rgba(14, 10, 7, 0.84), rgba(14, 10, 7, 0.88)),
+    url('assets/marble-sm.webp') var(--mp, 30% 60%) / cover no-repeat;
+}
+.marble--contact { --mp: 70% 30%; }
+.marble--contact::before {
+  display: block !important;
+  background:
+    linear-gradient(100deg, rgba(10, 8, 6, 0.95) 0%, rgba(10, 8, 6, 0.88) 55%, rgba(10, 8, 6, 0.55) 100%),
+    url('assets/marble-sm.webp') var(--mp) / cover no-repeat;
+}
+a.marble:hover::before, .sig-card.marble:hover::before { transform: scale(1.06); }
+.sys-grid > .marble:nth-child(4n+1), .feats > .marble:nth-child(4n+1), .sig-grid > .marble:nth-child(4n+1) { --mp: 8% 30%; }
+.sys-grid > .marble:nth-child(4n+2), .feats > .marble:nth-child(4n+2), .sig-grid > .marble:nth-child(4n+2) { --mp: 55% 20%; }
+.sys-grid > .marble:nth-child(4n+3), .feats > .marble:nth-child(4n+3), .sig-grid > .marble:nth-child(4n+3) { --mp: 92% 60%; }
+.sys-grid > .marble:nth-child(4n+4), .feats > .marble:nth-child(4n+4), .sig-grid > .marble:nth-child(4n+4) { --mp: 30% 90%; }
+.isnt-row > .marble:first-child { --mp: 50% 25%; }
+.isnt-row > .marble:last-child { --mp: 85% 75%; }
+@media (prefers-reduced-motion: reduce) { .marble::before { transition: none; } a.marble:hover::before, .sig-card.marble:hover::before { transform: none; } }
+
+/* Text on marble */
+.marble :is(h3, .title-2, .title-3, .heading-4, .how-t, strong, dd, .data) { color: var(--on-dark) !important; }
+.marble :is(p, li, .body-6, .body-3, .how-d) { color: var(--on-dark-2) !important; }
+.marble :is(.feat-n, .sys-n, .ws-n, .problem-n, .partner-role, .founder-role, .sys-note-label, code) { color: var(--gold-light) !important; }
+.marble :is(time, dt, .optional) { color: var(--on-dark-3) !important; }
+.marble .feat-more { color: var(--gold-light) !important; }
+.marble.feat:hover .feat-more, .marble.feat:focus-visible .feat-more { color: var(--on-dark) !important; }
+.marble.feat:hover { border-color: rgba(210, 175, 112, 0.5) !important; }
+.marble.feat:focus-visible, .marble.sig-card:focus-visible, .pipeline > li.marble:focus-visible { outline-color: var(--gold-light); }
+
+/* Signal toggles */
+.marble.sig-card .sig-dot { box-shadow: inset 0 0 0 1.5px rgba(246, 239, 231, 0.45); }
+.marble.sig-card:hover .sig-dot { box-shadow: inset 0 0 0 1.5px rgba(246, 239, 231, 0.8); }
+.marble.sig-card .sig-dot::after { border-color: #15110d; }
+.marble.sig-card[aria-pressed="true"] { border-color: var(--pink) !important; box-shadow: 0 0 0 1px var(--pink), 0 18px 40px -22px rgba(40, 25, 10, 0.6); }
+.marble.sig-card[aria-pressed="true"] .sig-dot { background: var(--pink); }
+
+/* Sensor table */
+.marble #sensors .sensor-row--head, .marble .sensor-row--head { background: rgba(0, 0, 0, 0.35) !important; color: var(--on-dark-3) !important; }
+.marble .sensor-row:hover:not(.sensor-row--head) { background: rgba(255, 255, 255, 0.04) !important; }
+.marble .pill { background: rgba(255, 255, 255, 0.1) !important; color: #e6dccf !important; }
+.marble .pill--live { background: rgba(120, 190, 130, 0.18) !important; color: #b2e0ba !important; }
+.marble .pill--no { background: rgba(240, 163, 187, 0.18) !important; color: var(--pink) !important; }
+
+/* Pipeline, hardware, roadmap */
+.pipeline > li.marble.is-active { border-color: var(--gold-light) !important; }
+.pipeline > li.marble .step-bar { background: var(--gold-light); }
+.marble .checks li::before { border-color: #9fd3a8 !important; }
+.marble .checks--open li::before { border-color: var(--on-dark-3) !important; }
+.marble .sys-list li::before { background: var(--gold-light); }
+
+/* Project log on marble */
+.journey-section .log-panel.marble li::before { background: #16120e; box-shadow: inset 0 0 0 2px var(--dark-line); }
+.journey-section .log-panel.marble li.is-reached::before { background: var(--gold-light); box-shadow: 0 0 0 4px rgba(210, 175, 112, 0.18); }
+.journey-section .log-panel.marble li.is-now.is-reached::before { background: var(--pink); box-shadow: 0 0 0 4px rgba(240, 163, 187, 0.18); }
+.journey-section .log-panel.marble li:not(:last-child)::after { background: var(--dark-line); }
+.journey-section .log-panel.marble li.is-reached:has(+ li.is-reached)::after { background: var(--gold-light); }
+.journey-section .log-panel.marble li:not(.is-reached) h3.title-2 { color: var(--on-dark-3) !important; }
+.journey-section .log-panel.marble .is-now time { color: var(--gold-light) !important; }
+
+/* Founder */
+.marble .founder-facts li { background: rgba(255, 255, 255, 0.08) !important; box-shadow: inset 0 0 0 1px var(--dark-line); color: var(--on-dark) !important; }
+.marble .founder-link { color: var(--on-dark-2) !important; }
+.marble .founder-link:hover { color: var(--on-dark) !important; }
+
+/* Contact on marble: the form returns to its dark fields and gold button */
+#contact .marble--contact .eyebrow { color: var(--on-dark-3) !important; }
+#contact .marble--contact h2.heading-2 { color: var(--bg) !important; }
+#contact .marble--contact .contact-email { color: var(--on-dark) !important; text-decoration-color: var(--gold-light); }
+#contact .marble--contact .contact-email:hover { color: var(--gold-light) !important; }
+#contact .marble--contact .contact-links a { color: var(--on-dark-2) !important; }
+#contact .marble--contact .contact-links a:hover { color: var(--on-dark) !important; }
+#contact .marble--contact .copy-btn { color: var(--on-dark); background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); }
+#contact .marble--contact .copy-btn:hover { background: rgba(255, 255, 255, 0.12); }
+#contact .marble--contact .copy-btn.is-done { color: #b2e0ba; border-color: rgba(120, 190, 130, 0.5); background: rgba(120, 190, 130, 0.12); }
+#contact .marble--contact .form-group label { color: var(--on-dark-3) !important; }
+#contact .marble--contact .form-group input, #contact .marble--contact .form-group textarea, #contact .marble--contact .form-group select {
+  background-color: #16120e; color: var(--bg); border-color: #332b24;
+}
+#contact .marble--contact .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23d2af70' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"); }
+#contact .marble--contact .form-group select:invalid { color: var(--on-dark-3); }
+#contact .marble--contact .form-group input:focus, #contact .marble--contact .form-group textarea:focus, #contact .marble--contact .form-group select:focus {
+  border-color: var(--gold-light); box-shadow: 0 0 0 2px rgba(210, 175, 112, 0.3);
+}
+#contact .marble--contact .form-group [aria-invalid="true"] { border-color: var(--pink); }
+#contact .marble--contact .field-error, #contact .marble--contact .form-status.error { color: var(--pink) !important; }
+#contact .marble--contact .form-status.success { color: #a6d9ae !important; }
+#contact .marble--contact .btn-dark { background: var(--gold-light); color: var(--ink); }
+#contact .marble--contact .btn-dark:hover { background: #e2c389; }
+#contact .marble--contact .btn-dark:focus-visible { outline-color: var(--gold-light); }
+#contact .marble--contact .form-intro { color: var(--on-dark-3) !important; }
+#contact .marble--contact .form-intro a { color: var(--gold-light) !important; }
+
+/* Photo deck card backs, tour screen and footer: marble back as before */
+.field .fl-back {
+  background:
+    linear-gradient(160deg, rgba(14, 10, 7, 0.35) 0%, rgba(14, 10, 7, 0.82) 70%),
+    #16120e url('assets/marble-sm.webp') var(--mp, 50% 40%) / cover no-repeat;
+}
+#device-tour .device-screen { background: #1a1612 url('assets/marble-sm.webp') center 35% / cover no-repeat; }
+.site-foot .foot-card { border-color: transparent; background: #110d0a; color: var(--on-dark); box-shadow: 0 30px 60px -40px rgba(40, 25, 10, 0.7); }
+.site-foot .foot-card::before {
+  display: block;
+  background: linear-gradient(180deg, rgba(14, 10, 7, 0.94) 0%, rgba(14, 10, 7, 0.82) 38%, rgba(14, 10, 7, 0.3) 70%, rgba(14, 10, 7, 0.86) 100%);
+}
+.site-foot .foot-art { display: block; }
+.site-foot .foot-brand .brand, .site-foot .foot-brand .brand-mark, .site-foot .foot-col h3 { color: var(--on-dark); }
+.site-foot .foot-tag, .site-foot .foot-col a { color: var(--on-dark-2); }
+.site-foot .foot-col a:hover, .site-foot .foot-col a:focus-visible { color: #fff; }
+.site-foot .foot-social a { color: var(--on-dark); background: rgba(255, 255, 255, 0.06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14); }
+.site-foot .foot-social a:hover, .site-foot .foot-social a:focus-visible { background: rgba(210, 175, 112, 0.2); color: var(--gold-light); }
+.site-foot .foot-base .footer-fine { color: rgba(246, 239, 231, 0.85); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8); }
+.site-foot .foot-legal > a:not(.foot-top) { color: var(--on-dark); }
+.site-foot .foot-top { color: var(--on-dark); background: rgba(14, 10, 7, 0.55); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); }
+.site-foot .foot-top:hover { background: rgba(14, 10, 7, 0.8); }
+.site-foot a:focus-visible { outline-color: var(--gold-light); }
+@media (min-width: 721px) { .site-foot .foot-card { min-height: 560px; } }
+.problem .problem-chart.marble, .marble { isolation: isolate; }
