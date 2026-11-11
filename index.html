@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="play.css">
     <link rel="stylesheet" href="story.css">
     <link rel="stylesheet" href="system.css">
+    <link rel="stylesheet" href="film.css">
 
     <script type="importmap">
     {
@@ -101,6 +102,25 @@
                     <li><p class="proof-n heading-3">Top&nbsp;10</p><p class="proof-l body-6">national finalist</p><p class="proof-src caption-4">SkillsUSA NLSC 2026</p></li>
                     <li><p class="proof-n heading-3">1st</p><p class="proof-l body-6">place at the state and regional science fair</p><p class="proof-src caption-4">Arkansas State &amp; Regional Science Fair</p></li>
                 </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2a. The PATHOS film: 44 seconds, driven by scroll (film.js) -->
+    <section id="film" class="film" aria-labelledby="filmTitle">
+        <h2 class="sr-only" id="filmTitle">PATHOS in 44 seconds</h2>
+        <p class="sr-only">A short film that moves as you scroll. Stress builds in the body before people can say it, and staff often notice only at the point of overload. PATHOS works in steps: sense skin conductance and temperature, stream synchronized signal windows live to the model, and show the result on a live dashboard. The film shows 93.72% accuracy on the WESAD research dataset when each person is held out in turn, not yet measured on PATHOS hardware, and the SkillsUSA top 10 national finalist result. It closes with two ways in, the next target and an invitation to collaborate with PATHOS IoT.</p>
+        <div class="film-track" id="filmTrack">
+            <div class="film-pin">
+                <div class="film-stage" id="filmStage">
+                    <img class="film-still" id="filmStill" data-base="assets/film/stills/p-" src="assets/film/stills/p-00.webp" alt="" width="1280" height="720" decoding="async">
+                    <video class="film-video" id="filmVideo" muted playsinline controls preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1" poster="assets/film/stills/p-00.webp" data-src2160="assets/film/film-2160.mp4" data-src1440="assets/film/film-1440.mp4" data-src1080="assets/film/film-1080.mp4">
+                        <source src="assets/film/film-1080.mp4" type="video/mp4">
+                    </video>
+                    <p class="film-status" id="filmStatus" role="status" aria-live="polite"></p>
+                    <a class="film-skip" href="#device-tour">Skip the film &darr;</a>
+                    <div class="film-scrub" aria-hidden="true"><span id="filmScrub"></span></div>
+                </div>
             </div>
         </div>
     </section>
@@ -798,6 +818,7 @@
     <script type="module" src="field.js"></script>
     <script type="module" src="play.js"></script>
     <script type="module" src="story.js"></script>
+    <script type="module" src="film.js"></script>
     <script type="module">
         // Load the 3D hardware section (Three.js + 2.2 MB model) only when it's close to the viewport.
         const section = document.getElementById('prototype');
