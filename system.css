@@ -556,3 +556,88 @@
 .hw-grid .specs > div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-100); padding: 0; border: 0; }
 .hw-grid .specs dt { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--muted); }
 .hw-grid .specs dd { margin: 0; font-size: 14px; line-height: 20px; color: var(--ink); text-align: right; }
+
+/* ==========================================================================
+   12. Hardware in 3D (pass 12)
+   Shared heading without the accent word. The film and its Didot titles
+   are an approved exception and keep their frame-relative sizes. The
+   instrument chrome around the film moves onto the system: flat window bar
+   (no gradient, no one-sided border), Tailwind radii with the nested rule
+   (frame 24 with an 8px bezel, so the view's corners are 16), token
+   spacing, 12/14/16px text, Geist for the chapter rail (ordinals are not
+   mono), solid scrubber, balanced captions. The file name and the frame
+   counter stay mono (a file name and a timestamp).
+   ========================================================================== */
+.prototype .hw-stage { border-width: 8px; border-radius: var(--r-3xl); }
+.prototype .hw-bar {
+  height: 48px; gap: var(--sp-200); padding: 0 var(--sp-200);
+  border-bottom: 0; background: rgba(19, 18, 9, 0.92); font-size: 12px; line-height: 16px;
+}
+.prototype .hw-view { inset: 48px 0 0 0; }
+.prototype .hw-file { gap: var(--sp-75); }
+.prototype .hw-skip, .prototype .hw-360 {
+  padding: var(--sp-50) var(--sp-75); border-radius: var(--r-md); font-size: 14px; line-height: 20px; font-weight: 500;
+  transition: background-color var(--t-fade) var(--ease), border-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease);
+}
+.prototype .hw-360 { gap: var(--sp-75); margin-left: var(--sp-50); }
+.prototype .hw-skip:focus-visible, .prototype .hw-360:focus-visible, .prototype .hw-orbit-btn:focus-visible,
+.prototype .hw-orbit-exit:focus-visible, .prototype .hw-rail-btn:focus-visible, .prototype .hw-label-x:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+.prototype .hw-label-card { left: var(--sp-200); top: var(--sp-100); padding: var(--sp-100) var(--sp-500) var(--sp-100) var(--sp-200); border-radius: var(--r-xl); }
+.prototype .hw-label-card strong { font-size: 14px; line-height: 20px; font-weight: 500; }
+.prototype .hw-label-d { margin-top: var(--sp-50); font-size: 14px; line-height: 20px; }
+.prototype .hw-label-x { top: var(--sp-75); right: var(--sp-75); border-radius: var(--r-md); font-size: 16px; }
+.prototype .hw-orbit-ui { top: var(--sp-200); gap: var(--sp-50); padding: var(--sp-50) var(--sp-50) var(--sp-50) var(--sp-200); border-radius: var(--r-xl); font-size: 14px; line-height: 20px; }
+.prototype .hw-orbit-hint { margin-right: var(--sp-75); }
+.prototype .hw-orbit-btn, .prototype .hw-orbit-exit { border-radius: var(--r-lg); }
+.prototype .hw-orbit-btn, .prototype .hw-label-x { padding: 0; }
+.prototype .hw-orbit-btn { font-size: 16px; }
+.prototype .hw-orbit-exit { padding: 0 var(--sp-100); font-size: 14px; }
+.prototype .hw-rail { right: var(--sp-200); gap: var(--sp-25); }
+.prototype .hw-rail-btn { gap: var(--sp-100); min-height: 32px; padding: 0 var(--sp-75); border-radius: var(--r-lg); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.prototype .hw-rail-btn .n { padding-right: var(--sp-200); }
+.prototype .hw-scrub { height: 4px; }
+.prototype .hw-scrub span { background: var(--gold-light); }
+.prototype .hw-caption { text-wrap: balance; }
+@media (max-width: 800px) {
+  .prototype .hw-stage { border-width: 8px; border-radius: var(--r-2xl); }
+  .prototype .hw-bar { height: 40px; padding: 0 var(--sp-100); gap: var(--sp-100); font-size: 12px; }
+  .prototype .hw-view { inset: 40px 0 0 0; }
+  .prototype .hw-skip { font-size: 12px; line-height: 16px; padding: var(--sp-50) var(--sp-75); }
+  .prototype .hw-360 { padding: var(--sp-50) var(--sp-75); }
+  .prototype .hw-orbit-ui { top: auto; bottom: var(--sp-100); padding: var(--sp-50); }
+}
+
+/* ==========================================================================
+   13. The build, photo deck (pass 13)
+   Shared heading without the accent word. Card backs were marble under a
+   gradient tint and the photo fronts had a gradient sheen; backs are now
+   the flat dark surface (#131209) and the sheen is gone. Back text:
+   number caption-4 in Geist, title heading-6, detail body-6. Caption under
+   the deck title-2 / body-3 (title-3 / body-6 on phones). Counter in Geist
+   with tabular figures (an ordinal, not data). Token spacing, round buttons.
+   ========================================================================== */
+.field .fl-back { gap: var(--sp-75); padding: var(--sp-300); background: #131209; }
+.field .fl-front.shot::after { display: none; }
+.field .fl-back-n { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0; }
+.field .fl-back-t { font-size: 20px; line-height: 28px; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+.field .fl-back-d { font-size: 14px; line-height: 20px; text-wrap: pretty; }
+.field .shot-caption-text strong { font-size: 16px; line-height: 24px; }
+.field .shot-caption-text span { font-size: 14px; line-height: 20px; }
+.field .fl-ui { gap: var(--sp-300); bottom: var(--sp-200); width: min(100% - 48px, 1100px); }
+.field .fl-caption { min-height: 52px; }
+.field .fl-caption strong { font-size: 18px; line-height: 28px; font-weight: 500; text-wrap: balance; }
+.field .fl-caption span { margin-top: var(--sp-25); font-size: 16px; line-height: 24px; text-wrap: pretty; }
+.field .fl-nav { gap: var(--sp-100); }
+.field .fl-count { font-family: var(--font-body); font-size: 14px; line-height: 20px; font-weight: 500; }
+.field .fl-btn {
+  padding: 0; border-radius: var(--r-full); font-size: 16px;
+  transition: background-color var(--t-fade) var(--ease), border-color var(--t-fade) var(--ease), transform var(--t-move) var(--ease);
+}
+.field .fl-btn:active { transform: scale(0.98); }
+.field .fl-btn:focus-visible, .field .fl-front:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (max-width: 800px) {
+  .field .fl-ui { bottom: var(--sp-100); width: calc(100% - 32px); gap: var(--sp-100); }
+  .field .fl-caption { min-height: 64px; }
+  .field .fl-caption strong { font-size: 16px; line-height: 24px; }
+  .field .fl-caption span { font-size: 14px; line-height: 20px; }
+}
