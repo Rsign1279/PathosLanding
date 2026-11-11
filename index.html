@@ -314,20 +314,20 @@
         <canvas class="edge-art" data-art="signals" data-side="left" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="modules" data-side="right" data-rotate="1" data-speed="0.18" aria-hidden="true"></canvas>
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">03 &middot; The model</p>
-                <h2>How PATHOS makes a <span class="accent accent--mono">call</span></h2>
-                <p>Aligned to <a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">WESAD</a>, a public research dataset recorded during a controlled lab stress test. Not yet validated on PATHOS hardware with real users.</p>
+                <h2 class="heading-2">How PATHOS makes a&nbsp;call</h2>
+                <p class="body-3">Aligned to <a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">WESAD</a>, a public research dataset recorded during a controlled lab stress test. Not yet validated on PATHOS hardware with real users.</p>
             </header>
-            <ol class="grid grid--4 steps pipeline" data-reveal-group>
-                <li class="card"><span class="step">01</span><h3>Sample</h3><p class="card-text">The ESP32-S3 reads each sensor and timestamps every sample.</p></li>
-                <li class="card"><span class="step">02</span><h3>Summarise</h3><p class="card-text">Short windows become features: levels, slopes and variability.</p></li>
-                <li class="card"><span class="step">03</span><h3>Classify</h3><p class="card-text">A scikit-learn voting ensemble runs locally, no internet needed.</p></li>
-                <li class="card"><span class="step">04</span><h3>Report</h3><p class="card-text">Baseline, elevated or high, shown with the model's confidence.</p></li>
+            <ol class="grid grid--4 steps pipeline sys-grid" data-reveal-group>
+                <li class="sys-panel"><span class="sys-n caption-4">01</span><h3 class="title-2">Sample</h3><p class="body-6">The ESP32-S3 reads each sensor and timestamps every sample.</p></li>
+                <li class="sys-panel"><span class="sys-n caption-4">02</span><h3 class="title-2">Summarise</h3><p class="body-6">Short windows become features: levels, slopes and variability.</p></li>
+                <li class="sys-panel"><span class="sys-n caption-4">03</span><h3 class="title-2">Classify</h3><p class="body-6">A scikit-learn voting ensemble runs locally, no internet needed.</p></li>
+                <li class="sys-panel"><span class="sys-n caption-4">04</span><h3 class="title-2">Report</h3><p class="body-6">Baseline, elevated or high, shown with the model&rsquo;s&nbsp;confidence.</p></li>
             </ol>
-            <aside class="callout" data-reveal>
-                <p class="callout-label">A number we threw out</p>
-                <p>Our first model, a small PyTorch network (3&rarr;64&rarr;64&rarr;1), scored R² = 0.9977 on a dataset we generated ourselves. That said nothing about real bodies, so we dropped it and moved to WESAD.</p>
+            <aside class="sys-note" data-reveal>
+                <p class="sys-note-label caption-4">A number we threw out</p>
+                <p class="body-6">Our first model, a small PyTorch network (3&rarr;64&rarr;64&rarr;1), scored <span class="data">R² = 0.9977</span> on a dataset we generated ourselves. That said nothing about real bodies, so we dropped it and moved to WESAD.</p>
             </aside>
         </div>
     </section>
@@ -337,32 +337,32 @@
         <canvas class="edge-art" data-art="controller" data-side="left" data-rotate="1" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="electrodes" data-side="right" data-speed="0.12" aria-hidden="true"></canvas>
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">04 &middot; Hardware</p>
-                <h2>What works <span class="accent accent--mono">today</span></h2>
+                <h2 class="heading-2">What works today</h2>
             </header>
-            <div class="grid grid--3" data-reveal-group>
-                <article class="card">
-                    <p class="card-kicker">Working now</p>
-                    <ul class="checks">
-                        <li>Real-time environmental sensing</li>
+            <div class="grid grid--3 sys-grid hw-grid" data-reveal-group>
+                <article class="sys-panel">
+                    <h3 class="title-2">Working now</h3>
+                    <ul class="checks body-6">
+                        <li>Environmental sensing in real time</li>
                         <li>Local model inference</li>
                         <li>Streamlit dashboard</li>
-                        <li>WESAD-aligned pipeline</li>
+                        <li>Pipeline aligned to WESAD</li>
                     </ul>
                 </article>
-                <article class="card">
-                    <p class="card-kicker">Not yet</p>
-                    <ul class="checks checks--open">
+                <article class="sys-panel">
+                    <h3 class="title-2">Not yet</h3>
+                    <ul class="checks checks--open body-6">
                         <li>Body sensors (EDA, pulse, heart rate)</li>
                         <li>A wearable enclosure</li>
                         <li>Mobile app with caregiver alerts</li>
-                        <li>IRB-approved validation study</li>
+                        <li>A validation study approved by an IRB</li>
                     </ul>
                 </article>
-                <article class="card">
-                    <p class="card-kicker">MVP 1 spec</p>
-                    <dl class="specs">
+                <article class="sys-panel">
+                    <h3 class="title-2">MVP 1 spec</h3>
+                    <dl class="specs body-6">
                         <div><dt>MCU</dt><dd>XIAO ESP32-S3 / C3</dd></div>
                         <div><dt>Sensor</dt><dd>BME280</dd></div>
                         <div><dt>Bus</dt><dd>I2C &middot; 0x76 &middot; 3.3 V</dd></div>
@@ -377,10 +377,10 @@
 
     <section id="prototype" class="prototype" aria-label="PATHOS hardware, in 3D">
         <div class="wrap">
-            <header class="sec-head prototype-head" data-reveal>
+            <header class="sec-head sys-head prototype-head" data-reveal>
                 <p class="eyebrow">05 &middot; Hardware in 3D</p>
-                <h2>Follow one signal through the <span class="accent accent--mono">rig</span></h2>
-                <p>The PATHOS rig, modelled and animated in Blender. Scroll to take it apart, follow each signal from the skin to the dashboard, and watch the v1 software on the laptop.</p>
+                <h2 class="heading-2">Follow one signal through the&nbsp;rig</h2>
+                <p class="body-3">The PATHOS rig, modelled and animated in Blender. Scroll to take it apart, follow each signal from the skin to the dashboard, and watch the v1 software on the laptop.</p>
             </header>
         </div>
         <div class="hw-track" id="hwTrack">
@@ -461,10 +461,10 @@
     <!-- 4. Feature: 05 The build: MVP 1 and the field, as a scroll-driven photo deck -->
     <section id="product" class="field" aria-label="The build: MVP 1, in photos">
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">06 &middot; The build</p>
-                <h2>MVP 1, from the bench to the <span class="accent accent--mono">booth</span></h2>
-                <p>An ESP32-S3 and a BME280 streaming into a Streamlit dashboard. It only measures the room, but it proved the pipeline end to end. Keep scrolling to deal through the photos; drag sideways to swipe, tap one to open it.</p>
+                <h2 class="heading-2">MVP&nbsp;1, from the bench to the&nbsp;booth</h2>
+                <p class="body-3">An ESP32-S3 and a BME280 streaming into a Streamlit dashboard. It only measures the room, but it proved the pipeline end to end. Keep scrolling to deal through the photos; drag sideways to swipe, tap one to open it.</p>
             </header>
         </div>
         <div class="fl-track" id="flTrack" style="--n: 7">
@@ -565,15 +565,15 @@
         <canvas class="edge-art" data-art="electrodes" data-side="left" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="signals" data-side="right" data-speed="0.18" aria-hidden="true"></canvas>
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">07 &middot; In the works</p>
-                <h2>MVP 2 moves onto the <span class="accent accent--mono">body</span></h2>
-                <p>A custom board with the body sensors built in. No photos yet: we'll post real ones when it exists, not renders.</p>
+                <h2 class="heading-2">MVP&nbsp;2 moves onto the&nbsp;body</h2>
+                <p class="body-3">A custom board with the body sensors built in. No photos yet: we&rsquo;ll post real ones when it exists, not renders.</p>
             </header>
-            <div class="grid grid--3" data-reveal-group>
-                <article class="card"><p class="card-kicker">Body sensors</p><p class="card-text">MAX30102 for pulse and HRV, a GSR front end for skin conductance, and skin-contact temperature.</p></article>
-                <article class="card"><p class="card-kicker">Something you can wear</p><p class="card-text">A 3D-printed case small enough to wear all day, not just hold during a demo.</p></article>
-                <article class="card"><p class="card-kicker">Alerts that stay private</p><p class="card-text">Caregivers get alerts over the network while the model keeps running on the device.</p></article>
+            <div class="grid grid--3 sys-grid" data-reveal-group>
+                <article class="sys-panel"><h3 class="title-2">Body sensors</h3><p class="body-6">MAX30102 for pulse and HRV, a GSR front end for skin conductance, and a temperature sensor that touches the&nbsp;skin.</p></article>
+                <article class="sys-panel"><h3 class="title-2">Something you can wear</h3><p class="body-6">A case printed in 3D, small enough to wear all day, not just hold during a&nbsp;demo.</p></article>
+                <article class="sys-panel"><h3 class="title-2">Alerts that stay private</h3><p class="body-6">Caregivers get alerts over the network while the model keeps running on the&nbsp;device.</p></article>
             </div>
         </div>
     </section>
@@ -583,18 +583,18 @@
         <canvas class="edge-art" data-art="signals" data-side="left" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="hand" data-side="right" data-flip="1" data-speed="0.18" aria-hidden="true"></canvas>
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">Roadmap</p>
-                <h2>What's <span class="accent accent--mono">next</span></h2>
+                <h2 class="heading-2">What&rsquo;s next</h2>
             </header>
-            <div class="grid grid--3" data-reveal-group>
-                <article class="card"><p class="card-kicker">Next 3 months</p><ul class="lines"><li>Integrate EDA and pulse sensors</li><li>Add motion classification</li><li>Shrink the hardware</li><li>Design a wearable case</li><li>Pilot studies with AIM members</li></ul></article>
-                <article class="card"><p class="card-kicker">6&ndash;12 months</p><ul class="lines"><li>Real physiological data with medical oversight</li><li>Mobile app for caregivers</li><li>Submit to ISEF</li><li>Run more workshops</li></ul></article>
-                <article class="card"><p class="card-kicker">After that</p><ul class="lines"><li>A go-to low-cost option for autism wellness tech</li><li>License to schools and hospitals</li><li>Look into FDA wellness registration</li><li>A model small enough to run anywhere</li></ul></article>
+            <div class="grid grid--3 sys-grid" data-reveal-group>
+                <article class="sys-panel"><h3 class="title-2">Next 3 months</h3><ul class="sys-list body-6"><li>Integrate EDA and pulse sensors</li><li>Add motion classification</li><li>Shrink the hardware</li><li>Design a wearable case</li><li>Pilot studies with AIM members</li></ul></article>
+                <article class="sys-panel"><h3 class="title-2">6&ndash;12 months</h3><ul class="sys-list body-6"><li>Real physiological data with medical oversight</li><li>Mobile app for caregivers</li><li>Submit to ISEF</li><li>Run more workshops</li></ul></article>
+                <article class="sys-panel"><h3 class="title-2">After that</h3><ul class="sys-list body-6"><li>The affordable first choice for autism wellness tech</li><li>License to schools and hospitals</li><li>Look into FDA wellness&nbsp;registration</li><li>A model small enough to run&nbsp;anywhere</li></ul></article>
             </div>
-            <div class="is-isnt" data-reveal>
-                <p><span class="pill pill--live">Is</span> a wellness tool, informed by research, processed locally, upfront about its limits.</p>
-                <p><span class="pill pill--no">Isn't</span> a medical device, a substitute for care, or finished.</p>
+            <div class="isnt-row" data-reveal>
+                <p class="isnt-item body-3"><span class="pill pill--live caption-4">Is</span> <span>a wellness tool, informed by research, processed locally, upfront about its&nbsp;limits.</span></p>
+                <p class="isnt-item body-3"><span class="pill pill--no caption-4">Isn&rsquo;t</span> <span>a medical device, a substitute for care, or&nbsp;finished.</span></p>
             </div>
         </div>
     </section>
@@ -604,17 +604,17 @@
         <canvas class="edge-art" data-art="controller" data-side="left" data-rotate="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="modules" data-side="right" data-rotate="1" data-speed="0.18" aria-hidden="true"></canvas>
         <div class="wrap wrap--narrow">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">08 &middot; Workshops</p>
-                <h2>We teach the <span class="accent accent--mono">pieces</span></h2>
-                <p>For students, caregivers and teachers.</p>
+                <h2 class="heading-2">We teach the&nbsp;pieces</h2>
+                <p class="body-3">For students, caregivers and teachers.</p>
             </header>
-            <ol class="panel workshop-list" data-reveal>
-                <li><span class="step">01</span><h3>Stress signals, explained</h3><p>What the body actually does under stress, and how to read it.</p></li>
-                <li><span class="step">02</span><h3>Embedded systems for beginners</h3><p>Wire a sensor, write Arduino code, and learn why 3.3 V vs 5 V logic matters.</p></li>
-                <li><span class="step">03</span><h3>Machine learning, minus the hype</h3><p>How a classifier works, what confidence means, when not to trust one.</p></li>
-                <li><span class="step">04</span><h3>Build your own sensor</h3><p>Breadboard, ESP32, thermometer. Real wiring, real data.</p></li>
-                <li><span class="step">05</span><h3>For caregivers and educators</h3><p>What readings mean, responding calmly, wellness vs diagnosis.</p></li>
+            <ol class="ws-list" data-reveal>
+                <li><span class="ws-n caption-4">01</span><h3 class="title-2">Stress signals, explained</h3><p class="body-6">What the body actually does under stress, and how to read it.</p></li>
+                <li><span class="ws-n caption-4">02</span><h3 class="title-2">Embedded systems for beginners</h3><p class="body-6">Wire a sensor, write Arduino code, and learn why 3.3&nbsp;V vs 5&nbsp;V logic matters.</p></li>
+                <li><span class="ws-n caption-4">03</span><h3 class="title-2">Machine learning, minus the hype</h3><p class="body-6">How a classifier works, what confidence means, when not to trust one.</p></li>
+                <li><span class="ws-n caption-4">04</span><h3 class="title-2">Build your own sensor</h3><p class="body-6">Breadboard, ESP32, thermometer. Real wiring, real data.</p></li>
+                <li><span class="ws-n caption-4">05</span><h3 class="title-2">For caregivers and educators</h3><p class="body-6">What readings mean, responding calmly, wellness vs diagnosis.</p></li>
             </ol>
         </div>
     </section>
@@ -622,23 +622,23 @@
     <!-- 5. How it works: three steps -->
     <section id="how" class="section how">
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">How it works</p>
-                <h2>Three steps, about a <span class="accent accent--mono">minute</span></h2>
-                <p>No setup, no account, no app to install. This is the flow we run at AIM events.</p>
+                <h2 class="heading-2">Three steps, about a&nbsp;minute</h2>
+                <p class="body-3">No setup, no account, no app to install. This is the flow we run at AIM events.</p>
             </header>
             <div class="how-grid">
                 <ol class="how-steps" id="howSteps" data-reveal-group>
-                    <li><button type="button" class="how-step" data-step="0"><span class="step">01</span><span class="how-t">Place</span><span class="how-d">Rest two fingertips on the electrodes. Skin conductance, temperature and pulse start streaming.</span></button></li>
-                    <li><button type="button" class="how-step" data-step="1"><span class="step">02</span><span class="how-t">Verify</span><span class="how-d">PATHOS checks the signal is clean and that you&rsquo;re sitting still, so movement isn&rsquo;t mistaken for stress.</span></button></li>
-                    <li><button type="button" class="how-step" data-step="2"><span class="step">03</span><span class="how-t">Observe</span><span class="how-d">Over a 60-second window the dashboard shows baseline, elevated or high, with the model&rsquo;s confidence.</span></button></li>
+                    <li><button type="button" class="how-step" data-step="0"><span class="how-n caption-4">01</span><span class="how-t title-1">Place</span><span class="how-d body-3">Rest two fingertips on the electrodes. Skin conductance, temperature and pulse start streaming.</span></button></li>
+                    <li><button type="button" class="how-step" data-step="1"><span class="how-n caption-4">02</span><span class="how-t title-1">Verify</span><span class="how-d body-3">PATHOS checks the signal is clean and that you&rsquo;re sitting still, so movement isn&rsquo;t mistaken for stress.</span></button></li>
+                    <li><button type="button" class="how-step" data-step="2"><span class="how-n caption-4">03</span><span class="how-t title-1">Observe</span><span class="how-d body-3">Over a window of 60 seconds the dashboard shows baseline, elevated or high, with the model&rsquo;s confidence.</span></button></li>
                 </ol>
-                <div class="panel how-scene" id="howScene" data-reveal aria-hidden="true">
+                <div class="how-scene" id="howScene" data-reveal aria-hidden="true">
                     <canvas id="howCanvas"></canvas>
                     <div class="how-hud"><span class="how-hud-step"></span><span class="how-hud-text"></span></div>
                 </div>
             </div>
-            <p class="how-note" data-reveal>Body sensors are being built into MVP 2. Today&rsquo;s build runs the same pipeline with the room sensor.</p>
+            <p class="how-note body-6" data-reveal>Body sensors are being built into MVP 2. Today&rsquo;s build runs the same pipeline with the room sensor.</p>
         </div>
     </section>
 
@@ -647,48 +647,48 @@
         <canvas class="edge-art" data-art="electrodes" data-side="left" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="signals" data-side="right" data-speed="0.18" aria-hidden="true"></canvas>
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">Founder</p>
-                <h2>Who's <span class="accent accent--mono">building</span> it</h2>
+                <h2 class="heading-2">Who&rsquo;s building&nbsp;it</h2>
             </header>
-            <article class="card founder" data-reveal>
+            <article class="founder founder--sys" data-reveal>
                 <img class="founder-photo" src="assets/rahul-viswanath.webp" alt="Rahul Viswanath, founder and CEO of PATHOS, in a grey suit and black tie." width="400" height="400" loading="lazy" decoding="async">
                 <div class="founder-body">
-                    <h3>Rahul Viswanath</h3>
-                    <p class="role">Founder &amp; CEO, PATHOS</p>
-                    <p class="card-text">Builds PATHOS end to end: the ML pipeline and WESAD work, component choice and I2C wiring, and the medical and ethics framing. Student at Bentonville High School.</p>
-                    <ul class="founder-facts">
+                    <h3 class="heading-4">Rahul&nbsp;Viswanath</h3>
+                    <p class="founder-role caption-2">Founder &amp; CEO, PATHOS</p>
+                    <p class="body-3">Builds PATHOS end to end: the ML pipeline and WESAD work, component choice and I2C wiring, and the medical and ethics framing. Student at Bentonville High&nbsp;School.</p>
+                    <ul class="founder-facts body-6">
                         <li>SkillsUSA NLSC Top 10 Finalist</li>
                         <li>1st in Arkansas State &amp; Regional Science Fair</li>
                         <li>Former CAIO, EverGreen Verification</li>
                         <li>President, Tech4All</li>
                         <li>Women+ in Technology of Northwest Arkansas</li>
                     </ul>
-                    <a class="founder-link" href="https://www.linkedin.com/in/rahulnviswanath/" target="_blank" rel="noopener noreferrer">
+                    <a class="founder-link text-link body-2" href="https://www.linkedin.com/in/rahulnviswanath/" target="_blank" rel="noopener noreferrer">
                         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
-                        Connect on LinkedIn
+                        Connect on LinkedIn <span aria-hidden="true">&rarr;</span>
                     </a>
                 </div>
             </article>
-            <p class="fine" data-reveal>Medical mentors: Mary Buschlen and Josiah Leong, Alice&nbsp;L.&nbsp;Walton School of Medicine. Community partner: Paula George, Autism Involves Me.</p>
+            <p class="fine body-6" data-reveal>Medical mentors: Mary&nbsp;Buschlen and Josiah&nbsp;Leong, Alice&nbsp;L.&nbsp;Walton School&nbsp;of&nbsp;Medicine. Community partner: Paula&nbsp;George, Autism Involves&nbsp;Me.</p>
         </div>
     </section>
 
     <!-- 6. FAQs -->
     <section id="faq" class="section faq">
         <div class="wrap wrap--narrow">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">FAQ</p>
-                <h2>Questions, <span class="accent accent--mono">answered</span></h2>
+                <h2 class="heading-2">Questions, answered</h2>
             </header>
             <div class="faq-list" data-reveal>
-                <details class="faq-item" open><summary><span>Is PATHOS a medical device?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>No. It&rsquo;s a wellness awareness project. It doesn&rsquo;t diagnose anything and it isn&rsquo;t a substitute for care.</p></div></details>
-                <details class="faq-item"><summary><span>What works today?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>MVP 1 reads the room (temperature, humidity and pressure) and runs the whole pipeline end to end: sensing, the model on the device, and the dashboard. MVP 2 adds the body sensors: skin conductance, pulse and skin temperature.</p></div></details>
-                <details class="faq-item"><summary><span>How accurate is it?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>The model is aligned to WESAD, a public dataset recorded during a controlled lab stress test. It hasn&rsquo;t been validated on PATHOS hardware with real users yet; a proper validation study is next. We threw out an early model that scored R&sup2; = 0.9977 because it was trained on data we generated ourselves.</p></div></details>
-                <details class="faq-item"><summary><span>Where does the data go?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>The model runs on the device, with no internet needed. In MVP 2, caregivers get alerts over the network while the model keeps running on the device.</p></div></details>
-                <details class="faq-item"><summary><span>Why under $25?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>Wearables that measure these signals usually cost $200 or more. Most of the families we built PATHOS with can&rsquo;t spend that, so the parts budget is a hard limit.</p></div></details>
-                <details class="faq-item"><summary><span>Who is it for?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>Nonverbal and neurodivergent people, and the caregivers, educators and therapists around them. It&rsquo;s built with families from Autism Involves Me.</p></div></details>
-                <details class="faq-item"><summary><span>Can I try it or help?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>Yes. Write to us to try a demo, bring PATHOS to your community or help build it. We also run workshops for students, caregivers and teachers.</p></div></details>
+                <details class="faq-item" open><summary><span class="title-2">Is PATHOS a medical device?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">No. It&rsquo;s a wellness awareness project. It doesn&rsquo;t diagnose anything and it isn&rsquo;t a substitute for&nbsp;care.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">What works today?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">MVP 1 reads the room (temperature, humidity and pressure) and runs the whole pipeline end to end: sensing, the model on the device, and the dashboard. MVP 2 adds the body sensors: skin conductance, pulse and skin temperature.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">How accurate is it?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">The model is aligned to WESAD, a public dataset recorded during a controlled lab stress test. It hasn&rsquo;t been validated on PATHOS hardware with real users yet; a proper validation study is next. We threw out an early model that scored <span class="data">R&sup2; = 0.9977</span> because it was trained on data we generated ourselves.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">Where does the data go?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">The model runs on the device, with no internet needed. In MVP 2, caregivers get alerts over the network while the model keeps running on the device.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">Why under $25?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">Wearables that measure these signals usually cost $200 or more. Most of the families we built PATHOS with can&rsquo;t spend that, so the parts budget is a hard limit.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">Who is it for?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">Nonverbal and neurodivergent people, and the caregivers, educators and therapists around them. It&rsquo;s built with families from Autism Involves Me.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">Can I try it or help?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">Yes. Write to us to try a demo, bring PATHOS to your community or help build it. We also run workshops for students, caregivers and teachers.</p></div></details>
             </div>
         </div>
     </section>
@@ -698,15 +698,15 @@
         <canvas class="edge-art" data-art="hand" data-side="left" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="controller" data-side="right" data-rotate="1" data-speed="0.15" aria-hidden="true"></canvas>
         <div class="wrap">
-            <div class="contact" data-reveal>
+            <div class="contact contact--sys" data-reveal>
                 <div class="contact-info">
                     <p class="eyebrow">Get in touch</p>
-                    <h2>Be there <span class="accent accent--mono">before</span> it spills over</h2>
-                    <p>Caregivers, researchers, teachers and builders: try a demo, bring PATHOS to your community, or ask us anything. One email is all it takes.</p>
-                    <span class="contact-email-row"><a class="contact-email" href="mailto:rsignsv1279@gmail.com">rsignsv1279@gmail.com</a><button type="button" class="copy-btn" data-copy="rsignsv1279@gmail.com" aria-label="Copy email address"><span>Copy</span></button></span>
-                    <ul class="contact-links">
-                        <li><a href="mailto:rsignsv1279@gmail.com?subject=PATHOS%20code">Ask about the code &rarr;</a></li>
-                        <li><a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">About the WESAD dataset &rarr;</a></li>
+                    <h2 class="heading-2">Be there before it spills&nbsp;over</h2>
+                    <p class="body-3">Caregivers, researchers, teachers and builders: try a demo, bring PATHOS to your community, or ask us anything. One email is all it takes.</p>
+                    <span class="contact-email-row"><a class="contact-email title-1" href="mailto:rsignsv1279@gmail.com">rsignsv1279@gmail.com</a><button type="button" class="copy-btn" data-copy="rsignsv1279@gmail.com" aria-label="Copy email address"><span>Copy</span></button></span>
+                    <ul class="contact-links body-2">
+                        <li><a class="text-link" href="mailto:rsignsv1279@gmail.com?subject=PATHOS%20code">Ask about the code <span aria-hidden="true">&rarr;</span></a></li>
+                        <li><a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer" class="text-link">About the WESAD dataset <span aria-hidden="true">&rarr;</span></a></li>
                     </ul>
                 </div>
                 <form class="contact-form" id="contactForm" action="https://formsubmit.co/ajax/rsignsv1279@gmail.com" method="post" novalidate>
@@ -727,7 +727,7 @@
                     <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
                     <p id="formStatus" class="form-status" role="status" aria-live="polite" hidden></p>
                     <button class="btn btn-dark button-md" type="submit">Explore a partnership</button>
-                    <p class="form-intro">We use your details only to reply. Messages are delivered by FormSubmit; see the <a href="privacy.html">privacy notice</a>.</p>
+                    <p class="form-intro caption-2">We use your details only to reply. Messages are delivered by FormSubmit; see the <a href="privacy.html">privacy notice</a>.</p>
                 </form>
             </div>
         </div>
@@ -744,7 +744,7 @@
                         <svg class="brand-mark" width="22" height="16" viewBox="0 0 22 16" aria-hidden="true"><path d="M0 8h4l2.2-6 3.6 12L13 4l2 4h7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         <span>PATHOS</span>
                     </a>
-                    <p class="foot-tag">See stress building, before it spills over.</p>
+                    <p class="foot-tag body-6">See stress building, before it spills&nbsp;over.</p>
                     <ul class="foot-social" aria-label="Elsewhere">
                         <li><a href="https://www.linkedin.com/in/rahulnviswanath/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.84-2.05 3.79-2.05C20.4 8.65 21 11 21 14.1V21h-4v-6.1c0-1.46-.03-3.33-2.03-3.33-2.03 0-2.34 1.59-2.34 3.23V21H9z"/></svg></a></li>
                         <li><a href="mailto:rsignsv1279@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M3.5 6.5h17v11h-17zM4 7l8 6 8-6"/></svg></a></li>
@@ -765,7 +765,7 @@
                 </nav>
             </div>
             <div class="foot-base">
-                <p class="footer-fine">A wellness awareness project from Bentonville High School. Not a medical device; it does not diagnose. &copy; <span id="copyrightYear">2026</span> Rahul Viswanath.</p>
+                <p class="footer-fine caption-2">A wellness awareness project from Bentonville High School. Not a medical device; it does not diagnose. &copy;&nbsp;<span id="copyrightYear">2026</span> Rahul&nbsp;Viswanath.</p>
                 <nav class="foot-legal" aria-label="Legal"><a href="privacy.html">Privacy notice</a><a class="foot-top" href="#hero">Back to top &uarr;</a></nav>
             </div>
         </div>

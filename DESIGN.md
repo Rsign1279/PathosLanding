@@ -43,7 +43,7 @@ button above the fold; a secondary action is a plain text link.
 | caption-2 | 14 / 20 | 400 |
 | caption-4 | 12 / 16 | 500 |
 
-Section headings use `.sys-head`: heading-2 (48) from 1024px, heading-3 (36)
+Every section now uses `.sys-head` (no section keeps a gold mono accent word). Panels use `.sys-panel` / `.sys-note` (light, bordered on all sides, radius 16). Section headings use `.sys-head`: heading-2 (48) from 1024px, heading-3 (36)
 from 640px, heading-4 (30) below, with a body-3 lead.
 
 Hero heading steps down by viewport: heading-3 under 640px, heading-2 from
@@ -93,6 +93,8 @@ ESP32-S3 and Wi-Fi are exempt). Headings balanced, body text pretty-wrapped.
 - Dark marble gradient tint behind lists of text (partners now sit on a light panel).
 - Dark marble tilt cards for the feature overview and the signal toggles (now light bordered panels).
 - Gradient highlights and gradient meter fills; canvas traces drawn with gradient fills.
+- Marble backgrounds anywhere (cards, card backs, footer, device screen); the partners press frame is the one approved holdover.
+- A second filled button beside or after the primary (the old gold LinkedIn button and gold submit button).
 - The same eyebrow on two sections.
 
 - Competing calls to action above the fold (was: announcement link plus two buttons).
@@ -135,4 +137,20 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | Features overview | Done (pass 7) | Shared `.sys-head` heading ("Meet PATHOS", no mono accent); lead says "inexpensive" instead of the hyphenated "low-cost". Eight features moved from dark marble tilt cards to light panels bordered on all sides (radius 16, padding 24, 16 on phones, gap 16): flat #131209 inset (radius 8) for each small animation, number caption-4 in Geist, title title-2, detail body-6, "See how" body-5 in gold. Hover lifts 2px over 500ms, active scale(0.98), gold focus ring; reduced motion keeps color only. Hyphens removed ("standard sensors", "a case to wear all day"); animations still pause off screen. |
 | Why five signals | Done (pass 8) | Shared `.sys-head` heading without the mono accent. Four signal toggles moved from dark marble tilt cards to light panels bordered on all sides (radius 16, padding 24/16), title-2 and body-6, flat #131209 trace (radius 8). Pressed state: pink-deep border and check; focus ring gold. Meter is one solid color (grey while moving) instead of a gradient. Closing line title-1, emphasis in semibold with a solid underline when all three agree (was mono plus a gradient highlight). Live traces (here and in the sensor table) draw a flat fill and a solid line instead of gradients. Click, Enter and Space tested. |
 | Sensors | Done (pass 9) | Shared `.sys-head` heading without the mono accent. Sensor table moved from a dark marble panel with one-sided row dividers to one light panel bordered on all sides (radius 16, padding 8; 4 on phones), rows separated by spacing only, each row radius 8 (12 on phones) by the nested formula, hover tint `--bg`. Header labels caption-4 in Geist (not mono); signal title-3; part number caption-2 in Geist Mono (functional); reason body-6; status caption-4 pill. Traces on #131209. Pin names kept together with non-breaking spaces. |
-| The model and the rest | Pending | One section per pass. |
+| The model | Done (pass 10) | Shared heading. Pipeline steps on the shared light panel (`.sys-panel`); active step gold border and solid gold progress bar (no gradient bar, no dimming filter). Discarded model note is a light panel on `--surface-2` (`.sys-note`); R² in mono via `.data`. |
+| Hardware | Done (pass 11) | Shared heading. Three light panels; checklists and spec rows spaced instead of divided; spec labels caption-4 in Geist. "Real-time", "WESAD-aligned", "IRB-approved" rewritten without hyphens. |
+| Hardware in 3D | Done (pass 12) | Shared heading. Film and Didot titles untouched (approved exception, sizes follow the frame). Chrome on the system: flat window bar, frame 24 with 8px bezel (16 on phones), token spacing, 12/14/16px text, Geist chapter rail, solid scrubber, balanced captions. File name and frame counter stay mono. All 3D tests pass, including fallbacks. |
+| The build (photo deck) | Done (pass 13) | Shared heading. Card backs flat #131209 instead of marble plus gradient; photo sheen removed; back text caption-4 / heading-6 / body-6; caption title-2 / body-3; counter Geist with tabular figures; round buttons. |
+| In the works | Done (pass 14) | Shared heading, three light panels; "skin-contact" and "3D-printed" rewritten. |
+| Roadmap | Done (pass 15) | Shared heading, three light panels with spaced dot lists (`.sys-list`); Is / Isn't as light panels instead of dashed marble; "go-to low-cost" rewritten. |
+| Workshops | Done (pass 16) | Shared heading; one light panel, rows spaced, numbers caption-4 in Geist. |
+| How it works | Done (pass 17) | Shared heading; steps on light panels with a solid gold progress bar; scene on #131209; finger and problem chart band drawn with flat fills; "60-second" rewritten. |
+| Founder | Done (pass 18) | Shared heading; light panel instead of marble tilt card; name heading-4, role Geist, facts as light chips, LinkedIn as a text link (was a second filled button); mentor names kept together. |
+| FAQ | Done (pass 19) | Shared heading; each question a light panel (radius 12) instead of rows between rules. |
+| Final CTA (contact) | Done (pass 20) | Light panel instead of dark marble; ink primary button per the approved style; white inputs, gold focus ring, errors in `--pink-deep`; email underlined, secondary links as text links. Form tests pass. |
+| Footer | Done (pass 21) | Light panel on `--surface-2` instead of drifting marble under a gradient scrim; solid underlines on links. |
+| Software tour (follow-up) | Done | Step numbers Geist (ordinals); screen bezel 32px (12 on phones) on #131209 instead of 4% over marble. |
+
+## Open question
+
+Section eyebrows ("01 · Why five signals") are still set in Geist Mono with ordinal numbers. The rules reserve mono for data and reject it for ordinals, so the consistent fix is Geist for every eyebrow. Left for the founder to decide because it changes every section's label at once.

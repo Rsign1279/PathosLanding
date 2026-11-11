@@ -498,3 +498,394 @@
   .sensor-table { padding: var(--sp-50); }
   #sensors .sensor-row { padding: var(--sp-200) var(--sp-100); border-radius: var(--r-xl); }
 }
+
+/* ==========================================================================
+   Shared light panel (from pass 10 on). One definition for the remaining
+   sections: bordered on all sides, radius 16, padding 24 (16 on phones),
+   number caption-4 in Geist, title title-2, detail body-6. Replaces the
+   dark marble .card / .panel / .callout treatment section by section.
+   ========================================================================== */
+.sys-grid { gap: var(--sp-200); }
+.sys-panel {
+  position: relative; display: flex; flex-direction: column; min-width: 0; padding: var(--sp-300);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+  color: var(--text); text-shadow: none; box-shadow: none;
+}
+.sys-panel .sys-n { margin: 0; color: var(--gold); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.sys-panel h3.title-2 { margin: 0 0 var(--sp-75); font-size: 18px; line-height: 28px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; text-wrap: balance; }
+.sys-panel .sys-n + h3.title-2 { margin-top: var(--sp-50); }
+.sys-panel p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+.sys-note {
+  max-width: 680px; margin: var(--sp-400) auto 0; padding: var(--sp-300);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface-2);
+  color: var(--text); text-shadow: none;
+}
+.sys-note-label { margin: 0 0 var(--sp-75); color: var(--gold); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.sys-note p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+.data { font-family: var(--font-mono); font-size: 14px; color: var(--ink); white-space: nowrap; }
+@media (max-width: 639px) {
+  .sys-panel, .sys-note { padding: var(--sp-200); }
+}
+
+/* ==========================================================================
+   10. The model (pass 10)
+   Shared heading without the accent word. The four pipeline steps are
+   shared light panels; the step running now gets a gold border and a
+   solid gold progress bar (was a gold to pink gradient bar and a brightness
+   filter that dimmed the other steps). The "number we threw out" note is a
+   light panel on --surface-2 instead of a dark ink box, with R² in mono
+   as a data value.
+   ========================================================================== */
+.pipeline > li.sys-panel { overflow: hidden; outline: none; transition: border-color var(--t-fade) var(--ease); }
+.pipeline.is-running > li.sys-panel:not(.is-active) { filter: none; }
+.pipeline > li.sys-panel.is-active { border-color: var(--gold); box-shadow: none; transform: none; }
+.pipeline > li.sys-panel:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.pipeline .step-bar { height: 4px; background: var(--gold); }
+
+/* ==========================================================================
+   11. Hardware (pass 11)
+   Shared heading without the accent word. Three shared light panels. Lists
+   and the spec sheet lose their one-sided row dividers and are spaced
+   instead; spec labels caption-4 in Geist, values body-6.
+   ========================================================================== */
+.hw-grid .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-75); }
+.hw-grid .checks li { padding: 0 0 0 var(--sp-300); border: 0; font-size: 14px; line-height: 20px; color: var(--text); }
+.hw-grid .checks li::before { left: 2px; top: 5px; border-color: var(--live); }
+.hw-grid .checks--open li::before { top: 5px; width: 10px; height: 10px; border: 1.5px solid var(--faint); border-radius: var(--r-sm); }
+.hw-grid .specs { margin: 0; display: grid; gap: var(--sp-75); }
+.hw-grid .specs > div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-100); padding: 0; border: 0; }
+.hw-grid .specs dt { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--muted); }
+.hw-grid .specs dd { margin: 0; font-size: 14px; line-height: 20px; color: var(--ink); text-align: right; }
+
+/* ==========================================================================
+   12. Hardware in 3D (pass 12)
+   Shared heading without the accent word. The film and its Didot titles
+   are an approved exception and keep their frame-relative sizes. The
+   instrument chrome around the film moves onto the system: flat window bar
+   (no gradient, no one-sided border), Tailwind radii with the nested rule
+   (frame 24 with an 8px bezel, so the view's corners are 16), token
+   spacing, 12/14/16px text, Geist for the chapter rail (ordinals are not
+   mono), solid scrubber, balanced captions. The file name and the frame
+   counter stay mono (a file name and a timestamp).
+   ========================================================================== */
+.prototype .hw-stage { border-width: 8px; border-radius: var(--r-3xl); }
+.prototype .hw-bar {
+  height: 48px; gap: var(--sp-200); padding: 0 var(--sp-200);
+  border-bottom: 0; background: rgba(19, 18, 9, 0.92); font-size: 12px; line-height: 16px;
+}
+.prototype .hw-view { inset: 48px 0 0 0; }
+.prototype .hw-file { gap: var(--sp-75); }
+.prototype .hw-skip, .prototype .hw-360 {
+  padding: var(--sp-50) var(--sp-75); border-radius: var(--r-md); font-size: 14px; line-height: 20px; font-weight: 500;
+  transition: background-color var(--t-fade) var(--ease), border-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease);
+}
+.prototype .hw-360 { gap: var(--sp-75); margin-left: var(--sp-50); }
+.prototype .hw-skip:focus-visible, .prototype .hw-360:focus-visible, .prototype .hw-orbit-btn:focus-visible,
+.prototype .hw-orbit-exit:focus-visible, .prototype .hw-rail-btn:focus-visible, .prototype .hw-label-x:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+.prototype .hw-label-card { left: var(--sp-200); top: var(--sp-100); padding: var(--sp-100) var(--sp-500) var(--sp-100) var(--sp-200); border-radius: var(--r-xl); }
+.prototype .hw-label-card strong { font-size: 14px; line-height: 20px; font-weight: 500; }
+.prototype .hw-label-d { margin-top: var(--sp-50); font-size: 14px; line-height: 20px; }
+.prototype .hw-label-x { top: var(--sp-75); right: var(--sp-75); border-radius: var(--r-md); font-size: 16px; }
+.prototype .hw-orbit-ui { top: var(--sp-200); gap: var(--sp-50); padding: var(--sp-50) var(--sp-50) var(--sp-50) var(--sp-200); border-radius: var(--r-xl); font-size: 14px; line-height: 20px; }
+.prototype .hw-orbit-hint { margin-right: var(--sp-75); }
+.prototype .hw-orbit-btn, .prototype .hw-orbit-exit { border-radius: var(--r-lg); }
+.prototype .hw-orbit-btn, .prototype .hw-label-x { padding: 0; }
+.prototype .hw-orbit-btn { font-size: 16px; }
+.prototype .hw-orbit-exit { padding: 0 var(--sp-100); font-size: 14px; }
+.prototype .hw-rail { right: var(--sp-200); gap: var(--sp-25); }
+.prototype .hw-rail-btn { gap: var(--sp-100); min-height: 32px; padding: 0 var(--sp-75); border-radius: var(--r-lg); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.prototype .hw-rail-btn .n { padding-right: var(--sp-200); }
+.prototype .hw-scrub { height: 4px; }
+.prototype .hw-scrub span { background: var(--gold-light); }
+.prototype .hw-caption { text-wrap: balance; }
+@media (max-width: 800px) {
+  .prototype .hw-stage { border-width: 8px; border-radius: var(--r-2xl); }
+  .prototype .hw-bar { height: 40px; padding: 0 var(--sp-100); gap: var(--sp-100); font-size: 12px; }
+  .prototype .hw-view { inset: 40px 0 0 0; }
+  .prototype .hw-skip { font-size: 12px; line-height: 16px; padding: var(--sp-50) var(--sp-75); }
+  .prototype .hw-360 { padding: var(--sp-50) var(--sp-75); }
+  .prototype .hw-orbit-ui { top: auto; bottom: var(--sp-100); padding: var(--sp-50); }
+}
+
+/* ==========================================================================
+   13. The build, photo deck (pass 13)
+   Shared heading without the accent word. Card backs were marble under a
+   gradient tint and the photo fronts had a gradient sheen; backs are now
+   the flat dark surface (#131209) and the sheen is gone. Back text:
+   number caption-4 in Geist, title heading-6, detail body-6. Caption under
+   the deck title-2 / body-3 (title-3 / body-6 on phones). Counter in Geist
+   with tabular figures (an ordinal, not data). Token spacing, round buttons.
+   ========================================================================== */
+.field .fl-back { gap: var(--sp-75); padding: var(--sp-300); background: #131209; }
+.field .fl-front.shot::after { display: none; }
+.field .fl-back-n { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0; }
+.field .fl-back-t { font-size: 20px; line-height: 28px; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+.field .fl-back-d { font-size: 14px; line-height: 20px; text-wrap: pretty; }
+.field .shot-caption-text strong { font-size: 16px; line-height: 24px; }
+.field .shot-caption-text span { font-size: 14px; line-height: 20px; }
+.field .fl-ui { gap: var(--sp-300); bottom: var(--sp-200); width: min(100% - 48px, 1100px); }
+.field .fl-caption { min-height: 52px; }
+.field .fl-caption strong { font-size: 18px; line-height: 28px; font-weight: 500; text-wrap: balance; }
+.field .fl-caption span { margin-top: var(--sp-25); font-size: 16px; line-height: 24px; text-wrap: pretty; }
+.field .fl-nav { gap: var(--sp-100); }
+.field .fl-count { font-family: var(--font-body); font-size: 14px; line-height: 20px; font-weight: 500; }
+.field .fl-btn {
+  padding: 0; border-radius: var(--r-full); font-size: 16px;
+  transition: background-color var(--t-fade) var(--ease), border-color var(--t-fade) var(--ease), transform var(--t-move) var(--ease);
+}
+.field .fl-btn:active { transform: scale(0.98); }
+.field .fl-btn:focus-visible, .field .fl-front:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+@media (max-width: 800px) {
+  .field .fl-ui { bottom: var(--sp-100); width: calc(100% - 32px); gap: var(--sp-100); }
+  .field .fl-caption { min-height: 64px; }
+  .field .fl-caption strong { font-size: 16px; line-height: 24px; }
+  .field .fl-caption span { font-size: 14px; line-height: 20px; }
+}
+
+/* ==========================================================================
+   14. In the works, Roadmap, Workshops (passes 14 to 16)
+   Shared headings without the accent word. Marble cards become shared
+   light panels. Roadmap lists lose their one-sided dividers for spacing
+   and a small solid dot; the Is / Isn't pair are light panels (no marble,
+   no dashed border). Workshops are one light panel bordered on all sides,
+   rows separated by spacing, number caption-4 in Geist (not mono).
+   Hyphenated compounds rewritten.
+   ========================================================================== */
+.sys-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-75); }
+.sys-list li { position: relative; padding-left: var(--sp-200); font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+.sys-list li::before { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: var(--r-full); background: var(--gold); }
+.isnt-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-200); margin-top: var(--sp-200); }
+.isnt-item {
+  display: flex; align-items: baseline; gap: var(--sp-100); margin: 0; padding: var(--sp-200) var(--sp-300);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+  font-size: 16px; line-height: 24px; color: var(--ink); text-wrap: pretty;
+}
+.isnt-item .pill { flex: none; margin: 0; gap: var(--sp-50); padding: var(--sp-25) var(--sp-75); border-radius: var(--r-md); font-size: 12px; line-height: 16px; font-weight: 500; }
+.isnt-item .pill--live { background: #e3ead9; color: var(--live); }
+.isnt-item .pill--no { background: #f6dde4; color: var(--pink-deep); }
+.ws-list {
+  list-style: none; margin: 0; padding: var(--sp-75); display: grid;
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+}
+.ws-list li { display: grid; grid-template-columns: 32px minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--sp-50) var(--sp-200); align-items: baseline; padding: var(--sp-200); }
+.ws-list .ws-n { color: var(--gold); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.ws-list h3.title-2 { margin: 0; font-size: 18px; line-height: 28px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; text-wrap: balance; }
+.ws-list p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+@media (max-width: 720px) {
+  .isnt-row { grid-template-columns: 1fr; }
+  .ws-list li { grid-template-columns: 24px minmax(0, 1fr); }
+  .ws-list li p.body-6 { grid-column: 2; }
+}
+@media (max-width: 639px) {
+  .isnt-item { padding: var(--sp-200); }
+  .ws-list { padding: var(--sp-50); }
+  .ws-list li { padding: var(--sp-200) var(--sp-100); }
+}
+
+/* ==========================================================================
+   15. How it works (pass 17)
+   Shared heading without the accent word. Steps: number caption-4 in
+   Geist, title title-1, detail body-3; the active step gets a gold border
+   and a solid gold progress bar (was a gold to pink gradient). The scene
+   sits on the flat dark surface (#131209) instead of marble; the finger
+   and the chart band draw flat fills. "60-second" rewritten.
+   ========================================================================== */
+.how .how-grid { gap: var(--sp-200); }
+.how .how-steps { gap: var(--sp-100); }
+.how .how-step {
+  gap: var(--sp-50); padding: var(--sp-200) var(--sp-300); border-radius: var(--r-2xl);
+  border: 1px solid var(--line-strong); background: var(--surface); box-shadow: none;
+  transition: transform var(--t-move) var(--ease), border-color var(--t-fade) var(--ease), background-color var(--t-fade) var(--ease);
+}
+.how .how-step:hover { background: #fff; }
+.how .how-step.is-on { background: #fff; border-color: var(--gold); box-shadow: none; transform: translateX(var(--sp-50)); }
+.how .how-step::after { height: 4px; background: var(--gold); }
+.how .how-step:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.how .how-n { color: var(--gold); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.how .how-t { font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+.how .how-d { font-size: 16px; line-height: 24px; color: var(--muted); text-wrap: pretty; }
+.how .how-scene { border-radius: var(--r-2xl); background: #131209; box-shadow: none; overflow: hidden; }
+.how .how-hud { left: var(--sp-200); right: var(--sp-200); bottom: var(--sp-200); gap: var(--sp-100); font-size: 14px; line-height: 20px; }
+.how .how-hud-step { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.how .how-note { margin: var(--sp-200) 0 0; font-size: 14px; line-height: 20px; color: var(--muted); text-align: center; text-wrap: balance; }
+@media (max-width: 720px) {
+  .how .how-hud { bottom: var(--sp-100); gap: var(--sp-25); font-size: 14px; }
+}
+@media (max-width: 639px) { .how .how-step { padding: var(--sp-200); } }
+@media (prefers-reduced-motion: reduce) { .how .how-step.is-on { transform: none; } }
+
+/* ==========================================================================
+   16. Founder (pass 18)
+   Shared heading without the accent word. The founder card is a light
+   panel bordered on all sides (no marble, no tilt). Name heading-4, role
+   caption-2 in Geist (not mono), bio body-3, facts as light chips (body-6),
+   LinkedIn as a text link (was a second filled gold button). Mentor line
+   body-6 with names kept together.
+   ========================================================================== */
+.founder--sys {
+  display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--sp-400); align-items: center;
+  max-width: 900px; margin: 0 auto; padding: var(--sp-400);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+  color: var(--text); text-shadow: none; box-shadow: none;
+}
+.founder--sys .founder-photo { border-radius: var(--r-xl); box-shadow: none; transform: none !important; }
+.founder--sys h3.heading-4 { margin: 0; font-size: 30px; line-height: 36px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); }
+.founder--sys .founder-role { margin: var(--sp-50) 0 var(--sp-200); font-family: var(--font-body); font-size: 14px; line-height: 20px; font-weight: 400; color: var(--gold); }
+.founder--sys p.body-3 { margin: 0; font-size: 16px; line-height: 24px; color: var(--text); text-wrap: pretty; }
+.founder--sys .founder-facts { margin: var(--sp-200) 0 0; gap: var(--sp-75); }
+.founder--sys .founder-facts li {
+  padding: var(--sp-50) var(--sp-100); border-radius: var(--r-lg); background: var(--surface-2); box-shadow: none;
+  font-size: 14px; line-height: 20px; color: var(--ink);
+}
+.founder--sys .founder-link {
+  min-height: 0; margin-top: var(--sp-300); padding: 0; border-radius: 0; background: none;
+  gap: var(--sp-75); font-size: 16px; line-height: 24px; font-weight: 500; color: var(--text);
+}
+.founder--sys .founder-link:hover { background: none; transform: none; color: var(--ink); }
+#team .fine.body-6 { max-width: 640px; margin: var(--sp-300) auto 0; font-size: 14px; line-height: 20px; color: var(--muted); text-wrap: balance; }
+@media (max-width: 720px) {
+  .founder--sys { grid-template-columns: 1fr; gap: var(--sp-300); padding: var(--sp-300); }
+  .founder--sys .founder-photo { max-width: 240px; }
+}
+@media (max-width: 639px) { .founder--sys { padding: var(--sp-200); } .founder--sys h3.heading-4 { font-size: 24px; line-height: 32px; } }
+
+/* ==========================================================================
+   17. FAQ (pass 19)
+   Shared heading without the accent word. The accordion used top and
+   bottom rules as dividers; each question is now its own light panel
+   bordered on all sides (radius 12), spaced 8px apart. Question title-2,
+   answer body-3, R² in mono as a data value.
+   ========================================================================== */
+.faq .faq-list { display: grid; gap: var(--sp-75); border: 0; }
+.faq .faq-item { border: 1px solid var(--line-strong); border-radius: var(--r-xl); background: var(--surface); }
+.faq .faq-item summary { gap: var(--sp-200); padding: var(--sp-200) var(--sp-300); font-size: 18px; line-height: 28px; font-weight: 500; letter-spacing: -0.01em; }
+.faq .faq-item summary span { text-wrap: balance; }
+.faq .faq-item summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: var(--r-xl); }
+.faq .faq-item summary i { transition: background-color var(--t-fade) var(--ease), transform var(--t-move) var(--ease); }
+.faq .faq-a p { margin: 0; padding: 0 var(--sp-300) var(--sp-300); font-size: 16px; line-height: 24px; color: var(--muted); text-wrap: pretty; }
+@media (max-width: 639px) {
+  .faq .faq-item summary { padding: var(--sp-200); font-size: 16px; line-height: 24px; }
+  .faq .faq-a p { padding: 0 var(--sp-200) var(--sp-200); font-size: 16px; }
+}
+
+/* ==========================================================================
+   18. Final call to action (pass 20)
+   The contact block was a dark marble panel; it is now a light panel
+   bordered on all sides like every other section, and the form follows the
+   approved primary button (ink, not gold). Heading uses heading-2/3/4 by
+   width without the accent word; lead body-3; email title-1 with a solid
+   underline on hover (no one-sided border); secondary links are text
+   links; labels body-5, inputs 16px on white with the gold focus ring;
+   errors in --pink-deep for contrast on a light ground.
+   ========================================================================== */
+#contact .contact--sys {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-500);
+  max-width: 1080px; margin: 0 auto; padding: var(--sp-500);
+  border: 1px solid var(--line-strong); border-radius: var(--r-3xl); background: var(--surface);
+  color: var(--text); text-shadow: none; box-shadow: none;
+}
+#contact .contact--sys::before { display: none; }
+#contact .contact--sys .eyebrow { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
+#contact .contact--sys h2.heading-2 { margin: var(--sp-200) 0 0; font-size: 48px; line-height: 48px; font-weight: 600; letter-spacing: -0.03em; color: var(--ink); text-wrap: balance; }
+#contact .contact--sys .contact-info > p.body-3 { margin: var(--sp-200) 0 0; font-size: 16px; line-height: 24px; color: var(--text); text-wrap: pretty; }
+#contact .contact-email-row { gap: var(--sp-100); margin-top: var(--sp-300); }
+#contact .contact-email {
+  margin: 0; padding: 0; border: 0; font-size: 20px; line-height: 28px; font-weight: 500; color: var(--ink);
+  text-decoration: underline 1px var(--gold); text-underline-offset: 6px;
+  transition: text-decoration-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease);
+}
+#contact .contact-email:hover { color: var(--gold); }
+#contact .contact-email:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+#contact .copy-btn {
+  height: 32px; padding: 0 var(--sp-100); border-radius: var(--r-lg); font-size: 14px; line-height: 20px; font-weight: 500;
+  color: var(--ink); background: var(--surface-2); border: 1px solid var(--line-strong);
+  transition: background-color var(--t-fade) var(--ease), border-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease), transform var(--t-move) var(--ease);
+}
+#contact .copy-btn:hover { background: var(--bg); }
+#contact .copy-btn:active { transform: scale(0.98); }
+#contact .copy-btn.is-done { color: var(--live); border-color: rgba(63, 122, 74, 0.4); background: #e3ead9; }
+#contact .copy-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+#contact .contact-links { gap: var(--sp-75); margin: var(--sp-300) 0 0; font-size: 16px; line-height: 24px; font-weight: 500; }
+#contact .contact-links a { color: var(--text); }
+#contact .contact-links a:hover { color: var(--ink); }
+#contact .contact-form { gap: var(--sp-200); }
+#contact .form-group label { margin-bottom: var(--sp-75); font-size: 14px; line-height: 20px; font-weight: 500; color: var(--ink); }
+#contact .form-group .optional { color: var(--muted); font-weight: 400; }
+#contact .form-group input, #contact .form-group textarea, #contact .form-group select {
+  padding: var(--sp-75) var(--sp-100); border: 1px solid var(--line-strong); border-radius: var(--r-lg);
+  background-color: #fff; color: var(--ink); font-size: 16px; line-height: 24px;
+  transition: border-color var(--t-fade) var(--ease), box-shadow var(--t-fade) var(--ease);
+}
+#contact .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%237b5d23' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"); }
+#contact .form-group select:invalid { color: var(--muted); }
+#contact .form-group input:focus, #contact .form-group textarea:focus, #contact .form-group select:focus {
+  outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(123, 93, 35, 0.25);
+}
+#contact .form-group [aria-invalid="true"] { border-color: var(--pink-deep); }
+#contact .field-error { color: var(--pink-deep); }
+#contact .form-status.error { color: var(--pink-deep); }
+#contact .form-status.success { color: var(--live); }
+#contact .contact .btn-dark { justify-self: start; background: var(--ink); color: var(--bg); }
+#contact .contact .btn-dark:hover { background: #2a241f; }
+#contact .form-intro { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
+#contact .form-intro a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 1023px) { #contact .contact--sys h2.heading-2 { font-size: 36px; line-height: 40px; } }
+@media (max-width: 860px) { #contact .contact--sys { grid-template-columns: 1fr; gap: var(--sp-400); padding: var(--sp-400); } }
+@media (max-width: 639px) {
+  #contact .contact--sys { padding: var(--sp-300) var(--sp-200); border-radius: var(--r-2xl); }
+  #contact .contact--sys h2.heading-2 { font-size: 30px; line-height: 36px; }
+}
+#contact .form-group select option { padding: 0; }
+
+/* ==========================================================================
+   19. Footer (pass 21)
+   The footer was a dark card over drifting marble under a gradient scrim
+   (both rejected). It is now a light panel bordered on all sides on
+   --surface-2, with no background art. Column titles title-4, links body-6
+   with a solid underline on hover (was a gradient drawn underline), tagline
+   body-6, fine print caption-2. Icon buttons and the back to top link are
+   light with token radii.
+   ========================================================================== */
+.site-foot .foot-card {
+  min-height: 0; padding: var(--sp-600) var(--sp-600) var(--sp-300); border-radius: var(--r-3xl);
+  border: 1px solid var(--line-strong); background: var(--surface-2); color: var(--text); box-shadow: none;
+}
+.site-foot .foot-card::before, .site-foot .foot-art { display: none; }
+.site-foot .foot-grid { gap: var(--sp-400); }
+.site-foot .foot-brand .brand, .site-foot .foot-brand .brand-mark { color: var(--ink); }
+.site-foot .foot-tag { margin: var(--sp-100) 0 var(--sp-200); max-width: 26ch; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: balance; }
+.site-foot .foot-social { gap: var(--sp-75); }
+.site-foot .foot-social a {
+  width: 40px; height: 40px; border-radius: var(--r-lg); color: var(--ink);
+  background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition: background-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease), transform var(--t-move) var(--ease);
+}
+.site-foot .foot-social a:hover, .site-foot .foot-social a:focus-visible { background: #fff; color: var(--gold); transform: translateY(-1px); }
+.site-foot .foot-col { gap: var(--sp-75); }
+.site-foot .foot-col h3 { margin: 0 0 var(--sp-50); font-size: 14px; line-height: 20px; font-weight: 500; color: var(--ink); }
+.site-foot .foot-col a {
+  font-size: 14px; line-height: 20px; color: var(--text); background: none;
+  text-decoration: underline 1px transparent; text-underline-offset: 4px;
+  transition: color var(--t-fade) var(--ease), text-decoration-color var(--t-fade) var(--ease);
+}
+.site-foot .foot-col a:hover, .site-foot .foot-col a:focus-visible { color: var(--ink); background: none; text-decoration-color: currentColor; }
+.site-foot a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.site-foot .foot-base { padding-top: var(--sp-400); gap: var(--sp-100) var(--sp-300); }
+.site-foot .foot-base .footer-fine { font-size: 14px; line-height: 20px; color: var(--muted); text-shadow: none; text-wrap: pretty; }
+.site-foot .foot-legal > a:not(.foot-top) { color: var(--text); }
+.site-foot .foot-top {
+  padding: var(--sp-75) var(--sp-100); border-radius: var(--r-lg); font-size: 14px; line-height: 20px; font-weight: 500;
+  color: var(--ink); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition: background-color var(--t-fade) var(--ease);
+}
+.site-foot .foot-top:hover { background: #fff; }
+@media (max-width: 720px) {
+  .site-foot .foot-card { padding: var(--sp-400) var(--sp-200) var(--sp-200); border-radius: var(--r-2xl); }
+  .site-foot .foot-grid { gap: var(--sp-300); }
+}
+
+/* Software tour follow-up: step numbers are ordinals, so Geist (not mono);
+   screen bezel on the spacing scale (32px, 12px on phones) instead of 4%. */
+#device-tour .step-btn span { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+#device-tour .device-screen { padding: var(--sp-400); background: #131209; }
+@media (max-width: 720px) { #device-tour .device-screen { padding: var(--sp-100); } }
