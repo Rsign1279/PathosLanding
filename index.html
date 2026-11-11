@@ -677,18 +677,18 @@
     <!-- 6. FAQs -->
     <section id="faq" class="section faq">
         <div class="wrap wrap--narrow">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">FAQ</p>
-                <h2>Questions, <span class="accent accent--mono">answered</span></h2>
+                <h2 class="heading-2">Questions, answered</h2>
             </header>
             <div class="faq-list" data-reveal>
-                <details class="faq-item" open><summary><span>Is PATHOS a medical device?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>No. It&rsquo;s a wellness awareness project. It doesn&rsquo;t diagnose anything and it isn&rsquo;t a substitute for care.</p></div></details>
-                <details class="faq-item"><summary><span>What works today?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>MVP 1 reads the room (temperature, humidity and pressure) and runs the whole pipeline end to end: sensing, the model on the device, and the dashboard. MVP 2 adds the body sensors: skin conductance, pulse and skin temperature.</p></div></details>
-                <details class="faq-item"><summary><span>How accurate is it?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>The model is aligned to WESAD, a public dataset recorded during a controlled lab stress test. It hasn&rsquo;t been validated on PATHOS hardware with real users yet; a proper validation study is next. We threw out an early model that scored R&sup2; = 0.9977 because it was trained on data we generated ourselves.</p></div></details>
-                <details class="faq-item"><summary><span>Where does the data go?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>The model runs on the device, with no internet needed. In MVP 2, caregivers get alerts over the network while the model keeps running on the device.</p></div></details>
-                <details class="faq-item"><summary><span>Why under $25?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>Wearables that measure these signals usually cost $200 or more. Most of the families we built PATHOS with can&rsquo;t spend that, so the parts budget is a hard limit.</p></div></details>
-                <details class="faq-item"><summary><span>Who is it for?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>Nonverbal and neurodivergent people, and the caregivers, educators and therapists around them. It&rsquo;s built with families from Autism Involves Me.</p></div></details>
-                <details class="faq-item"><summary><span>Can I try it or help?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p>Yes. Write to us to try a demo, bring PATHOS to your community or help build it. We also run workshops for students, caregivers and teachers.</p></div></details>
+                <details class="faq-item" open><summary><span class="title-2">Is PATHOS a medical device?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">No. It&rsquo;s a wellness awareness project. It doesn&rsquo;t diagnose anything and it isn&rsquo;t a substitute for&nbsp;care.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">What works today?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">MVP 1 reads the room (temperature, humidity and pressure) and runs the whole pipeline end to end: sensing, the model on the device, and the dashboard. MVP 2 adds the body sensors: skin conductance, pulse and skin temperature.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">How accurate is it?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">The model is aligned to WESAD, a public dataset recorded during a controlled lab stress test. It hasn&rsquo;t been validated on PATHOS hardware with real users yet; a proper validation study is next. We threw out an early model that scored <span class="data">R&sup2; = 0.9977</span> because it was trained on data we generated ourselves.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">Where does the data go?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">The model runs on the device, with no internet needed. In MVP 2, caregivers get alerts over the network while the model keeps running on the device.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">Why under $25?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">Wearables that measure these signals usually cost $200 or more. Most of the families we built PATHOS with can&rsquo;t spend that, so the parts budget is a hard limit.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">Who is it for?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">Nonverbal and neurodivergent people, and the caregivers, educators and therapists around them. It&rsquo;s built with families from Autism Involves Me.</p></div></details>
+                <details class="faq-item"><summary><span class="title-2">Can I try it or help?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">Yes. Write to us to try a demo, bring PATHOS to your community or help build it. We also run workshops for students, caregivers and teachers.</p></div></details>
             </div>
         </div>
     </section>
@@ -698,15 +698,15 @@
         <canvas class="edge-art" data-art="hand" data-side="left" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="controller" data-side="right" data-rotate="1" data-speed="0.15" aria-hidden="true"></canvas>
         <div class="wrap">
-            <div class="contact" data-reveal>
+            <div class="contact contact--sys" data-reveal>
                 <div class="contact-info">
                     <p class="eyebrow">Get in touch</p>
-                    <h2>Be there <span class="accent accent--mono">before</span> it spills over</h2>
-                    <p>Caregivers, researchers, teachers and builders: try a demo, bring PATHOS to your community, or ask us anything. One email is all it takes.</p>
-                    <span class="contact-email-row"><a class="contact-email" href="mailto:rsignsv1279@gmail.com">rsignsv1279@gmail.com</a><button type="button" class="copy-btn" data-copy="rsignsv1279@gmail.com" aria-label="Copy email address"><span>Copy</span></button></span>
-                    <ul class="contact-links">
-                        <li><a href="mailto:rsignsv1279@gmail.com?subject=PATHOS%20code">Ask about the code &rarr;</a></li>
-                        <li><a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">About the WESAD dataset &rarr;</a></li>
+                    <h2 class="heading-2">Be there before it spills&nbsp;over</h2>
+                    <p class="body-3">Caregivers, researchers, teachers and builders: try a demo, bring PATHOS to your community, or ask us anything. One email is all it takes.</p>
+                    <span class="contact-email-row"><a class="contact-email title-1" href="mailto:rsignsv1279@gmail.com">rsignsv1279@gmail.com</a><button type="button" class="copy-btn" data-copy="rsignsv1279@gmail.com" aria-label="Copy email address"><span>Copy</span></button></span>
+                    <ul class="contact-links body-2">
+                        <li><a class="text-link" href="mailto:rsignsv1279@gmail.com?subject=PATHOS%20code">Ask about the code <span aria-hidden="true">&rarr;</span></a></li>
+                        <li><a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer" class="text-link">About the WESAD dataset <span aria-hidden="true">&rarr;</span></a></li>
                     </ul>
                 </div>
                 <form class="contact-form" id="contactForm" action="https://formsubmit.co/ajax/rsignsv1279@gmail.com" method="post" novalidate>
@@ -727,7 +727,7 @@
                     <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
                     <p id="formStatus" class="form-status" role="status" aria-live="polite" hidden></p>
                     <button class="btn btn-dark button-md" type="submit">Explore a partnership</button>
-                    <p class="form-intro">We use your details only to reply. Messages are delivered by FormSubmit; see the <a href="privacy.html">privacy notice</a>.</p>
+                    <p class="form-intro caption-2">We use your details only to reply. Messages are delivered by FormSubmit; see the <a href="privacy.html">privacy notice</a>.</p>
                 </form>
             </div>
         </div>
@@ -744,7 +744,7 @@
                         <svg class="brand-mark" width="22" height="16" viewBox="0 0 22 16" aria-hidden="true"><path d="M0 8h4l2.2-6 3.6 12L13 4l2 4h7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         <span>PATHOS</span>
                     </a>
-                    <p class="foot-tag">See stress building, before it spills over.</p>
+                    <p class="foot-tag body-6">See stress building, before it spills&nbsp;over.</p>
                     <ul class="foot-social" aria-label="Elsewhere">
                         <li><a href="https://www.linkedin.com/in/rahulnviswanath/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.84-2.05 3.79-2.05C20.4 8.65 21 11 21 14.1V21h-4v-6.1c0-1.46-.03-3.33-2.03-3.33-2.03 0-2.34 1.59-2.34 3.23V21H9z"/></svg></a></li>
                         <li><a href="mailto:rsignsv1279@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M3.5 6.5h17v11h-17zM4 7l8 6 8-6"/></svg></a></li>
@@ -765,7 +765,7 @@
                 </nav>
             </div>
             <div class="foot-base">
-                <p class="footer-fine">A wellness awareness project from Bentonville High School. Not a medical device; it does not diagnose. &copy; <span id="copyrightYear">2026</span> Rahul Viswanath.</p>
+                <p class="footer-fine caption-2">A wellness awareness project from Bentonville High School. Not a medical device; it does not diagnose. &copy;&nbsp;<span id="copyrightYear">2026</span> Rahul&nbsp;Viswanath.</p>
                 <nav class="foot-legal" aria-label="Legal"><a href="privacy.html">Privacy notice</a><a class="foot-top" href="#hero">Back to top &uarr;</a></nav>
             </div>
         </div>

@@ -748,3 +748,138 @@
   .founder--sys .founder-photo { max-width: 240px; }
 }
 @media (max-width: 639px) { .founder--sys { padding: var(--sp-200); } .founder--sys h3.heading-4 { font-size: 24px; line-height: 32px; } }
+
+/* ==========================================================================
+   17. FAQ (pass 19)
+   Shared heading without the accent word. The accordion used top and
+   bottom rules as dividers; each question is now its own light panel
+   bordered on all sides (radius 12), spaced 8px apart. Question title-2,
+   answer body-3, R² in mono as a data value.
+   ========================================================================== */
+.faq .faq-list { display: grid; gap: var(--sp-75); border: 0; }
+.faq .faq-item { border: 1px solid var(--line-strong); border-radius: var(--r-xl); background: var(--surface); }
+.faq .faq-item summary { gap: var(--sp-200); padding: var(--sp-200) var(--sp-300); font-size: 18px; line-height: 28px; font-weight: 500; letter-spacing: -0.01em; }
+.faq .faq-item summary span { text-wrap: balance; }
+.faq .faq-item summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: var(--r-xl); }
+.faq .faq-item summary i { transition: background-color var(--t-fade) var(--ease), transform var(--t-move) var(--ease); }
+.faq .faq-a p { margin: 0; padding: 0 var(--sp-300) var(--sp-300); font-size: 16px; line-height: 24px; color: var(--muted); text-wrap: pretty; }
+@media (max-width: 639px) {
+  .faq .faq-item summary { padding: var(--sp-200); font-size: 16px; line-height: 24px; }
+  .faq .faq-a p { padding: 0 var(--sp-200) var(--sp-200); font-size: 16px; }
+}
+
+/* ==========================================================================
+   18. Final call to action (pass 20)
+   The contact block was a dark marble panel; it is now a light panel
+   bordered on all sides like every other section, and the form follows the
+   approved primary button (ink, not gold). Heading uses heading-2/3/4 by
+   width without the accent word; lead body-3; email title-1 with a solid
+   underline on hover (no one-sided border); secondary links are text
+   links; labels body-5, inputs 16px on white with the gold focus ring;
+   errors in --pink-deep for contrast on a light ground.
+   ========================================================================== */
+#contact .contact--sys {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-500);
+  max-width: 1080px; margin: 0 auto; padding: var(--sp-500);
+  border: 1px solid var(--line-strong); border-radius: var(--r-3xl); background: var(--surface);
+  color: var(--text); text-shadow: none; box-shadow: none;
+}
+#contact .contact--sys::before { display: none; }
+#contact .contact--sys .eyebrow { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
+#contact .contact--sys h2.heading-2 { margin: var(--sp-200) 0 0; font-size: 48px; line-height: 48px; font-weight: 600; letter-spacing: -0.03em; color: var(--ink); text-wrap: balance; }
+#contact .contact--sys .contact-info > p.body-3 { margin: var(--sp-200) 0 0; font-size: 16px; line-height: 24px; color: var(--text); text-wrap: pretty; }
+#contact .contact-email-row { gap: var(--sp-100); margin-top: var(--sp-300); }
+#contact .contact-email {
+  margin: 0; padding: 0; border: 0; font-size: 20px; line-height: 28px; font-weight: 500; color: var(--ink);
+  text-decoration: underline 1px var(--gold); text-underline-offset: 6px;
+  transition: text-decoration-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease);
+}
+#contact .contact-email:hover { color: var(--gold); }
+#contact .contact-email:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+#contact .copy-btn {
+  height: 32px; padding: 0 var(--sp-100); border-radius: var(--r-lg); font-size: 14px; line-height: 20px; font-weight: 500;
+  color: var(--ink); background: var(--surface-2); border: 1px solid var(--line-strong);
+  transition: background-color var(--t-fade) var(--ease), border-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease), transform var(--t-move) var(--ease);
+}
+#contact .copy-btn:hover { background: var(--bg); }
+#contact .copy-btn:active { transform: scale(0.98); }
+#contact .copy-btn.is-done { color: var(--live); border-color: rgba(63, 122, 74, 0.4); background: #e3ead9; }
+#contact .copy-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+#contact .contact-links { gap: var(--sp-75); margin: var(--sp-300) 0 0; font-size: 16px; line-height: 24px; font-weight: 500; }
+#contact .contact-links a { color: var(--text); }
+#contact .contact-links a:hover { color: var(--ink); }
+#contact .contact-form { gap: var(--sp-200); }
+#contact .form-group label { margin-bottom: var(--sp-75); font-size: 14px; line-height: 20px; font-weight: 500; color: var(--ink); }
+#contact .form-group .optional { color: var(--muted); font-weight: 400; }
+#contact .form-group input, #contact .form-group textarea, #contact .form-group select {
+  padding: var(--sp-75) var(--sp-100); border: 1px solid var(--line-strong); border-radius: var(--r-lg);
+  background-color: #fff; color: var(--ink); font-size: 16px; line-height: 24px;
+  transition: border-color var(--t-fade) var(--ease), box-shadow var(--t-fade) var(--ease);
+}
+#contact .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%237b5d23' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"); }
+#contact .form-group select:invalid { color: var(--muted); }
+#contact .form-group input:focus, #contact .form-group textarea:focus, #contact .form-group select:focus {
+  outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(123, 93, 35, 0.25);
+}
+#contact .form-group [aria-invalid="true"] { border-color: var(--pink-deep); }
+#contact .field-error { color: var(--pink-deep); }
+#contact .form-status.error { color: var(--pink-deep); }
+#contact .form-status.success { color: var(--live); }
+#contact .contact .btn-dark { justify-self: start; background: var(--ink); color: var(--bg); }
+#contact .contact .btn-dark:hover { background: #2a241f; }
+#contact .form-intro { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
+#contact .form-intro a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 1023px) { #contact .contact--sys h2.heading-2 { font-size: 36px; line-height: 40px; } }
+@media (max-width: 860px) { #contact .contact--sys { grid-template-columns: 1fr; gap: var(--sp-400); padding: var(--sp-400); } }
+@media (max-width: 639px) {
+  #contact .contact--sys { padding: var(--sp-300) var(--sp-200); border-radius: var(--r-2xl); }
+  #contact .contact--sys h2.heading-2 { font-size: 30px; line-height: 36px; }
+}
+#contact .form-group select option { padding: 0; }
+
+/* ==========================================================================
+   19. Footer (pass 21)
+   The footer was a dark card over drifting marble under a gradient scrim
+   (both rejected). It is now a light panel bordered on all sides on
+   --surface-2, with no background art. Column titles title-4, links body-6
+   with a solid underline on hover (was a gradient drawn underline), tagline
+   body-6, fine print caption-2. Icon buttons and the back to top link are
+   light with token radii.
+   ========================================================================== */
+.site-foot .foot-card {
+  min-height: 0; padding: var(--sp-600) var(--sp-600) var(--sp-300); border-radius: var(--r-3xl);
+  border: 1px solid var(--line-strong); background: var(--surface-2); color: var(--text); box-shadow: none;
+}
+.site-foot .foot-card::before, .site-foot .foot-art { display: none; }
+.site-foot .foot-grid { gap: var(--sp-400); }
+.site-foot .foot-brand .brand, .site-foot .foot-brand .brand-mark { color: var(--ink); }
+.site-foot .foot-tag { margin: var(--sp-100) 0 var(--sp-200); max-width: 26ch; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: balance; }
+.site-foot .foot-social { gap: var(--sp-75); }
+.site-foot .foot-social a {
+  width: 40px; height: 40px; border-radius: var(--r-lg); color: var(--ink);
+  background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition: background-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease), transform var(--t-move) var(--ease);
+}
+.site-foot .foot-social a:hover, .site-foot .foot-social a:focus-visible { background: #fff; color: var(--gold); transform: translateY(-1px); }
+.site-foot .foot-col { gap: var(--sp-75); }
+.site-foot .foot-col h3 { margin: 0 0 var(--sp-50); font-size: 14px; line-height: 20px; font-weight: 500; color: var(--ink); }
+.site-foot .foot-col a {
+  font-size: 14px; line-height: 20px; color: var(--text); background: none;
+  text-decoration: underline 1px transparent; text-underline-offset: 4px;
+  transition: color var(--t-fade) var(--ease), text-decoration-color var(--t-fade) var(--ease);
+}
+.site-foot .foot-col a:hover, .site-foot .foot-col a:focus-visible { color: var(--ink); background: none; text-decoration-color: currentColor; }
+.site-foot a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.site-foot .foot-base { padding-top: var(--sp-400); gap: var(--sp-100) var(--sp-300); }
+.site-foot .foot-base .footer-fine { font-size: 14px; line-height: 20px; color: var(--muted); text-shadow: none; text-wrap: pretty; }
+.site-foot .foot-legal > a:not(.foot-top) { color: var(--text); }
+.site-foot .foot-top {
+  padding: var(--sp-75) var(--sp-100); border-radius: var(--r-lg); font-size: 14px; line-height: 20px; font-weight: 500;
+  color: var(--ink); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition: background-color var(--t-fade) var(--ease);
+}
+.site-foot .foot-top:hover { background: #fff; }
+@media (max-width: 720px) {
+  .site-foot .foot-card { padding: var(--sp-400) var(--sp-200) var(--sp-200); border-radius: var(--r-2xl); }
+  .site-foot .foot-grid { gap: var(--sp-300); }
+}
