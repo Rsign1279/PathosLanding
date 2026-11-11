@@ -82,9 +82,7 @@ if (chart) {
     // The missed window.
     const gx0 = X(GAP[0]), gx1 = X(Math.min(GAP[1], Math.max(GAP[0], p)));
     if (p > GAP[0]) {
-      const g = ctx.createLinearGradient(0, T, 0, B);
-      g.addColorStop(0, `rgba(${C.gold},0.22)`); g.addColorStop(1, `rgba(${C.gold},0.04)`);
-      ctx.fillStyle = g; ctx.fillRect(gx0, T - 18, gx1 - gx0, B - T + 18);
+      ctx.fillStyle = `rgba(${C.gold},0.14)`; ctx.fillRect(gx0, T - 18, gx1 - gx0, B - T + 18);
       ctx.strokeStyle = `rgba(${C.gold},0.5)`; ctx.setLineDash([3, 4]);
       ctx.beginPath(); ctx.moveTo(gx0 + 0.5, T - 18); ctx.lineTo(gx0 + 0.5, B); ctx.stroke();
       if (p >= GAP[1]) { ctx.beginPath(); ctx.moveTo(X(GAP[1]) + 0.5, T - 18); ctx.lineTo(X(GAP[1]) + 0.5, B); ctx.stroke(); }
@@ -186,9 +184,7 @@ if (scene && stepsEl) {
     const ang = Math.atan2(tipY - baseY, tipX - baseX), len = Math.hypot(tipX - baseX, tipY - baseY), fw = 44;
     ctx.save();
     ctx.translate(tipX, tipY); ctx.rotate(ang + Math.PI);
-    const skin = ctx.createLinearGradient(0, -fw / 2, 0, fw / 2);
-    skin.addColorStop(0, '#d8ab90'); skin.addColorStop(1, '#a9755b');
-    ctx.fillStyle = skin;
+    ctx.fillStyle = '#c4937a';   // flat skin tone, no gradient
     roundRect(ctx, 0, -fw / 2, len + 40, fw, fw / 2); ctx.fill();
     ctx.fillStyle = 'rgba(255,240,230,0.35)'; roundRect(ctx, 6, -fw / 2 + 7, 30, fw - 14, 9); ctx.fill();   // nail
     ctx.strokeStyle = 'rgba(90,50,35,0.35)'; ctx.lineWidth = 1.5;                                       // knuckle creases
@@ -212,7 +208,7 @@ if (scene && stepsEl) {
     ];
     rows.forEach(([name, col, fn], r) => {
       const ry = mon.y + 14 + r * (mon.h - 22) / 3, rh = (mon.h - 22) / 3 - 6;
-      ctx.font = `10.5px ${MONO}`; ctx.fillStyle = `rgba(${C.cream},0.45)`; ctx.textAlign = 'left';
+      ctx.font = `12px ${MONO}`; ctx.fillStyle = `rgba(${C.cream},0.45)`; ctx.textAlign = 'left';
       ctx.fillText(name, mon.x + 10, ry + rh / 2 + 3);
       if (streamA <= 0) return;
       const x0 = mon.x + 56, x1 = mon.x + 56 + (traceW - 66) * streamA;
@@ -229,14 +225,14 @@ if (scene && stepsEl) {
     if (step >= 1) {
       const q = step === 1 ? ease(u / 0.6) : 1;
       const vx = mon.x, vy = mon.y + mon.h + 14, vw = Math.min(200, mon.w * 0.6);
-      ctx.font = `11px ${MONO}`; ctx.fillStyle = `rgba(${C.cream},0.6)`; ctx.textAlign = 'left';
+      ctx.font = `12px ${MONO}`; ctx.fillStyle = `rgba(${C.cream},0.6)`; ctx.textAlign = 'left';
       ctx.fillText('SIGNAL', vx, vy + 9);
       ctx.fillStyle = 'rgba(246,239,231,0.12)'; roundRect(ctx, vx + 58, vy + 2, vw, 8, 4); ctx.fill();
       ctx.fillStyle = `rgb(${C.green})`; roundRect(ctx, vx + 58, vy + 2, vw * q, 8, 4); ctx.fill();
       const stillA = step === 1 ? smooth(0.6, 0.75, u) : 1;
       if (stillA > 0) {
         ctx.globalAlpha = stillA * (step === 2 ? 0.55 : 1);
-        ctx.fillStyle = `rgb(${C.green})`; ctx.font = `500 12.5px ${FONT}`;
+        ctx.fillStyle = `rgb(${C.green})`; ctx.font = `500 12px ${FONT}`;
         ctx.fillText('✓ Clean  ·  ✓ Sitting still', vx + 58, vy + 30);
         ctx.globalAlpha = 1;
       }

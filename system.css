@@ -681,3 +681,70 @@
   .ws-list { padding: var(--sp-50); }
   .ws-list li { padding: var(--sp-200) var(--sp-100); }
 }
+
+/* ==========================================================================
+   15. How it works (pass 17)
+   Shared heading without the accent word. Steps: number caption-4 in
+   Geist, title title-1, detail body-3; the active step gets a gold border
+   and a solid gold progress bar (was a gold to pink gradient). The scene
+   sits on the flat dark surface (#131209) instead of marble; the finger
+   and the chart band draw flat fills. "60-second" rewritten.
+   ========================================================================== */
+.how .how-grid { gap: var(--sp-200); }
+.how .how-steps { gap: var(--sp-100); }
+.how .how-step {
+  gap: var(--sp-50); padding: var(--sp-200) var(--sp-300); border-radius: var(--r-2xl);
+  border: 1px solid var(--line-strong); background: var(--surface); box-shadow: none;
+  transition: transform var(--t-move) var(--ease), border-color var(--t-fade) var(--ease), background-color var(--t-fade) var(--ease);
+}
+.how .how-step:hover { background: #fff; }
+.how .how-step.is-on { background: #fff; border-color: var(--gold); box-shadow: none; transform: translateX(var(--sp-50)); }
+.how .how-step::after { height: 4px; background: var(--gold); }
+.how .how-step:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.how .how-n { color: var(--gold); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.how .how-t { font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+.how .how-d { font-size: 16px; line-height: 24px; color: var(--muted); text-wrap: pretty; }
+.how .how-scene { border-radius: var(--r-2xl); background: #131209; box-shadow: none; overflow: hidden; }
+.how .how-hud { left: var(--sp-200); right: var(--sp-200); bottom: var(--sp-200); gap: var(--sp-100); font-size: 14px; line-height: 20px; }
+.how .how-hud-step { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.how .how-note { margin: var(--sp-200) 0 0; font-size: 14px; line-height: 20px; color: var(--muted); text-align: center; text-wrap: balance; }
+@media (max-width: 720px) {
+  .how .how-hud { bottom: var(--sp-100); gap: var(--sp-25); font-size: 14px; }
+}
+@media (max-width: 639px) { .how .how-step { padding: var(--sp-200); } }
+@media (prefers-reduced-motion: reduce) { .how .how-step.is-on { transform: none; } }
+
+/* ==========================================================================
+   16. Founder (pass 18)
+   Shared heading without the accent word. The founder card is a light
+   panel bordered on all sides (no marble, no tilt). Name heading-4, role
+   caption-2 in Geist (not mono), bio body-3, facts as light chips (body-6),
+   LinkedIn as a text link (was a second filled gold button). Mentor line
+   body-6 with names kept together.
+   ========================================================================== */
+.founder--sys {
+  display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: var(--sp-400); align-items: center;
+  max-width: 900px; margin: 0 auto; padding: var(--sp-400);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+  color: var(--text); text-shadow: none; box-shadow: none;
+}
+.founder--sys .founder-photo { border-radius: var(--r-xl); box-shadow: none; transform: none !important; }
+.founder--sys h3.heading-4 { margin: 0; font-size: 30px; line-height: 36px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); }
+.founder--sys .founder-role { margin: var(--sp-50) 0 var(--sp-200); font-family: var(--font-body); font-size: 14px; line-height: 20px; font-weight: 400; color: var(--gold); }
+.founder--sys p.body-3 { margin: 0; font-size: 16px; line-height: 24px; color: var(--text); text-wrap: pretty; }
+.founder--sys .founder-facts { margin: var(--sp-200) 0 0; gap: var(--sp-75); }
+.founder--sys .founder-facts li {
+  padding: var(--sp-50) var(--sp-100); border-radius: var(--r-lg); background: var(--surface-2); box-shadow: none;
+  font-size: 14px; line-height: 20px; color: var(--ink);
+}
+.founder--sys .founder-link {
+  min-height: 0; margin-top: var(--sp-300); padding: 0; border-radius: 0; background: none;
+  gap: var(--sp-75); font-size: 16px; line-height: 24px; font-weight: 500; color: var(--text);
+}
+.founder--sys .founder-link:hover { background: none; transform: none; color: var(--ink); }
+#team .fine.body-6 { max-width: 640px; margin: var(--sp-300) auto 0; font-size: 14px; line-height: 20px; color: var(--muted); text-wrap: balance; }
+@media (max-width: 720px) {
+  .founder--sys { grid-template-columns: 1fr; gap: var(--sp-300); padding: var(--sp-300); }
+  .founder--sys .founder-photo { max-width: 240px; }
+}
+@media (max-width: 639px) { .founder--sys { padding: var(--sp-200); } .founder--sys h3.heading-4 { font-size: 24px; line-height: 32px; } }
