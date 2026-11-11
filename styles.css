@@ -479,6 +479,8 @@ body.lightbox-open { overflow: hidden; }
 }
 
 @media (max-width: 720px) {
+  .hero { padding-top: 120px; }
+  .hero-title { margin-top: 28px; }
   .halftone--hand { width: 58vw; left: -14vw; top: 440px; }
   .halftone--board { width: 58vw; right: -14vw; top: 64px; opacity: 0.85; }
   .device-section { height: 380vh; }
@@ -596,6 +598,10 @@ body { font-size: 18px; }
 .shot.is-missing::before { position: static; z-index: auto; background: none; color: var(--on-dark-3); transform: none; }
 
 /* --- Larger type --- */
+.announce { font-size: 14px; padding: 7px 12px; }
+.hero-inner { max-width: 840px; }
+.hero-title { font-size: clamp(38px, 4.9vw, 64px); }
+.hero-sub { font-size: 20px; max-width: 32em; }
 .btn { font-size: 15.5px; min-height: 44px; padding: 0 18px; }
 .logo { font-size: 18.5px; }
 .logo--caps { font-size: 13px; }
@@ -713,6 +719,11 @@ body { font-size: 18px; }
 }
 
 /* --- Less vertical whitespace --- */
+.hero { padding-top: 124px; padding-bottom: 32px; }
+.hero-title { margin-top: 26px; }
+.hero-sub { margin-top: 16px; }
+.hero-cta { margin-top: 22px; }
+.logos { margin-top: 44px; }
 .device-section { height: 340vh; }
 .device-meta { gap: 10px; }
 .section { padding: 56px 0; }
@@ -723,6 +734,9 @@ body { font-size: 18px; }
 
 @media (max-width: 720px) {
   body { font-size: 17px; }
+  .hero { padding-top: 104px; }
+  .hero-sub { font-size: 18px; }
+  .logos { margin-top: 36px; }
   .device-section { height: 300vh; }
   .section { padding: 40px 0; }
   .sec-head { margin-bottom: 20px; }

@@ -67,39 +67,14 @@
    One primary action, a quiet text link, an honest status line and a plain
    text proof line. Heading and subheading capped at 680px (B5).
    ========================================================================== */
-.hero { padding: var(--sp-900) var(--gutter) var(--sp-700); }
-.hero-inner { max-width: 680px; }
-.hero-status {
-  display: inline-flex; align-items: center; gap: var(--sp-75); margin: 0;
-  padding: var(--sp-50) var(--sp-100); border-radius: var(--r-full);
-  color: var(--text); box-shadow: inset 0 0 0 1px var(--line-strong); background: var(--surface);
-}
-.hero-status i { width: 6px; height: 6px; border-radius: var(--r-full); background: var(--gold); }
-.hero-title {
-  margin: var(--sp-300) auto 0; max-width: 680px; letter-spacing: -0.03em;
-  /* B5: the one permitted gradient, on hero heading text only. */
-  background: linear-gradient(90deg, #000000, #666666);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-.hero-sub { margin: var(--sp-300) auto 0; max-width: 680px; color: var(--text); }
-.hero-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--sp-300); margin-top: var(--sp-400); }
-.hero-proof { margin: var(--sp-300) 0 0; color: var(--muted); }
-.hero-proof span + span::before { content: "\00b7"; margin: 0 var(--sp-75); color: var(--faint); }
+/* The original hero (announcement pill, accent heading, single button and
+   name strip) was restored at the founder's request, November 2026; its
+   styles live in styles.css again. */
 
 /* Hero entrance: opacity and transform only (B7), 24px rise. */
 .js [data-intro] { filter: none; transform: translateY(var(--sp-300)); transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
 .js.ready [data-intro] { transform: none; }
 
-/* Heading steps down so it never crowds a small screen. */
-@media (max-width: 1023px) {
-  .hero-title.heading-1 { font-size: 48px; line-height: 48px; }
-}
-@media (max-width: 639px) {
-  .hero { padding-top: var(--sp-900); }
-  .hero-title.heading-1 { font-size: 36px; line-height: 40px; }
-  .hero-sub.title-1 { font-size: 18px; line-height: 28px; }
-  .hero-cta { gap: var(--sp-200); }
-}
 @media (prefers-reduced-motion: reduce) {
   .js [data-intro] { transform: none; transition: opacity var(--t-fade) var(--ease); }
 }
