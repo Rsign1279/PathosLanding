@@ -617,7 +617,7 @@
    with tabular figures (an ordinal, not data). Token spacing, round buttons.
    ========================================================================== */
 .field .fl-back { gap: var(--sp-75); padding: var(--sp-300); background: #131209; }
-.field .fl-front.shot::after { display: none; }
+/* Sheen restored (founder, November 2026): the light catch on the photo fronts is back; see field.css. */
 .field .fl-back-n { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0; }
 .field .fl-back-t { font-size: 20px; line-height: 28px; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
 .field .fl-back-d { font-size: 14px; line-height: 20px; text-wrap: pretty; }
