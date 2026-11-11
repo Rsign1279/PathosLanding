@@ -452,3 +452,49 @@
   .sig-card:active { transform: none; }
   .sig-meter-fill { transition: background-color var(--t-fade) var(--ease); }
 }
+
+/* ==========================================================================
+   9. Sensors (pass 9)
+   Shared heading without the accent word. The sensor table was a dark
+   marble panel with one-sided row dividers; it is now one light panel
+   bordered on all sides, rows separated by spacing alone (no dividers).
+   Header labels caption-4 in Geist; signal title-3; part number caption-2
+   in Geist Mono (a part number, so mono is functional); reason body-6;
+   status caption-4. Traces sit on the flat dark surface (#131209).
+   ========================================================================== */
+.sensor-table {
+  max-width: 1080px; margin: 0 auto; padding: var(--sp-75);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+  color: var(--text); text-shadow: none;
+}
+#sensors .sensor-row {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr) minmax(0, 2fr) 96px; gap: var(--sp-300); align-items: baseline;
+  padding: var(--sp-200); border: 0; border-radius: var(--r-lg); background: none;
+  transition: background-color var(--t-fade) var(--ease);
+}
+#sensors .sensor-row:hover:not(.sensor-row--head) { background: var(--bg); }
+#sensors .sensor-row--head {
+  padding: var(--sp-100) var(--sp-200); background: var(--surface-2); color: var(--muted);
+  font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500;
+}
+#sensors .sensor-row--head > :last-child, #sensors .sensor-row > .pill { justify-self: end; }
+#sensors .sensor-row h3.title-3 { margin: 0; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--ink); text-wrap: balance; }
+#sensors .sensor-row code.caption-2 { font-family: var(--font-mono); font-size: 14px; line-height: 20px; font-weight: 400; color: var(--gold); }
+#sensors .sensor-row p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+#sensors .sig-trace--row { height: 24px; margin-top: var(--sp-75); max-width: 168px; border-radius: var(--r-md); background: #131209; box-shadow: none; }
+#sensors .pill {
+  gap: var(--sp-50); padding: var(--sp-50) var(--sp-75); border-radius: var(--r-md);
+  font-size: 12px; line-height: 16px; font-weight: 500; background: var(--surface-2); color: var(--muted);
+}
+#sensors .pill--live { background: #e3ead9; color: var(--live); }
+@media (max-width: 960px) {
+  #sensors .sensor-row { grid-template-columns: minmax(0, 1fr) auto; gap: var(--sp-75) var(--sp-200); }
+  #sensors .sensor-row code.caption-2 { grid-row: 2; }
+  #sensors .sensor-row p.body-6 { grid-column: 1 / -1; grid-row: 3; }
+  #sensors .sensor-row .pill { grid-row: 1; grid-column: 2; }
+  #sensors .sensor-row--head { display: none; }
+}
+@media (max-width: 639px) {
+  .sensor-table { padding: var(--sp-50); }
+  #sensors .sensor-row { padding: var(--sp-200) var(--sp-100); border-radius: var(--r-xl); }
+}
