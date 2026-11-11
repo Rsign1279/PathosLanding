@@ -75,17 +75,12 @@ pointer, drag turns them and they settle on a spring; the contact panel does
 not tilt, and reduced motion turns tilt off. The photo deck's light catch (sheen) on the photo
 fronts is back as well.
 
-**The PATHOS film** (founder's film, November 2026). Sits right after the
-results panel, full screen edge to edge (no frame, no rounded corners).
-Scrolling plays it, and every single frame reaches the screen in order: the
-script steps one frame at a time and waits until each is on screen before
-the next, forward or backward. After a fast flick (more than ~0.3 s of steps
-behind) it moves several frames per step, in order, to catch up in about a
-second, then lands frame by frame. Speed follows the scroll with eased inertia,
-up to one film frame per screen refresh (2x at 60 Hz) or what the device
-can decode. One 1080p encode (`assets/film/film-1080.mp4`, keyframe every
-4 frames, no B-frames), fetched whole into memory. Stills
-(`assets/film/stills/`) follow the scroll while it loads.
+**The PATHOS film** (founder's film, November 2026). One full-screen
+section right after the results panel. It plays on its own, muted and
+looping, edge to edge (`object-fit: cover`), with a thin gold progress line.
+It pauses while off screen and resumes on return; with reduced motion it
+does not autoplay and shows ordinary controls (`film.js`, `film.css`). One
+1080p file, `assets/film/film-1080.mp4`, poster `assets/film/stills/p-00.webp`.
 
 **Spacing.** Section padding is 64px on desktop and 40px on phones (`--section-pad`).
 Only 0, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96 px
