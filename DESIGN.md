@@ -57,8 +57,20 @@ Hero heading steps down by viewport: heading-3 under 640px, heading-2 from
   Both pass WCAG AA on every page surface; the old #7d7166 and #a2978b are rejected.
 - Accents `--gold` #7b5d23, `--gold-light` #d2af70, `--pink` #f0a3bb, `--pink-deep` #b8577a
 - Lines `--line` rgba(10, 8, 6, 0.09), `--line-strong` rgba(10, 8, 6, 0.16)
-- Hero heading only: text gradient #000000 to #666666, left to right. No other gradients.
+- Hero heading only: text gradient #000000 to #666666, left to right. The only
+  other gradient allowed is the dark tint that is part of the marble surface.
 - Dark surfaces, where a section needs one (charts, instrument scenes): #131209, flat.
+
+**Marble surface** (restored by the founder, November 2026). The brand's dark
+marble is the surface for cards and panels: the feature tiles, signal toggles,
+sensor table, pipeline steps and notes, hardware, In the works and roadmap
+cards, Is / Isn't, workshops, the How it works scene, founder card, contact
+panel, problem chart and points, project log, partner list and note, photo
+deck card backs, the tour's device screen and the footer. One class,
+`.marble` in `system.css` (`--panel` for long lists, `--contact` for the
+contact crop), with light text on it (`--on-dark`, `--on-dark-2`,
+`--on-dark-3`, gold-light accents). Layout, type, spacing and radii from the
+passes stay. The 3D tilt on cards stays off.
 
 **Spacing.** Section padding is 64px on desktop and 40px on phones (`--section-pad`).
 Only 0, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96 px
@@ -92,10 +104,7 @@ ESP32-S3 and Wi-Fi are exempt). Headings balanced, body text pretty-wrapped.
 - Gradient fills on objects (the old iPad bezel and its radial floor shadow).
 - A visual section with no heading telling visitors what they are looking at.
 - Stats without a stated source.
-- Dark marble gradient tint behind lists of text (partners now sit on a light panel).
-- Dark marble tilt cards for the feature overview and the signal toggles (now light bordered panels).
 - Gradient highlights and gradient meter fills; canvas traces drawn with gradient fills.
-- Marble backgrounds anywhere (cards, card backs, footer, device screen); the partners press frame is the one approved holdover.
 - A second filled button beside or after the primary (the old gold LinkedIn button and gold submit button).
 - The same eyebrow on two sections.
 
