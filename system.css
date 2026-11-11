@@ -641,3 +641,43 @@
   .field .fl-caption strong { font-size: 16px; line-height: 24px; }
   .field .fl-caption span { font-size: 14px; line-height: 20px; }
 }
+
+/* ==========================================================================
+   14. In the works, Roadmap, Workshops (passes 14 to 16)
+   Shared headings without the accent word. Marble cards become shared
+   light panels. Roadmap lists lose their one-sided dividers for spacing
+   and a small solid dot; the Is / Isn't pair are light panels (no marble,
+   no dashed border). Workshops are one light panel bordered on all sides,
+   rows separated by spacing, number caption-4 in Geist (not mono).
+   Hyphenated compounds rewritten.
+   ========================================================================== */
+.sys-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-75); }
+.sys-list li { position: relative; padding-left: var(--sp-200); font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+.sys-list li::before { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: var(--r-full); background: var(--gold); }
+.isnt-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-200); margin-top: var(--sp-200); }
+.isnt-item {
+  display: flex; align-items: baseline; gap: var(--sp-100); margin: 0; padding: var(--sp-200) var(--sp-300);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+  font-size: 16px; line-height: 24px; color: var(--ink); text-wrap: pretty;
+}
+.isnt-item .pill { flex: none; margin: 0; gap: var(--sp-50); padding: var(--sp-25) var(--sp-75); border-radius: var(--r-md); font-size: 12px; line-height: 16px; font-weight: 500; }
+.isnt-item .pill--live { background: #e3ead9; color: var(--live); }
+.isnt-item .pill--no { background: #f6dde4; color: var(--pink-deep); }
+.ws-list {
+  list-style: none; margin: 0; padding: var(--sp-75); display: grid;
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+}
+.ws-list li { display: grid; grid-template-columns: 32px minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--sp-50) var(--sp-200); align-items: baseline; padding: var(--sp-200); }
+.ws-list .ws-n { color: var(--gold); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.ws-list h3.title-2 { margin: 0; font-size: 18px; line-height: 28px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; text-wrap: balance; }
+.ws-list p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+@media (max-width: 720px) {
+  .isnt-row { grid-template-columns: 1fr; }
+  .ws-list li { grid-template-columns: 24px minmax(0, 1fr); }
+  .ws-list li p.body-6 { grid-column: 2; }
+}
+@media (max-width: 639px) {
+  .isnt-item { padding: var(--sp-200); }
+  .ws-list { padding: var(--sp-50); }
+  .ws-list li { padding: var(--sp-200) var(--sp-100); }
+}
