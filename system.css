@@ -883,3 +883,9 @@
   .site-foot .foot-card { padding: var(--sp-400) var(--sp-200) var(--sp-200); border-radius: var(--r-2xl); }
   .site-foot .foot-grid { gap: var(--sp-300); }
 }
+
+/* Software tour follow-up: step numbers are ordinals, so Geist (not mono);
+   screen bezel on the spacing scale (32px, 12px on phones) instead of 4%. */
+#device-tour .step-btn span { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+#device-tour .device-screen { padding: var(--sp-400); background: #131209; }
+@media (max-width: 720px) { #device-tour .device-screen { padding: var(--sp-100); } }
