@@ -9,6 +9,9 @@
      is only requested once the previous one is actually on screen
      (requestVideoFrameCallback), so a frame can never be skipped, forward
      or backward.
+   - After a fast flick that leaves the film more than ~0.8 s of screen time
+     behind, it moves several frames per step (in order) to catch up in under
+     a second; ordinary scrolling still shows every frame.
    - Speed follows the scroll: the further the scroll is ahead of the film,
      the faster frames are stepped, eased so it accelerates and coasts like
      inertia, then stops when it reaches the scroll position. The top speed
@@ -35,6 +38,7 @@ if (track && stage && video) {
   const LASTF = FRAMES - 1;
   const PREVIEWS = 45;                    // one still per second, 0..44
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const CATCHUP_S = 0.8;                  // longest a catch-up should take
   const timeOf = f => (f + 0.5) / FPS;    // middle of a frame: never rounds to a neighbour
 
   video.removeAttribute('controls');
@@ -52,6 +56,8 @@ if (track && stage && video) {
   let credit = 0;             // fractional frames owed at the current speed
   let lastNow = 0;
   let stepId = 0;
+  let stride = 1;             // frames per step during a catch-up
+  const stepMs = [];          // how long recent steps took to reach the screen
 
   const progress = () => {
     const r = track.getBoundingClientRect();
@@ -71,7 +77,13 @@ if (track && stage && video) {
   const stepTo = f => {
     busy = true;
     const id = ++stepId;
-    const done = () => { if (id !== stepId || !busy) return; busy = false; shown = f; wake(); };
+    const t0 = performance.now();
+    const done = () => {
+      if (id !== stepId || !busy) return;
+      busy = false; shown = f;
+      stepMs.push(performance.now() - t0); if (stepMs.length > 30) stepMs.shift();
+      wake();
+    };
     if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(done);
     else video.addEventListener('seeked', () => requestAnimationFrame(done), { once: true });
     // Safety: never wait forever if a callback is missed.
@@ -113,10 +125,23 @@ if (track && stage && video) {
       credit = Math.min(1, credit + speed * dt / 1000);
       if (!busy && credit >= 1) {
         credit -= 1;
-        stepTo(shown + Math.sign(gap));   // always the very next frame
+        // Normal scrolling: the very next frame, every frame. After a fast
+        // flick (more than ~0.8 s of screen time behind), move several frames
+        // per step, still in order, so it catches up in under a second, then
+        // eases back to single frames as it lands.
+        // Steps per second this device really manages (decode or refresh).
+        const perStep = stepMs.length >= 5 ? stepMs.slice().sort((a, b) => a - b)[stepMs.length >> 1] : 1000 / refreshFps();
+        const stepsPerSec = Math.min(refreshFps(), 1000 / Math.max(1, perStep));
+        // Hold the big stride for the whole catch-up (so it closes in a
+        // straight line, not an ever slower tail), then land frame by frame
+        // over the last ~0.3 s.
+        if (Math.abs(gap) <= stepsPerSec * 0.3) stride = 1;
+        else stride = Math.max(stride, Math.ceil(Math.abs(gap) / (stepsPerSec * CATCHUP_S)));
+        const k = stride;
+        stepTo(shown + Math.sign(gap) * Math.min(k, Math.abs(gap)));
       }
     } else {
-      speed = 0; credit = 0;
+      speed = 0; credit = 0; stride = 1;
     }
 
     if (gap !== 0 || busy) raf = requestAnimationFrame(frame);

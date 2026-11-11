@@ -79,7 +79,9 @@ fronts is back as well.
 results panel, full screen edge to edge (no frame, no rounded corners).
 Scrolling plays it, and every single frame reaches the screen in order: the
 script steps one frame at a time and waits until each is on screen before
-the next, forward or backward. Speed follows the scroll with eased inertia,
+the next, forward or backward. After a fast flick (more than ~0.3 s of steps
+behind) it moves several frames per step, in order, to catch up in about a
+second, then lands frame by frame. Speed follows the scroll with eased inertia,
 up to one film frame per screen refresh (2x at 60 Hz) or what the device
 can decode. One 1080p encode (`assets/film/film-1080.mp4`, keyframe every
 4 frames, no B-frames), fetched whole into memory. Stills
