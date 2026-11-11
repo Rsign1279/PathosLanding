@@ -314,20 +314,20 @@
         <canvas class="edge-art" data-art="signals" data-side="left" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="modules" data-side="right" data-rotate="1" data-speed="0.18" aria-hidden="true"></canvas>
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">03 &middot; The model</p>
-                <h2>How PATHOS makes a <span class="accent accent--mono">call</span></h2>
-                <p>Aligned to <a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">WESAD</a>, a public research dataset recorded during a controlled lab stress test. Not yet validated on PATHOS hardware with real users.</p>
+                <h2 class="heading-2">How PATHOS makes a&nbsp;call</h2>
+                <p class="body-3">Aligned to <a href="https://ubicomp.eti.uni-siegen.de/home/datasets/icmi18/" target="_blank" rel="noopener noreferrer">WESAD</a>, a public research dataset recorded during a controlled lab stress test. Not yet validated on PATHOS hardware with real users.</p>
             </header>
-            <ol class="grid grid--4 steps pipeline" data-reveal-group>
-                <li class="card"><span class="step">01</span><h3>Sample</h3><p class="card-text">The ESP32-S3 reads each sensor and timestamps every sample.</p></li>
-                <li class="card"><span class="step">02</span><h3>Summarise</h3><p class="card-text">Short windows become features: levels, slopes and variability.</p></li>
-                <li class="card"><span class="step">03</span><h3>Classify</h3><p class="card-text">A scikit-learn voting ensemble runs locally, no internet needed.</p></li>
-                <li class="card"><span class="step">04</span><h3>Report</h3><p class="card-text">Baseline, elevated or high, shown with the model's confidence.</p></li>
+            <ol class="grid grid--4 steps pipeline sys-grid" data-reveal-group>
+                <li class="sys-panel"><span class="sys-n caption-4">01</span><h3 class="title-2">Sample</h3><p class="body-6">The ESP32-S3 reads each sensor and timestamps every sample.</p></li>
+                <li class="sys-panel"><span class="sys-n caption-4">02</span><h3 class="title-2">Summarise</h3><p class="body-6">Short windows become features: levels, slopes and variability.</p></li>
+                <li class="sys-panel"><span class="sys-n caption-4">03</span><h3 class="title-2">Classify</h3><p class="body-6">A scikit-learn voting ensemble runs locally, no internet needed.</p></li>
+                <li class="sys-panel"><span class="sys-n caption-4">04</span><h3 class="title-2">Report</h3><p class="body-6">Baseline, elevated or high, shown with the model&rsquo;s&nbsp;confidence.</p></li>
             </ol>
-            <aside class="callout" data-reveal>
-                <p class="callout-label">A number we threw out</p>
-                <p>Our first model, a small PyTorch network (3&rarr;64&rarr;64&rarr;1), scored R² = 0.9977 on a dataset we generated ourselves. That said nothing about real bodies, so we dropped it and moved to WESAD.</p>
+            <aside class="sys-note" data-reveal>
+                <p class="sys-note-label caption-4">A number we threw out</p>
+                <p class="body-6">Our first model, a small PyTorch network (3&rarr;64&rarr;64&rarr;1), scored <span class="data">R² = 0.9977</span> on a dataset we generated ourselves. That said nothing about real bodies, so we dropped it and moved to WESAD.</p>
             </aside>
         </div>
     </section>
@@ -337,32 +337,32 @@
         <canvas class="edge-art" data-art="controller" data-side="left" data-rotate="1" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="electrodes" data-side="right" data-speed="0.12" aria-hidden="true"></canvas>
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">04 &middot; Hardware</p>
-                <h2>What works <span class="accent accent--mono">today</span></h2>
+                <h2 class="heading-2">What works today</h2>
             </header>
-            <div class="grid grid--3" data-reveal-group>
-                <article class="card">
-                    <p class="card-kicker">Working now</p>
-                    <ul class="checks">
-                        <li>Real-time environmental sensing</li>
+            <div class="grid grid--3 sys-grid hw-grid" data-reveal-group>
+                <article class="sys-panel">
+                    <h3 class="title-2">Working now</h3>
+                    <ul class="checks body-6">
+                        <li>Environmental sensing in real time</li>
                         <li>Local model inference</li>
                         <li>Streamlit dashboard</li>
-                        <li>WESAD-aligned pipeline</li>
+                        <li>Pipeline aligned to WESAD</li>
                     </ul>
                 </article>
-                <article class="card">
-                    <p class="card-kicker">Not yet</p>
-                    <ul class="checks checks--open">
+                <article class="sys-panel">
+                    <h3 class="title-2">Not yet</h3>
+                    <ul class="checks checks--open body-6">
                         <li>Body sensors (EDA, pulse, heart rate)</li>
                         <li>A wearable enclosure</li>
                         <li>Mobile app with caregiver alerts</li>
-                        <li>IRB-approved validation study</li>
+                        <li>A validation study approved by an IRB</li>
                     </ul>
                 </article>
-                <article class="card">
-                    <p class="card-kicker">MVP 1 spec</p>
-                    <dl class="specs">
+                <article class="sys-panel">
+                    <h3 class="title-2">MVP 1 spec</h3>
+                    <dl class="specs body-6">
                         <div><dt>MCU</dt><dd>XIAO ESP32-S3 / C3</dd></div>
                         <div><dt>Sensor</dt><dd>BME280</dd></div>
                         <div><dt>Bus</dt><dd>I2C &middot; 0x76 &middot; 3.3 V</dd></div>

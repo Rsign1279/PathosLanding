@@ -498,3 +498,61 @@
   .sensor-table { padding: var(--sp-50); }
   #sensors .sensor-row { padding: var(--sp-200) var(--sp-100); border-radius: var(--r-xl); }
 }
+
+/* ==========================================================================
+   Shared light panel (from pass 10 on). One definition for the remaining
+   sections: bordered on all sides, radius 16, padding 24 (16 on phones),
+   number caption-4 in Geist, title title-2, detail body-6. Replaces the
+   dark marble .card / .panel / .callout treatment section by section.
+   ========================================================================== */
+.sys-grid { gap: var(--sp-200); }
+.sys-panel {
+  position: relative; display: flex; flex-direction: column; min-width: 0; padding: var(--sp-300);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
+  color: var(--text); text-shadow: none; box-shadow: none;
+}
+.sys-panel .sys-n { margin: 0; color: var(--gold); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.sys-panel h3.title-2 { margin: 0 0 var(--sp-75); font-size: 18px; line-height: 28px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; text-wrap: balance; }
+.sys-panel .sys-n + h3.title-2 { margin-top: var(--sp-50); }
+.sys-panel p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+.sys-note {
+  max-width: 680px; margin: var(--sp-400) auto 0; padding: var(--sp-300);
+  border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface-2);
+  color: var(--text); text-shadow: none;
+}
+.sys-note-label { margin: 0 0 var(--sp-75); color: var(--gold); font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
+.sys-note p.body-6 { margin: 0; font-size: 14px; line-height: 20px; color: var(--text); text-wrap: pretty; }
+.data { font-family: var(--font-mono); font-size: 14px; color: var(--ink); white-space: nowrap; }
+@media (max-width: 639px) {
+  .sys-panel, .sys-note { padding: var(--sp-200); }
+}
+
+/* ==========================================================================
+   10. The model (pass 10)
+   Shared heading without the accent word. The four pipeline steps are
+   shared light panels; the step running now gets a gold border and a
+   solid gold progress bar (was a gold to pink gradient bar and a brightness
+   filter that dimmed the other steps). The "number we threw out" note is a
+   light panel on --surface-2 instead of a dark ink box, with R² in mono
+   as a data value.
+   ========================================================================== */
+.pipeline > li.sys-panel { overflow: hidden; outline: none; transition: border-color var(--t-fade) var(--ease); }
+.pipeline.is-running > li.sys-panel:not(.is-active) { filter: none; }
+.pipeline > li.sys-panel.is-active { border-color: var(--gold); box-shadow: none; transform: none; }
+.pipeline > li.sys-panel:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.pipeline .step-bar { height: 4px; background: var(--gold); }
+
+/* ==========================================================================
+   11. Hardware (pass 11)
+   Shared heading without the accent word. Three shared light panels. Lists
+   and the spec sheet lose their one-sided row dividers and are spaced
+   instead; spec labels caption-4 in Geist, values body-6.
+   ========================================================================== */
+.hw-grid .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-75); }
+.hw-grid .checks li { padding: 0 0 0 var(--sp-300); border: 0; font-size: 14px; line-height: 20px; color: var(--text); }
+.hw-grid .checks li::before { left: 2px; top: 5px; border-color: var(--live); }
+.hw-grid .checks--open li::before { top: 5px; width: 10px; height: 10px; border: 1.5px solid var(--faint); border-radius: var(--r-sm); }
+.hw-grid .specs { margin: 0; display: grid; gap: var(--sp-75); }
+.hw-grid .specs > div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-100); padding: 0; border: 0; }
+.hw-grid .specs dt { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--muted); }
+.hw-grid .specs dd { margin: 0; font-size: 14px; line-height: 20px; color: var(--ink); text-align: right; }
