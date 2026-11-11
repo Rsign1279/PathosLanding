@@ -2,24 +2,16 @@
    The PATHOS film (film.js)
    A tall track; inside it the stage pins under the nav and the film fills
    the largest 16:9 box the screen allows. Black ground to match the film,
-   radius 24 (16 on phones), solid gold progress line, a skip link.
+   full screen edge to edge (cover), solid gold progress line, a skip link.
    ========================================================================== */
 .film { position: relative; background: var(--bg); }
 .film-track { position: relative; height: 900svh; }
-.film-pin {
-  position: sticky; top: 0; height: 100svh;
-  display: grid; place-items: center;
-  padding: var(--sp-800) var(--sp-200) var(--sp-200);
-}
-.film-stage {
-  position: relative; overflow: hidden; isolation: isolate;
-  width: min(100%, calc((100svh - 96px) * 16 / 9), 1600px); aspect-ratio: 16 / 9;
-  border-radius: var(--r-3xl); background: #000;
-  box-shadow: 0 1px 2px rgba(40, 25, 10, 0.1), 0 40px 80px -40px rgba(40, 25, 10, 0.6);
-}
+.film-pin { position: sticky; top: 0; height: 100svh; }
+/* Full screen, edge to edge: no frame, no rounded corners. */
+.film-stage { position: relative; overflow: hidden; width: 100%; height: 100%; background: #000; }
 .film-video, .film-still {
   position: absolute; inset: 0; width: 100%; height: 100%; display: block;
-  object-fit: contain; background: #000;
+  object-fit: cover; background: #000;
 }
 .film-still { z-index: 1; transition: opacity var(--t-fade) var(--ease); }
 .film-stage.is-ready .film-still { opacity: 0; pointer-events: none; }
@@ -29,7 +21,7 @@
 }
 .film-status:empty { display: none; }
 .film-skip {
-  position: absolute; z-index: 3; right: var(--sp-200); top: var(--sp-200);
+  position: absolute; z-index: 3; right: var(--sp-200); bottom: var(--sp-300);
   padding: var(--sp-50) var(--sp-75); border-radius: var(--r-md);
   font-size: 14px; line-height: 20px; font-weight: 500; color: #f6efe7; text-decoration: none;
   background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.16);
@@ -43,13 +35,13 @@
 
 @media (max-width: 720px) {
   .film-track { height: 700svh; }
-  .film-pin { padding: var(--sp-800) var(--sp-100) var(--sp-100); }
-  .film-stage { border-radius: var(--r-2xl); box-shadow: 0 12px 24px -16px rgba(40, 25, 10, 0.5); }
-  .film-skip { opacity: 1; top: var(--sp-100); right: var(--sp-100); font-size: 12px; line-height: 16px; }
+  .film-skip { opacity: 1; bottom: var(--sp-200); right: var(--sp-100); font-size: 12px; line-height: 16px; }
   .film-status { left: var(--sp-100); bottom: var(--sp-200); font-size: 12px; line-height: 16px; }
 }
 
 /* Without JavaScript: an ordinary video with controls, no tall track. */
 html:not(.js) .film-track { height: auto; }
 html:not(.js) .film-pin { position: relative; height: auto; }
+html:not(.js) .film-stage { height: auto; aspect-ratio: 16 / 9; }
+html:not(.js) .film-video { object-fit: contain; }
 html:not(.js) .film-still, html:not(.js) .film-scrub, html:not(.js) .film-status { display: none; }

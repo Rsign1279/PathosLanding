@@ -1,8 +1,10 @@
 /* ==========================================================================
    The PATHOS film, driven by scroll.
 
-   The founder's 44 second film sits right after the results panel. It never
-   plays: the page's scroll position picks the frame, forward and backward.
+   The founder's 44 second film sits right after the results panel, full
+   screen. Scrolling plays it: real playback, every frame in order, faster
+   for faster scrolls, coasting to a pause when the scroll stops. Scrolling
+   up steps it back.
 
    - Three encodes of the same film (2160p, 1440p, 1080p), each with a
      keyframe every 10 frames so any frame decodes quickly. The page picks
@@ -48,12 +50,17 @@ if (track && stage && first) {
 
   // Smallest encode that covers the stage's device pixels.
   const pickTier = () => {
-    const cssW = stage.getBoundingClientRect().width || innerWidth;
+    // Full screen with cover: the film's width on screen is the larger of
+    // the viewport width and the 16:9 width that fills its height.
+    const cssW = Math.max(innerWidth, innerHeight * 16 / 9);
     const px = cssW * Math.min(devicePixelRatio || 1, 3);
     const saveData = navigator.connection && navigator.connection.saveData;
     if (saveData) return 0;
-    const i = TIERS.findIndex(t => t[0] >= px * 0.98);
-    return i === -1 ? TIERS.length - 1 : i;
+    let i = TIERS.findIndex(t => t[0] >= px * 0.98);
+    if (i === -1) i = TIERS.length - 1;
+    // Phones: at most 1440p (a 45 MB 4K download is too much on mobile data).
+    if (matchMedia('(pointer: coarse)').matches && innerWidth < 900) i = Math.min(i, 1);
+    return i;
   };
 
   // The visible video. It is ours to drive: no controls, never plays.
@@ -113,17 +120,44 @@ if (track && stage && first) {
     video.currentTime = timeOf(f);
   };
 
+  // Scroll drives real playback. The scroll position sets where the film
+  // should be; when that is ahead, the video actually plays (every frame,
+  // in order) at a speed that grows with the gap, so a fast scroll plays
+  // fast and the film coasts to a stop after the scroll ends (inertia).
+  // When the target is behind (scrolling up) it steps backward, since
+  // browsers can't play in reverse. Caught up: it pauses.
+  let rate = 1;
+  const MAX_RATE = 4;
   const frame = () => {
     raf = 0;
     const p = progress();
     target = p * LAST;
     if (bar) bar.style.transform = `scaleX(${p.toFixed(4)})`;
     if (!ready) { showStill(p); eased = target; return; }
-    // Ease toward the target: quick enough to feel direct, smooth on flicks.
-    const d = target - eased;
-    eased = Math.abs(d) < 0.5 / 30 ? target : eased + d * 0.35;
-    seek();
-    if (eased !== target || seeking) raf = requestAnimationFrame(frame);
+    const ct = video.currentTime;
+    const gap = target - ct;
+    if (Math.abs(gap) > 12) {
+      // A leap (link, skip, refresh mid page): go straight there. Ordinary
+      // scrolling, however fast, always plays through every frame.
+      if (!video.paused) video.pause();
+      eased = target; seek();
+    } else if (gap > 1 / FPS) {
+      // Ahead: play. Speed follows the gap, eased so it never lurches.
+      const want = clamp(gap * 1.6, 0.35, MAX_RATE);
+      rate += (want - rate) * 0.15;
+      if (Math.abs(video.playbackRate - rate) > 0.02) video.playbackRate = rate;
+      if (video.paused && !seeking) video.play().catch(() => {});
+    } else if (gap < -1 / FPS) {
+      // Behind: step back smoothly, frame by frame.
+      if (!video.paused) video.pause();
+      const d = target - eased;
+      eased = Math.abs(d) < 0.5 / FPS ? target : (eased > ct ? ct : eased) + d * 0.3;
+      seek();
+    } else {
+      if (!video.paused) video.pause();
+      rate = 1; eased = ct;
+    }
+    if (Math.abs(target - video.currentTime) > 1 / FPS || !video.paused || seeking) raf = requestAnimationFrame(frame);
   };
   const wake = () => { if (!raf && near) raf = requestAnimationFrame(frame); };
 
@@ -168,8 +202,6 @@ if (track && stage && first) {
 
   const setup = el => {
     el.addEventListener('seeked', onSeeked);
-    // Nothing else may play it.
-    el.addEventListener('play', () => { if (!el.dataset.priming) el.pause(); });
   };
   setup(video);
 
