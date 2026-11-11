@@ -423,7 +423,7 @@ async function initHalftones() {
   document.documentElement.addEventListener('pointerleave', () => { if (pointer.active) leave(); });
   // Click (or tap) a figure: mini explosion + shockwave ring.
   const blastAt = (x, y, target) => {
-    if (target && target.closest && target.closest('a, button, input, textarea, select, label, .device, .card, .shot, .hw-stage, .fl-stage')) return;
+    if (target && target.closest && target.closest('a, button, input, textarea, select, label, .device, .card, .marble, .shot, .hw-stage, .fl-stage')) return;
     const hitArts = arts.filter(a => a.hit(x, y));
     if (!hitArts.length) return;
     hitArts.forEach(a => a.blast(x, y));

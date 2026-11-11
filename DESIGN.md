@@ -70,7 +70,9 @@ deck card backs, the tour's device screen and the footer. One class,
 `.marble` in `system.css` (`--panel` for long lists, `--contact` for the
 contact crop), with light text on it (`--on-dark`, `--on-dark-2`,
 `--on-dark-3`, gold-light accents). Layout, type, spacing and radii from the
-passes stay. The 3D tilt on cards stays off.
+passes stay. The cards tilt again (`tilt.js`): hover leans them toward the
+pointer, drag turns them and they settle on a spring; the contact panel does
+not tilt, and reduced motion turns tilt off.
 
 **Spacing.** Section padding is 64px on desktop and 40px on phones (`--section-pad`).
 Only 0, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96 px
