@@ -75,6 +75,15 @@ pointer, drag turns them and they settle on a spring; the contact panel does
 not tilt, and reduced motion turns tilt off. The photo deck's light catch (sheen) on the photo
 fronts is back as well.
 
+**The PATHOS film** (founder's film, November 2026). Sits right after the
+results panel. It never plays: scroll picks the frame (`film.js`, `film.css`).
+Three H.264 encodes of the 4K master with a keyframe every 10 frames
+(`assets/film/film-2160.mp4`, `-1440`, `-1080`); the page loads the smallest
+that covers the stage's device pixels, whole into memory, and seeks frame
+exactly. 4K encode measured against the master: SSIM 0.9993, PSNR 56 dB.
+If seeks run slower than 100ms (median of 20) it steps down one encode,
+once. Stills (`assets/film/stills/`) follow the scroll while it loads.
+
 **Spacing.** Section padding is 64px on desktop and 40px on phones (`--section-pad`).
 Only 0, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96 px
 (`--sp-0` … `--sp-900` in `system.css`). Page gutter `--gutter` is 24px
@@ -163,5 +172,6 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | FAQ | Done (pass 19) | Shared heading; each question a light panel (radius 12) instead of rows between rules. |
 | Final CTA (contact) | Done (pass 20) | Light panel instead of dark marble; ink primary button per the approved style; white inputs, gold focus ring, errors in `--pink-deep`; email underlined, secondary links as text links. Form tests pass. |
 | Footer | Done (pass 21) | Light panel on `--surface-2` instead of drifting marble under a gradient scrim; solid underlines on links. |
+| The film | Done | Scroll-driven 4K film after the results panel; frame exact at 60 of 60 tested positions; loading stills; skip link; no-JS fallback with controls. The film's own text (93.72% on WESAD with its caveat, the LLC question, booking by the hour, the Thanksgiving target) is the founder's and is not repeated as page copy. |
 | Software tour (follow-up) | Done | Step numbers Geist (ordinals); screen bezel 32px (12 on phones) on #131209 instead of 4% over marble. |
 
