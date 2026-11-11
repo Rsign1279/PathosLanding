@@ -76,7 +76,10 @@ not tilt, and reduced motion turns tilt off. The photo deck's light catch (sheen
 fronts is back as well.
 
 **The PATHOS film** (founder's film, November 2026). Sits right after the
-results panel. It never plays: scroll picks the frame (`film.js`, `film.css`).
+results panel, full screen edge to edge (no frame, no rounded corners).
+Scrolling plays it for real, every frame in order; faster scrolls play
+faster (up to 4x), it coasts to a pause after the scroll stops, and
+scrolling up steps it back (`film.js`, `film.css`).
 Three H.264 encodes of the 4K master with a keyframe every 10 frames
 (`assets/film/film-2160.mp4`, `-1440`, `-1080`); the page loads the smallest
 that covers the stage's device pixels, whole into memory, and seeks frame
