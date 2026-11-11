@@ -16,7 +16,7 @@
    - Off for prefers-reduced-motion.
    ========================================================================== */
 
-const SELECTOR = '.card, .panel, .callout, .is-isnt p, .shot:not(.fl-face)';
+const SELECTOR = '.card, .panel, .callout, .is-isnt p, .shot:not(.fl-face), .marble:not(.marble--contact)';
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 

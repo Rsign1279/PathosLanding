@@ -728,7 +728,7 @@
   border: 1px solid var(--line-strong); border-radius: var(--r-2xl); background: var(--surface);
   color: var(--text); text-shadow: none; box-shadow: none;
 }
-.founder--sys .founder-photo { border-radius: var(--r-xl); box-shadow: none; transform: none !important; }
+.founder--sys .founder-photo { border-radius: var(--r-xl); box-shadow: none; }
 .founder--sys h3.heading-4 { margin: 0; font-size: 30px; line-height: 36px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); }
 .founder--sys .founder-role { margin: var(--sp-50) 0 var(--sp-200); font-family: var(--font-body); font-size: 14px; line-height: 20px; font-weight: 400; color: var(--gold); }
 .founder--sys p.body-3 { margin: 0; font-size: 16px; line-height: 24px; color: var(--text); text-wrap: pretty; }
@@ -1041,3 +1041,26 @@ a.marble:hover::before, .sig-card.marble:hover::before { transform: scale(1.06);
 .site-foot a:focus-visible { outline-color: var(--gold-light); }
 @media (min-width: 721px) { .site-foot .foot-card { min-height: 560px; } }
 .problem .problem-chart.marble, .marble { isolation: isolate; }
+
+/* ==========================================================================
+   Tilt restored on marble cards (founder's decision, November 2026)
+   tilt.js again turns every marble card and panel toward the pointer (the
+   contact panel never tilted). Same treatment as the original cards: the
+   marble sits deeper and slides the other way, a soft light follows the
+   pointer, the founder photo keeps its depth. The passes' own hover lift
+   and press scale step aside so the tilt is the only motion.
+   ========================================================================== */
+.has-tilt .marble:not(.marble--contact) { touch-action: pan-y; -webkit-tap-highlight-color: transparent; }
+.has-tilt .marble:not(.marble--contact)::before {
+  inset: -14px;
+  transform: translate3d(var(--tilt-x, 0px), var(--tilt-y, 0px), 0);
+  transition: none;
+}
+.has-tilt a.marble:hover::before, .has-tilt .sig-card.marble:hover::before { transform: translate3d(var(--tilt-x, 0px), var(--tilt-y, 0px), 0); }
+.has-tilt .marble:not(.marble--contact)::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--light-x, 50%) var(--light-y, 50%), rgba(255, 244, 228, 0.16), rgba(255, 244, 228, 0.05) 28%, transparent 58%);
+  opacity: var(--light, 0);
+}
+.has-tilt .solution .feat.marble:hover, .has-tilt .solution .feat.marble:active, .has-tilt .sig-card.marble:active { transform: none; }
