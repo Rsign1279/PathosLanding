@@ -15,7 +15,9 @@ button above the fold; a secondary action is a plain text link.
 **Fonts.**
 - Geist for all interface text.
 - Geist Mono only where a monospace is functional: part numbers, data values,
-  timestamps, frame counters.
+  timestamps, frame counters, file names.
+- Section eyebrows ("01 · Why five signals") in Geist 14/20, weight 500, muted,
+  with the gold square marker (switched from mono, November 2026).
 - Didot (fallback Bodoni Moda) only inside the Blender film HUD, because it
   reproduces the film's own titles.
 - No italics. Maximum weight 600 (semibold).
@@ -151,6 +153,3 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | Footer | Done (pass 21) | Light panel on `--surface-2` instead of drifting marble under a gradient scrim; solid underlines on links. |
 | Software tour (follow-up) | Done | Step numbers Geist (ordinals); screen bezel 32px (12 on phones) on #131209 instead of 4% over marble. |
 
-## Open question
-
-Section eyebrows ("01 · Why five signals") are still set in Geist Mono with ordinal numbers. The rules reserve mono for data and reject it for ordinals, so the consistent fix is Geist for every eyebrow. Left for the founder to decide because it changes every section's label at once.

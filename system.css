@@ -889,3 +889,12 @@
 #device-tour .step-btn span { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; }
 #device-tour .device-screen { padding: var(--sp-400); background: #131209; }
 @media (max-width: 720px) { #device-tour .device-screen { padding: var(--sp-100); } }
+
+/* ==========================================================================
+   Eyebrows in Geist (decided November 2026)
+   Section labels such as "01 · Why five signals" were set in Geist Mono.
+   They are labels with ordinal numbers, not data, so they use Geist like
+   the rest of the interface: 14/20, weight 500, muted, gold square marker.
+   ========================================================================== */
+.eyebrow { gap: var(--sp-75); margin-bottom: var(--sp-100); font-family: var(--font-body); font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+#contact .contact--sys .eyebrow { margin: 0; }
