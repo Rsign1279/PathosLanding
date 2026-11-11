@@ -77,15 +77,13 @@ fronts is back as well.
 
 **The PATHOS film** (founder's film, November 2026). Sits right after the
 results panel, full screen edge to edge (no frame, no rounded corners).
-Scrolling plays it for real, every frame in order; faster scrolls play
-faster (up to 4x), it coasts to a pause after the scroll stops, and
-scrolling up steps it back (`film.js`, `film.css`).
-Three H.264 encodes of the 4K master with a keyframe every 10 frames
-(`assets/film/film-2160.mp4`, `-1440`, `-1080`); the page loads the smallest
-that covers the stage's device pixels, whole into memory, and seeks frame
-exactly. 4K encode measured against the master: SSIM 0.9993, PSNR 56 dB.
-If seeks run slower than 100ms (median of 20) it steps down one encode,
-once. Stills (`assets/film/stills/`) follow the scroll while it loads.
+Scrolling plays it, and every single frame reaches the screen in order: the
+script steps one frame at a time and waits until each is on screen before
+the next, forward or backward. Speed follows the scroll with eased inertia,
+up to one film frame per screen refresh (2x at 60 Hz) or what the device
+can decode. One 1080p encode (`assets/film/film-1080.mp4`, keyframe every
+4 frames, no B-frames), fetched whole into memory. Stills
+(`assets/film/stills/`) follow the scroll while it loads.
 
 **Spacing.** Section padding is 64px on desktop and 40px on phones (`--section-pad`).
 Only 0, 2, 4, 8, 12, 16, 24, 32, 40, 48, 64, 80, 96 px
