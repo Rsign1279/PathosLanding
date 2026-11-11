@@ -293,18 +293,18 @@
         <canvas class="edge-art" data-art="electrodes" data-side="left" data-flip="1" data-speed="0.12" aria-hidden="true"></canvas>
         <canvas class="edge-art" data-art="controller" data-side="right" data-rotate="1" data-speed="0.18" aria-hidden="true"></canvas>
         <div class="wrap">
-            <header class="sec-head" data-reveal>
+            <header class="sec-head sys-head" data-reveal>
                 <p class="eyebrow">02 &middot; Sensors</p>
-                <h2>Five sensors, one <span class="accent accent--mono">bus</span></h2>
-                <p>All five share one I2C bus (SDA GPIO 8, SCL GPIO 9). Only the environmental sensor is in the current build.</p>
+                <h2 class="heading-2">Five sensors, one&nbsp;bus</h2>
+                <p class="body-3">All five share one I2C bus (SDA&nbsp;GPIO&nbsp;8, SCL&nbsp;GPIO&nbsp;9). Only the environmental sensor is in the current build.</p>
             </header>
-            <div class="panel" data-reveal>
-                <div class="sensor-row sensor-row--head" aria-hidden="true"><span>Signal</span><span>Part</span><span>Why we measure it</span><span>Status</span></div>
-                <div class="sensor-row"><div class="sensor-name"><h3>Skin conductance (EDA)</h3><canvas class="sig-trace sig-trace--row" data-signal="eda" aria-hidden="true"></canvas></div><code>GSR &rarr; ADS1115</code><p>Sweat glands react quickly under stress, sometimes before you notice it yourself.</p><span class="pill">MVP 2</span></div>
-                <div class="sensor-row"><div class="sensor-name"><h3>Heart rate &amp; HRV</h3><canvas class="sig-trace sig-trace--row" data-signal="hr" aria-hidden="true"></canvas></div><code>MAX30102</code><p>Not just how fast the heart beats, but how much the gap between beats varies.</p><span class="pill">MVP 2</span></div>
-                <div class="sensor-row"><div class="sensor-name"><h3>Skin temperature</h3><canvas class="sig-trace sig-trace--row" data-signal="temp" aria-hidden="true"></canvas></div><code>TMP117</code><p>Blood vessels in the hands tighten under stress, so the skin cools slightly.</p><span class="pill">MVP 2</span></div>
-                <div class="sensor-row"><div class="sensor-name"><h3>Motion</h3><canvas class="sig-trace sig-trace--row" data-signal="motion" aria-hidden="true"></canvas></div><code>MPU6050</code><p>Tells walking from sitting, so movement isn't mistaken for stress.</p><span class="pill">MVP 2</span></div>
-                <div class="sensor-row"><div class="sensor-name"><h3>Environment</h3><canvas class="sig-trace sig-trace--row" data-signal="env" aria-hidden="true"></canvas></div><code>BME280</code><p>Room temperature, humidity and pressure, so a hot room doesn't look like a sweaty palm.</p><span class="pill pill--live">Working</span></div>
+            <div class="sensor-table" data-reveal>
+                <div class="sensor-row sensor-row--head caption-4" aria-hidden="true"><span>Signal</span><span>Part</span><span>Why we measure it</span><span>Status</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3 class="title-3">Skin conductance (EDA)</h3><canvas class="sig-trace sig-trace--row" data-signal="eda" aria-hidden="true"></canvas></div><code class="caption-2">GSR &rarr; ADS1115</code><p class="body-6">Sweat glands react quickly under stress, sometimes before you notice it&nbsp;yourself.</p><span class="pill caption-4">MVP&nbsp;2</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3 class="title-3">Heart rate &amp; HRV</h3><canvas class="sig-trace sig-trace--row" data-signal="hr" aria-hidden="true"></canvas></div><code class="caption-2">MAX30102</code><p class="body-6">Not just how fast the heart beats, but how much the gap between beats&nbsp;varies.</p><span class="pill caption-4">MVP&nbsp;2</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3 class="title-3">Skin temperature</h3><canvas class="sig-trace sig-trace--row" data-signal="temp" aria-hidden="true"></canvas></div><code class="caption-2">TMP117</code><p class="body-6">Blood vessels in the hands tighten under stress, so the skin cools&nbsp;slightly.</p><span class="pill caption-4">MVP&nbsp;2</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3 class="title-3">Motion</h3><canvas class="sig-trace sig-trace--row" data-signal="motion" aria-hidden="true"></canvas></div><code class="caption-2">MPU6050</code><p class="body-6">Tells walking from sitting, so movement isn&rsquo;t mistaken for stress.</p><span class="pill caption-4">MVP&nbsp;2</span></div>
+                <div class="sensor-row"><div class="sensor-name"><h3 class="title-3">Environment</h3><canvas class="sig-trace sig-trace--row" data-signal="env" aria-hidden="true"></canvas></div><code class="caption-2">BME280</code><p class="body-6">Room temperature, humidity and pressure, so a hot room doesn&rsquo;t look like a sweaty&nbsp;palm.</p><span class="pill pill--live caption-4">Working</span></div>
             </div>
         </div>
     </section>
