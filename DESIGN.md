@@ -12,6 +12,15 @@ of new values.
 words are used at the top and at the final call to action. Only one primary
 button above the fold; a secondary action is a plain text link.
 
+**Editorial layer** (founder, November 2026; from a Wispr Flow style
+reference, `flow.css`, loaded last). EB Garamond 400 for display headings
+and stat numbers, Figtree for body and interface (Geist Mono stays for
+data). Lavender (#f0d7ff) primary buttons with a 2px #1a1a1a border and
+12px radius. The floating nav is a pill with a 2px ink border. A
+hand-drawn lavender underline under "humans" in the hero. The film is a
+dark 16:9 chamber up to 1200px wide, 40px radius (32 on phones), 2px ink
+border, no shadow. Everything else keeps the PATHOS palette and marble.
+
 **Fonts.**
 - Geist for all interface text.
 - Geist Mono only where a monospace is functional: part numbers, data values,
@@ -75,8 +84,8 @@ pointer, drag turns them and they settle on a spring; the contact panel does
 not tilt, and reduced motion turns tilt off. The photo deck's light catch (sheen) on the photo
 fronts is back as well.
 
-**The PATHOS film** (founder's film, November 2026). One full-screen
-section right after the results panel. It plays on its own, muted and
+**The PATHOS film** (founder's film, November 2026). A dark 16:9 chamber
+(see Editorial layer) right after the results panel. It plays on its own, muted and
 looping, edge to edge (`object-fit: cover`), with a thin gold progress line.
 It pauses while off screen and resumes on return; with reduced motion it
 does not autoplay and shows ordinary controls (`film.js`, `film.css`). One
