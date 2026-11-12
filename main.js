@@ -359,13 +359,16 @@ async function initHalftones() {
   const hand = document.getElementById('htHand');
   const board = document.getElementById('htBoard');
   const hero = document.getElementById('hero');
-  if (!hand || !board || !hero) return;
+  if (!hero) return;
 
   // Pause the idle drift once the hero is off screen.
   new IntersectionObserver(es => document.documentElement.classList.toggle('hero-off', !es[es.length - 1].isIntersecting)).observe(hero);
 
   let arts = [];
-  try {
+  // The hero figures are now drawn by heroAscii.js; only the margin art
+  // (and its cursor handling below) remains here.
+  if (!hand || !board) initEdgeArt(arts);
+  else try {
     const [handData, boardData] = await Promise.all([
       loadDots('assets/halftone-hand.bin'),
       loadDots('assets/halftone-board.bin'),
