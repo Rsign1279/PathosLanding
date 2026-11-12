@@ -21,6 +21,17 @@ hand-drawn lavender underline under "humans" in the hero. The film is a
 dark 16:9 chamber up to 1200px wide, 40px radius (32 on phones), 2px ink
 border, no shadow. Everything else keeps the PATHOS palette and marble.
 
+**Hero background** (founder, November 2026; `heroAscii.js`). One canvas
+behind the start screen draws the hand reaching for the sensor board as a
+living ASCII field (" .:-=+*#%@"), built from the hand and board dot data.
+It never stops moving: a director cycles reach and touch with signal rings,
+data packets along the board, quick taps, a scan line, and the hand
+dissolving into dust and reforming, over breathing, shimmer and drifting
+dust. Cursor parts the characters, dragging splits them, a click explodes
+them; springs reassemble. The canvas never takes the pointer, so the text,
+pill and button stay clickable; characters behind text are drawn at 30%.
+Reduced motion: one still frame. Replaces the two side halftone figures.
+
 **Fonts.**
 - Geist for all interface text.
 - Geist Mono only where a monospace is functional: part numbers, data values,

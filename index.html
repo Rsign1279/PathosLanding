@@ -77,8 +77,7 @@
 
     <!-- 1. Hero: the result people want, without the thing they fear -->
     <section id="hero" class="hero">
-        <canvas class="halftone halftone--hand" id="htHand" aria-hidden="true"></canvas>
-        <canvas class="halftone halftone--board" id="htBoard" aria-hidden="true"></canvas>
+        <canvas class="hero-ascii" id="heroAscii" aria-hidden="true"></canvas>
 
         <div class="hero-inner">
             <a class="announce" href="#pathos-iot" data-intro="0">
@@ -827,6 +826,7 @@
     <script type="module" src="play.js"></script>
     <script type="module" src="story.js"></script>
     <script type="module" src="film.js"></script>
+    <script type="module" src="heroAscii.js"></script>
     <script type="module">
         // Load the 3D hardware section (Three.js + 2.2 MB model) only when it's close to the viewport.
         const section = document.getElementById('prototype');

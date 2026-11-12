@@ -69,3 +69,14 @@ h2:not(.sr-only):not(.title-4) { letter-spacing: -0.02em !important; line-height
 
 /* Garamond's tighter leading needs a little more air under the hero heading. */
 .hero-sub { margin-top: var(--sp-300); }
+
+/* Hero background: the ASCII hand-and-sensors scene (heroAscii.js). It sits
+   behind every hero element and never takes the pointer, so links and the
+   button stay clickable; dragging across it shouldn't select text. */
+.hero { user-select: none; -webkit-user-select: none; }
+.hero-ascii {
+  position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%;
+  display: block; pointer-events: none; opacity: 0; transition: opacity 600ms var(--ease);
+}
+.hero-ascii.is-on { opacity: 1; }
+.hero > :not(.hero-ascii) { position: relative; z-index: 1; }
