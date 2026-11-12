@@ -26,7 +26,7 @@ const canvas = document.getElementById('heroAscii');
 const RAMP = ' .:-=+*#%@';
 const COLORS = {
   board: '#2a241f',
-  hand: '#c4784e',
+  hand: '#a8521f',
   gold: '#a8761f',
   pink: '#c8547e',
   dust: '#8f8173',
@@ -58,6 +58,9 @@ if (hero && canvas) init().catch(err => console.warn('Hero ASCII unavailable:', 
 async function init() {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const coarse = matchMedia('(pointer: coarse)').matches;
+  if (document.fonts && document.fonts.load) {
+    try { await Promise.all([document.fonts.load("700 12px 'Geist Mono'"), document.fonts.load("500 12px 'Geist Mono'")]); } catch (_) {}
+  }
   const [hand, board] = await Promise.all([
     loadDots('assets/halftone-hand.bin'),
     loadDots('assets/halftone-board.bin'),
@@ -107,10 +110,12 @@ async function init() {
     const a = atlas.getContext('2d');
     a.textAlign = 'center';
     a.textBaseline = 'middle';
-    a.font = `500 ${Math.round(tile * 1.08)}px 'Geist Mono', ui-monospace, monospace`;
     COLOR_KEYS.forEach((key, ci) => {
+      // The hand is the subject: bold glyphs at full strength.
+      const bold = key === 'hand';
+      a.font = `${bold ? 700 : 500} ${Math.round(tile * (bold ? 1.12 : 1.08))}px 'Geist Mono', ui-monospace, monospace`;
       for (const faint of [0, 1]) {
-        a.globalAlpha = faint ? 0.3 : (key === 'dust' ? 0.55 : 0.8);
+        a.globalAlpha = bold ? (faint ? 0.32 : 1) : faint ? 0.3 : (key === 'dust' ? 0.55 : 0.8);
         a.fillStyle = COLORS[key];
         for (let li = 1; li < RAMP.length; li++) {
           a.fillText(RAMP[li], li * tile + tile / 2, (ci * 2 + faint) * tile + tile / 2 + tile * 0.04);
@@ -125,7 +130,7 @@ async function init() {
     const lines = el => { const r = document.createRange(); r.selectNodeContents(el); return [...r.getClientRects()]; };
     hero.querySelectorAll('.hero-title, .hero-sub').forEach(el => lines(el).forEach(q => q.width && out.push(q)));
     hero.querySelectorAll('.announce, .hero-cta .btn, .logos li').forEach(el => out.push(el.getBoundingClientRect()));
-    return out.map(q => ({ l: q.left - hr.left - 14, r: q.right - hr.left + 14, t: q.top - hr.top - 8, b: q.bottom - hr.top + 8 }));
+    return out.map(q => ({ l: q.left - hr.left - 18, r: q.right - hr.left + 18, t: q.top - hr.top - 10, b: q.bottom - hr.top + 10 }));
   };
 
   const layout = () => {
@@ -155,7 +160,7 @@ async function init() {
     const rest = narrow ? W * 0.14 : W * 0.11;
     geo = { sb, boardX, boardY, padX, padY, sh, rest, narrow };
     // Weight each dot so a fully covered cell holds about 4 units either way.
-    wHand = 2.6 / Math.max(0.05, DH * cell * cell / (sh * sh));
+    wHand = 3.8 / Math.max(0.05, DH * cell * cell / (sh * sh));
     wBoard = 2.6 / Math.max(0.05, DB * cell * cell / (sb * sb));
 
     mask = new Uint8Array(cols * rows);
