@@ -29,7 +29,8 @@ data packets along the board, quick taps, a scan line, and the hand
 dissolving into dust and reforming, over breathing, shimmer and drifting
 dust. Cursor parts the characters, dragging splits them, a click explodes
 them; springs reassemble. The canvas never takes the pointer, so the text,
-pill and button stay clickable; characters behind text are drawn at 30%.
+pill and button stay clickable; characters behind text are drawn faint (hand 32%, rest 30%). The hand is
+the subject: bold Geist Mono 700, deep orange #a8521f, full opacity, denser.
 Reduced motion: one still frame. Replaces the two side halftone figures.
 
 **Fonts.**
