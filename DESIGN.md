@@ -194,3 +194,15 @@ cloud, encryption or retention. Illustrative charts carry a visible
 | The film | Done | Scroll-driven 4K film after the results panel; frame exact at 60 of 60 tested positions; loading stills; skip link; no-JS fallback with controls. The film's own text (93.72% on WESAD with its caveat, the LLC question, booking by the hour, the Thanksgiving target) is the founder's and is not repeated as page copy. |
 | Software tour (follow-up) | Done | Step numbers Geist (ordinals); screen bezel 32px (12 on phones) on #131209 instead of 4% over marble. |
 
+
+## Condensed copy
+
+The page's text was cut to about half (visible reading text 2,143 → ~1,200 words) after a round of decisions with the founder. All animations stay.
+
+- **Each fact said once.** The under-$25 budget lives on the problem card ($200+ tools) and the parts tagline; partners and the founder no longer repeat stats; "body sensors arrive in MVP 2" is the parts table's status column.
+- **Voice.** Plain sentence first, technical detail as a small mono spec tag (`.spec-tag`) in the model steps; part numbers live in the parts table.
+- **Taglines.** Every section's intro paragraph is replaced by a 3–6 word deck line (`p.body-3.sec-tag`, EB Garamond italic 24/30, 21/27 on phones).
+- **The parts** (`#sensors`, now after the model): one table, What · Part · Job · Status, for the ESP32-S3 and the five sensors (traces kept), with the bus and the rest of the rig (electrodes, microSD, breadboard, power bank) underneath. Replaces "Five sensors, one bus" and "What works today". No per-part prices (not verified); total "under $25".
+- **Merges.** Project log folded into the Roadmap as one timeline (planned milestones keep hollow dots, `.is-next`); "Results so far" stays, the partner cards drop the repeated numbers; the founder's mentor line is gone (it's in Partners); Meet PATHOS keeps 4 cards (five signals, $25, on-device, 3D); FAQ keeps 4 questions not answered above (medical device, who it's for, data, how to help), and its structured data matches.
+- **Caveats.** Only "not a medical device" (FAQ, footer) and "not yet validated on PATHOS hardware" (model section) remain. The R² story, "no photos yet", the chart's "Illustration" label, the screenshot "simulated / not clinical" notes, the how-it-works note and the Is / Isn't row were removed.
+- Section numbers: 01 Why five signals, 02 The model, 03 The parts, 04 Hardware in 3D, 05 The build, 06 In the works, 07 Workshops. The 3D chapter captions are unchanged.

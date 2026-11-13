@@ -44,16 +44,16 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   await p.screenshot({ path: `${require('os').tmpdir()}/play-pipeline.png` });
   await p.mouse.move(5, 5);
   // Journey
-  await go('#journey', 700);
+  await go('#roadmap', 700);
   const r1 = await p.evaluate(() => [...document.querySelectorAll('.log li')].filter(l => l.classList.contains('is-reached')).length);
-  await go('#journey', -200);
+  await go('#roadmap', -200);
   const r2 = await p.evaluate(() => [...document.querySelectorAll('.log li')].filter(l => l.classList.contains('is-reached')).length);
   ok(r2 > r1, `log milestones light with scroll (${r1} -> ${r2})`);
   await p.screenshot({ path: `${require('os').tmpdir()}/play-journey.png` });
   // Counters
   await go('.partner-rows', 120); await p.waitForTimeout(1500);
   const counts = await p.evaluate(() => [...document.querySelectorAll('.count')].map(c => c.textContent));
-  ok(JSON.stringify(counts) === JSON.stringify(['2,000', '13.6K', '2,000', '250K+', '13.6K', '4,389']), 'counters end on the real numbers ' + counts.join(' '));
+  ok(JSON.stringify(counts) === JSON.stringify(['2,000', '13.6K', '250K+']), 'counters end on the real numbers ' + counts.join(' '));
   // Copy
   await go('#contact');
   await p.click('.copy-btn'); await p.waitForTimeout(300);

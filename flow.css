@@ -80,3 +80,58 @@ h2:not(.sr-only):not(.title-4) { letter-spacing: -0.02em !important; line-height
 }
 .hero-ascii.is-on { opacity: 1; }
 .hero > :not(.hero-ascii) { position: relative; z-index: 1; }
+
+/* ==========================================================================
+   Condensed copy (see DESIGN.md, "Condensed copy")
+   ========================================================================== */
+/* Taglines: one short deck line under each heading, in Garamond italic,
+   in place of the old intro paragraphs. Colour is left to each section. */
+:is(.sec-head, .contact-info) p.body-3.sec-tag {
+  font-family: var(--font-serif); font-style: italic; font-weight: 400;
+  font-size: 24px; line-height: 30px; letter-spacing: -0.005em; text-wrap: balance;
+}
+@media (max-width: 720px) {
+  :is(.sec-head, .contact-info) p.body-3.sec-tag { font-size: 21px; line-height: 27px; }
+}
+/* The contact panel's own intro rule is ID-scoped, so match it here. */
+#contact .contact--sys .contact-info > p.body-3.sec-tag { font-size: 24px; line-height: 30px; }
+@media (max-width: 720px) {
+  #contact .contact--sys .contact-info > p.body-3.sec-tag { font-size: 21px; line-height: 27px; }
+}
+
+/* Spec tag: the technical detail under a plain sentence (model steps). */
+.spec-tag {
+  display: block; margin-top: var(--sp-100);
+  font-family: var(--font-mono); font-size: 12px; line-height: 16px; letter-spacing: 0.02em;
+  color: var(--gold);
+}
+.marble .spec-tag { color: var(--gold-light); }
+
+/* The parts: bus and the rest of the rig, under the table. */
+.parts-foot {
+  margin: var(--sp-75) 0 0; padding: var(--sp-200); display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: var(--sp-200) var(--sp-300);
+  border-top: 1px solid var(--line);
+}
+.parts-foot dt { font-family: var(--font-body); font-size: 12px; line-height: 16px; font-weight: 500; color: var(--muted); }
+.parts-foot dd { margin: var(--sp-25) 0 0; font-family: var(--font-mono); font-size: 13px; line-height: 20px; color: var(--ink); }
+.marble .parts-foot { border-top-color: var(--dark-line); }
+.marble .parts-foot dt { color: var(--on-dark-3); }
+.marble .parts-foot dd { color: var(--on-dark); }
+@media (max-width: 639px) {
+  .parts-foot { grid-template-columns: 1fr; padding: var(--sp-200) var(--sp-100); }
+}
+
+/* Roadmap timeline: planned milestones keep a hollow dot and a dim line,
+   so lighting up on scroll never reads as "done". */
+.journey-section .log-panel li.is-next::before,
+.journey-section .log-panel.marble li.is-next.is-reached::before { background: transparent; box-shadow: inset 0 0 0 2px var(--gold-light); }
+.journey-section .log-panel.marble li.is-next:not(.is-reached)::before { box-shadow: inset 0 0 0 2px var(--dark-line); }
+.journey-section .log-panel.marble li:has(+ li.is-next)::after,
+.journey-section .log-panel.marble li.is-next::after { background: var(--dark-line); }
+
+/* Partners: the press shot stands alone now that the $25 note moved out. */
+@media (max-width: 959px) {
+  .partners-aside { grid-template-columns: 1fr; }
+  .partners-section .press-strip { max-width: 280px; margin: 0 auto; width: 100%; }
+}
