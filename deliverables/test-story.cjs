@@ -10,7 +10,7 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); p.on('response', r => { if (r.status() >= 400) errs.push(r.status() + ' ' + r.url()); });
   await p.goto('http://127.0.0.1:8000/'); await p.waitForTimeout(1000);
   const order = await p.evaluate(() => [...document.querySelectorAll('main > section[id]')].map(s => s.id));
-  ok(JSON.stringify(order) === JSON.stringify(['hero','proof','film','device-tour','impact','journey','problem','solution','philosophy','sensors','ai','hardware','prototype','product','pathos-iot','roadmap','workshops','how','team','faq','contact']), 'story order: ' + order.join(' > '));
+  ok(JSON.stringify(order) === JSON.stringify(['hero','proof','film','device-tour','impact','problem','solution','philosophy','ai','sensors','prototype','product','pathos-iot','roadmap','workshops','how','team','faq','contact']), 'story order: ' + order.join(' > '));
   // Every in-page link points at something that exists
   const broken = await p.evaluate(() => [...document.querySelectorAll('a[href^="#"]')].map(a => a.getAttribute('href')).filter(h => h.length > 1 && !document.querySelector(h)));
   ok(!broken.length, 'all in-page links resolve ' + broken.join(','));
@@ -24,7 +24,7 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   }
   // Feature cards link to their deep dives
   const feats = await p.evaluate(() => [...document.querySelectorAll('.feat')].map(a => a.getAttribute('href')));
-  ok(feats.length === 8, '8 feature cards: ' + feats.join(' '));
+  ok(feats.length === 4, '4 feature cards: ' + feats.join(' '));
   // FAQ
   await p.evaluate(() => { const el = document.getElementById('faq'); scrollTo(0, el.getBoundingClientRect().top + scrollY - 80); }); await p.waitForTimeout(800);
   await p.click('.faq-item:nth-child(3) summary'); await p.waitForTimeout(600);

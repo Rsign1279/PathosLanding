@@ -385,7 +385,7 @@ addEventListener('pointerdown', () => { aimRun++; document.documentElement.style
   const links = [...document.querySelectorAll('#navLinks a[href^="#"]')];
   // Sections that belong to a nav item (the feature deep dives count as Features).
   const GROUP = { problem: 'problem', solution: 'solution', philosophy: 'solution', sensors: 'solution', ai: 'solution',
-    hardware: 'solution', prototype: 'solution', 'pathos-iot': 'solution', roadmap: 'solution', workshops: 'solution',
+    prototype: 'solution', 'pathos-iot': 'solution', roadmap: 'solution', workshops: 'solution',
     product: 'product', how: 'how', faq: 'faq', contact: 'contact' };
   const setCurrent = id => links.forEach(a => {
     if (id && a.getAttribute('href') === '#' + id) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
