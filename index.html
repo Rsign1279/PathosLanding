@@ -127,7 +127,7 @@
         <h2 class="sr-only" id="filmTitle">PATHOS in 44 seconds</h2>
         <p class="sr-only">A silent film that plays on its own. Stress builds in the body before people can say it. PATHOS senses skin conductance and temperature, streams the signals to the model and shows the result live. It cites 93.72% accuracy on the WESAD dataset with each person held out in turn, not yet measured on PATHOS hardware, and the SkillsUSA top 10 finish, then invites you to collaborate.</p>
         <div class="film-stage" id="filmStage">
-            <video class="film-video" id="filmVideo" src="assets/film/film-1080.mp4" poster="assets/film/stills/p-00.webp" autoplay muted loop playsinline preload="auto" disablepictureinpicture disableremoteplayback></video>
+            <video class="film-video" id="filmVideo" src="assets/film/film-1080.mp4" poster="assets/film/stills/p-00.webp" muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback></video>
             <div class="film-scrub" aria-hidden="true"><span id="filmScrub"></span></div>
         </div>
     </section>
@@ -183,7 +183,7 @@
                 <p class="body-3 sec-tag">Mentors, media and community.</p>
             </header>
             <div class="partners-grid">
-                <ul class="partner-rows marble marble--panel" data-reveal>
+                <ul class="partner-rows marble marble--panel" data-reveal data-reveal-group>
                     <li><p class="partner-role caption-4">Community partner</p><h3 class="title-2">Autism Involves Me</h3><p class="body-6">Founder Paula George has backed PATHOS since the first build.</p></li>
                     <li><p class="partner-role caption-4">Medical mentors</p><h3 class="title-2">Alice&nbsp;L.&nbsp;Walton School of Medicine</h3><p class="body-6">Mary Buschlen and Josiah Leong advise on design, research and ethics.</p></li>
                     <li><p class="partner-role caption-4">Media coverage</p><h3 class="title-2">5NEWS</h3><p class="body-6">TV segment: &ldquo;Bentonville teens create AI tool to aid nonverbal autistic individuals.&rdquo;</p></li>
@@ -323,7 +323,7 @@
                 <h2 class="heading-2">Five sensors, one&nbsp;bus</h2>
                 <p class="body-3 sec-tag">Off the shelf, under $25.</p>
             </header>
-            <div class="sensor-table marble marble--panel" data-reveal>
+            <div class="sensor-table marble marble--panel" data-reveal data-reveal-group>
                 <div class="sensor-row sensor-row--head caption-4" aria-hidden="true"><span>What</span><span>Part</span><span>Job</span><span>Status</span></div>
                 <div class="sensor-row"><div class="sensor-name"><h3 class="title-3">The brain</h3></div><code class="caption-2">XIAO ESP32-S3</code><p class="body-6">Reads every sensor.</p><span class="pill pill--live caption-4">Working</span></div>
                 <div class="sensor-row"><div class="sensor-name"><h3 class="title-3">Skin conductance (EDA)</h3><canvas class="sig-trace sig-trace--row" data-signal="eda" aria-hidden="true"></canvas></div><code class="caption-2">GSR &rarr; ADS1115</code><p class="body-6">Sweat rises under stress, often&nbsp;first.</p><span class="pill caption-4">MVP&nbsp;2</span></div>
@@ -564,7 +564,7 @@
                 <h2 class="heading-2">We teach the&nbsp;pieces</h2>
                 <p class="body-3 sec-tag">Hands-on, for students, caregivers and teachers.</p>
             </header>
-            <ol class="ws-list marble marble--panel" data-reveal>
+            <ol class="ws-list marble marble--panel" data-reveal data-reveal-group>
                 <li><span class="ws-n caption-4">01</span><h3 class="title-2">Stress signals, explained</h3><p class="body-6">What the body does under stress.</p></li>
                 <li><span class="ws-n caption-4">02</span><h3 class="title-2">Embedded systems for beginners</h3><p class="body-6">Wire a sensor, write Arduino&nbsp;code.</p></li>
                 <li><span class="ws-n caption-4">03</span><h3 class="title-2">Machine learning, minus the hype</h3><p class="body-6">How a classifier works, and when not to trust&nbsp;one.</p></li>
@@ -636,7 +636,7 @@
                 <h2 class="heading-2">Questions, answered</h2>
                 <p class="body-3 sec-tag">The short answers.</p>
             </header>
-            <div class="faq-list" data-reveal>
+            <div class="faq-list" data-reveal-group>
                 <details class="faq-item" open><summary><span class="title-2">Is PATHOS a medical device?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">No. It&rsquo;s a wellness awareness project. It doesn&rsquo;t diagnose and isn&rsquo;t a substitute for&nbsp;care.</p></div></details>
                 <details class="faq-item"><summary><span class="title-2">Who is it for?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">Nonverbal and neurodivergent people, and the caregivers, teachers and therapists around them.</p></div></details>
                 <details class="faq-item"><summary><span class="title-2">Where does the data go?</span><i aria-hidden="true"></i></summary><div class="faq-a"><p class="body-3">It stays local: the model runs on the device. In MVP 2, caregivers get alerts over the network.</p></div></details>

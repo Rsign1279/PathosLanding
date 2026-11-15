@@ -766,13 +766,6 @@ body { font-size: 18px; }
   100% { transform: scale(13); opacity: 0; border-width: 0.5px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .device { --rx: 0deg !important; --ry: 0deg !important; --rz: 0deg !important; --s: 1 !important; }
-  .js [data-intro], .js [data-reveal] { opacity: 1; transform: none; filter: none; }
-  .shot img { opacity: 1; transform: none; }
-}
 
 @media print {
   .nav-wrap, .lightbox, .prototype, .halftone, .device-section { display: none !important; }

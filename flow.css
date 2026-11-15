@@ -135,3 +135,16 @@ h2:not(.sr-only):not(.title-4) { letter-spacing: -0.02em !important; line-height
   .partners-aside { grid-template-columns: 1fr; }
   .partners-section .press-strip { max-width: 280px; margin: 0 auto; width: 100%; }
 }
+
+/* Spawn: every card, panel and row rises in, slightly scaled, one after
+   another (the --d stagger from main.js), on every device. A keyframe
+   animation with a backwards fill lets go of the transform when it ends, so
+   hover lifts and the tilt keep working afterwards. */
+@keyframes spawn {
+  from { opacity: 0; transform: translateY(32px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+.js :is(.marble, .feat, .sig-card, .sys-panel, .problem-point, .partner-rows > li, .ws-list > li,
+  .faq-item, .sensor-row, .parts-foot, .pipeline > li, .how-steps > li, .founder, .proof-stats > li)[data-reveal].in {
+  animation: spawn 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d, 0ms) backwards;
+}

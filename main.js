@@ -5,7 +5,9 @@
    (prototype.js) is loaded separately, only when it nears the viewport.
    ========================================================================== */
 
-const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Animations run on every device, including when the system asks for reduced
+// motion (school laptops often ship with animations off). Founder's decision.
+const reduceMotion = false;
 const raf = requestAnimationFrame;
 
 /* ---------- Nav ---------- */

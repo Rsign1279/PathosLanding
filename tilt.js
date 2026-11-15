@@ -13,11 +13,13 @@
      removed so text renders perfectly crisp.
    - Touch: a sideways drag turns the card; vertical scrolling is untouched.
    - Bigger panels tilt less, so wide cards don't swing their far edge.
-   - Off for prefers-reduced-motion.
+   - On for every device, including reduced-motion settings.
    ========================================================================== */
 
 const SELECTOR = '.card, .panel, .callout, .is-isnt p, .shot:not(.fl-face), .marble:not(.marble--contact)';
-const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+// Animations run on every device, including when the system asks for reduced
+// motion (school laptops often ship with animations off). Founder's decision.
+const reduced = { matches: false };
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 
 const HOVER_DEG = 5;       // lean toward the cursor (for a ~360px card)

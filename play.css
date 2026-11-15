@@ -104,6 +104,4 @@
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 26px 44px -18px rgba(0, 0, 0, 0.8);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .sig-meter-fill, .statement em, .log li::before { transition: none; }
-}
+

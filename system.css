@@ -75,9 +75,6 @@
 .js [data-intro] { filter: none; transform: translateY(var(--sp-300)); transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
 .js.ready [data-intro] { transform: none; }
 
-@media (prefers-reduced-motion: reduce) {
-  .js [data-intro] { transform: none; transition: opacity var(--t-fade) var(--ease); }
-}
 
 /* ==========================================================================
    QA pass: contrast, form states, legal links, nav location
@@ -360,10 +357,6 @@
   .solution .feat { padding: var(--sp-200); }
   .solution .feat-viz { height: 64px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .solution .feat, .solution .feat-more { transition: border-color var(--t-fade) var(--ease), color var(--t-fade) var(--ease); }
-  .solution .feat:hover, .solution .feat:active, .solution .feat:hover .feat-more, .solution .feat:focus-visible .feat-more { transform: none; }
-}
 
 /* ==========================================================================
    8. Why five signals (pass 8)
@@ -421,11 +414,6 @@
 @media (max-width: 639px) {
   .sig-card { padding: var(--sp-200); }
   .sig-card .sig-dot { top: var(--sp-200); right: var(--sp-200); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .sig-card { transition: border-color var(--t-fade) var(--ease), box-shadow var(--t-fade) var(--ease); }
-  .sig-card:active { transform: none; }
-  .sig-meter-fill { transition: background-color var(--t-fade) var(--ease); }
 }
 
 /* ==========================================================================
@@ -687,7 +675,6 @@
   .how .how-hud { bottom: var(--sp-100); gap: var(--sp-25); font-size: 14px; }
 }
 @media (max-width: 639px) { .how .how-step { padding: var(--sp-200); } }
-@media (prefers-reduced-motion: reduce) { .how .how-step.is-on { transform: none; } }
 
 /* ==========================================================================
    16. Founder (pass 18)
@@ -916,7 +903,6 @@ a.marble:hover::before, .sig-card.marble:hover::before { transform: scale(1.06);
 .sys-grid > .marble:nth-child(4n+4), .feats > .marble:nth-child(4n+4), .sig-grid > .marble:nth-child(4n+4) { --mp: 30% 90%; }
 .isnt-row > .marble:first-child { --mp: 50% 25%; }
 .isnt-row > .marble:last-child { --mp: 85% 75%; }
-@media (prefers-reduced-motion: reduce) { .marble::before { transition: none; } a.marble:hover::before, .sig-card.marble:hover::before { transform: none; } }
 
 /* Text on marble */
 .marble :is(h3, .title-2, .title-3, .heading-4, .how-t, strong, dd, .data) { color: var(--on-dark) !important; }

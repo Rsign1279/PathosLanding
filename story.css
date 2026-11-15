@@ -208,6 +208,4 @@
 @media (max-width: 480px) {
   .feats { grid-template-columns: 1fr; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .feat-viz *, .foot-art, .how-step.is-on::after { animation: none !important; }
-}
+

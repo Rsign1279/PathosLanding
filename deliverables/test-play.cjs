@@ -74,7 +74,7 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   const rm = await b.newPage({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
   rm.on('pageerror', e => errs.push('rm ' + e.message));
   await rm.goto('http://127.0.0.1:8000/#ai'); await rm.waitForTimeout(2500);
-  ok(await rm.evaluate(() => !document.querySelector('.pipeline').classList.contains('is-running')), 'reduced motion: pipeline stays still');
+  ok(await rm.evaluate(() => document.querySelector('.pipeline').classList.contains('is-running')), 'reduced-motion setting: pipeline still runs');
   ok(!errs.length, 'no errors ' + errs.join(' | '));
   await b.close();
 })();

@@ -206,3 +206,12 @@ The page's text was cut to about half (visible reading text 2,143 → ~1,200 wor
 - **Merges.** Project log folded into the Roadmap as one timeline (planned milestones keep hollow dots, `.is-next`); "Results so far" stays, the partner cards drop the repeated numbers; the founder's mentor line is gone (it's in Partners); Meet PATHOS keeps 4 cards (five signals, $25, on-device, 3D); FAQ keeps 4 questions not answered above (medical device, who it's for, data, how to help), and its structured data matches.
 - **Caveats.** Only "not a medical device" (FAQ, footer) and "not yet validated on PATHOS hardware" (model section) remain. The R² story, "no photos yet", the chart's "Illustration" label, the screenshot "simulated / not clinical" notes, the how-it-works note and the Is / Isn't row were removed.
 - Section numbers: 01 Why five signals, 02 The model, 03 The parts, 04 Hardware in 3D, 05 The build, 06 In the works, 07 Workshops. The 3D chapter captions are unchanged.
+
+## Motion on every device
+
+A ThinkPad with Windows "Animation effects" off (common on school laptops) reports `prefers-reduced-motion: reduce`, and the site used to honour it: hero particles, margin art, charts, traces, the finger scene, the photo deck and the 3D easing all froze, and the film showed native controls. By the founder's decision, animations now run for everyone:
+
+- Every reduced-motion branch in the scripts is a constant `false`, and every reduced-motion CSS block is removed. `deliverables/test-motion.cjs` loads the page with reduced motion on and checks that each moving part moves (it fails on the old build, passes now).
+- **Film:** muted autoplay loop, never any controls. It starts downloading after the page's own load (or a screen before it's reached), so the 25 MB file never competes with first paint.
+- **3D:** the scene is built once the page is idle, or two screens before the section, instead of during the hero. Built-in graphics (Intel UHD/Iris, AMD Radeon Graphics, etc.) start at 1x pixels and a 1024 shadow map; any machine under ~42 fps for 10 frames halves the shadow map, then lowers the pixel ratio in steps down to 0.55x. One frame at the laptop start costs ~25% less than before, ~47% less after adapting. Scroll easing is back on every device.
+- **Spawn:** every card, panel and row (features, signals, pipeline, parts rows, partners, workshops, FAQ, problem points, how steps, founder, results) rises in with a staggered `spawn` keyframe (32px, scale 0.96, 0.85s). The backwards fill releases the transform so hover lifts and tilt still work.

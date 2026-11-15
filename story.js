@@ -10,10 +10,12 @@
      step jumps to it.
    - FAQ: smooth open and close.
    - Feature visuals and the footer art only animate while on screen.
-   Everything respects reduced motion.
+   Animations run on every device.
    ========================================================================== */
 
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Animations run on every device, including when the system asks for reduced
+// motion (school laptops often ship with animations off). Founder's decision.
+const reduced = false;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 const ease = x => 1 - Math.pow(1 - clamp(x, 0, 1), 3);

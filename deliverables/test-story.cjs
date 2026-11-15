@@ -49,12 +49,12 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   await ph.goto('http://127.0.0.1:8000/'); await ph.waitForTimeout(1200);
   for (const id of ['proof', 'problem', 'solution', 'how', 'faq', 'footCard']) { await ph.evaluate(id => document.getElementById(id).scrollIntoView(), id); await ph.waitForTimeout(500); }
   ok(!(await ph.evaluate(() => document.documentElement.scrollWidth > innerWidth)), 'phone: no overflow');
-  // Reduced motion: still renders, no errors
+  // Reduced-motion setting: everything still runs, no errors
   const rm = await b.newPage({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
   rm.on('pageerror', e => errs.push('rm ' + e.message));
   await rm.goto('http://127.0.0.1:8000/#how'); await rm.waitForTimeout(1500);
   await rm.click('.faq-item:nth-child(2) summary');
-  ok(await rm.evaluate(() => document.querySelectorAll('.faq-item')[1].open), 'reduced motion: FAQ opens instantly');
+  ok(await rm.evaluate(() => document.querySelectorAll('.faq-item')[1].open), 'reduced-motion setting: FAQ opens');
   ok(!errs.length, 'no errors ' + errs.join(' | '));
   await b.close();
 })();

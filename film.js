@@ -1,12 +1,12 @@
 /* ==========================================================================
-   The PATHOS film: plays on its own.
+   The PATHOS film: plays on its own, on every device.
 
-   The video autoplays muted and loops (set in the markup, so it also plays
-   without JavaScript). This script only:
-   - pauses it while it is off screen and resumes when it comes back, so it
-     costs nothing while you read the rest of the page;
-   - moves the thin gold progress line;
-   - respects "reduce motion": no autoplay, ordinary controls instead.
+   The video is muted and loops, with no controls. This script:
+   - starts downloading it once the rest of the page has loaded, or as soon as
+     it is about a screen away, whichever comes first, so the 25 MB file never
+     competes with the page's first paint;
+   - plays it while it is on screen and pauses it off screen;
+   - moves the thin gold progress line.
    ========================================================================== */
 
 const stage = document.getElementById('filmStage');
@@ -15,27 +15,20 @@ const bar = document.getElementById('filmScrub');
 
 if (stage && video) {
   video.muted = true;
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let onScreen = false;
-  let raf = 0;
+  video.controls = false;
+  let onScreen = false, loading = false, raf = 0;
 
+  const load = () => {
+    if (loading) return;
+    loading = true;
+    video.preload = 'auto';
+    video.load();
+  };
   const tryPlay = () => {
-    if (reduced.matches || !onScreen) return;
+    if (!onScreen) return;
+    load();
     const p = video.play();
     if (p && p.catch) p.catch(() => {});
-  };
-
-  const apply = () => {
-    if (reduced.matches) {
-      video.pause();
-      video.removeAttribute('autoplay');
-      video.controls = true;
-      stage.classList.add('is-manual');
-    } else {
-      video.controls = false;
-      stage.classList.remove('is-manual');
-      tryPlay();
-    }
   };
 
   const draw = () => {
@@ -46,14 +39,18 @@ if (stage && video) {
   video.addEventListener('play', () => { if (!raf) raf = requestAnimationFrame(draw); });
   video.addEventListener('seeked', draw);
 
+  if (document.readyState === 'complete') load();
+  else addEventListener('load', load, { once: true });
+  new IntersectionObserver(es => {
+    if (es[es.length - 1].isIntersecting) load();
+  }, { rootMargin: '100% 0px' }).observe(stage);
+
   new IntersectionObserver(es => {
     onScreen = es[es.length - 1].isIntersecting;
     if (onScreen) tryPlay(); else video.pause();
   }, { threshold: 0.15 }).observe(stage);
 
-  // Some browsers hold autoplay until the data is ready.
+  // Some browsers hold playback until the data is ready.
   video.addEventListener('canplay', tryPlay);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) tryPlay(); });
-  reduced.addEventListener ? reduced.addEventListener('change', apply) : reduced.addListener(apply);
-  apply();
 }

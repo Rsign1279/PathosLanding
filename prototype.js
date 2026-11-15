@@ -44,7 +44,9 @@ const orbitUi = document.getElementById('hwOrbitUi');
 const rail = document.getElementById('hwRail');
 const scrubEl = document.getElementById('hwScrub');
 const frameEl = document.getElementById('hwFrame');
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Animations run on every device, including when the system asks for reduced
+// motion (school laptops often ship with animations off). Founder's decision.
+const reduced = false;
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
@@ -185,7 +187,7 @@ layoutFilm(view.clientWidth || 1, view.clientHeight || 1);
 
 /* ---------- Three.js ---------- */
 
-const stats = { ready: false, frames: 0, drawCalls: 0, triangles: 0, quality: 0, model: MODEL, page: 0 };
+const stats = { ready: false, frames: 0, drawCalls: 0, triangles: 0, quality: 0, model: MODEL, page: 0, gpu: '', low: false, shadow: 0 };
 let renderer, scene, camera, mixer;
 let cur = FIRST, tgt = FIRST, visible = false, dirty = true, raf = 0, last = 0, slow = 0, quality = 1;
 const pickables = [];
@@ -246,8 +248,10 @@ function resize() {
   if (!w || !h) return;
   layoutFilm(w, h);
   if (!renderer) return;
-  const dpr = Math.min(devicePixelRatio || 1, MOBILE ? 1.35 : 1.75) * quality;
-  renderer.setPixelRatio(Math.max(1, dpr));
+  // Built-in laptop graphics render at up to 1x; others up to 1.75x (1.35x on
+  // phones). Adaptive quality can then go below 1x on a slow machine.
+  const cap = LOW_GPU ? Math.min(devicePixelRatio || 1, 1) : Math.min(devicePixelRatio || 1, MOBILE ? 1.35 : 1.75);
+  renderer.setPixelRatio(Math.max(0.55, cap * quality));
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   setLens(lensAt(Math.round(cur)));
@@ -438,9 +442,16 @@ function render(now) {
     stats.drawCalls = renderer.info.render.calls;
     stats.triangles = renderer.info.render.triangles;
     dirty = false;
-    // Adaptive quality: drop the pixel ratio if frames stay slow.
-    if (dt > 0.034) { if (++slow > 24 && quality > 0.6) { quality -= 0.2; slow = 0; resize(); } }
-    else slow = Math.max(0, slow - 1);
+    // Adaptive quality: if frames stay well behind the screen's own rate
+    // (frameBudget), first halve the shadow map, then lower the pixel ratio
+    // step by step.
+    if (dt > frameBudget) {
+      if (++slow > 10) {
+        slow = 0;
+        if (shadowSize > 1024) setShadowSize(1024);
+        else if (quality > 0.6) { quality = Math.max(0.55, quality - 0.15); resize(); }
+      }
+    } else slow = Math.max(0, slow - 1);
   }
   if (moving) raf = requestAnimationFrame(render);
   else last = 0;
@@ -468,6 +479,48 @@ const LIGHTS = [
   { name: 'Edge strip', p: [0.08, 0.3, 0.25], d: [-0.229, -0.716, -0.659], w: 0.95, c: [1, 0.85, 0.8] },
 ];
 const LIGHT_SCALE = window.__hwTune?.light ?? 0.8;
+
+// Built-in laptop/phone graphics (Intel UHD/Iris, AMD Radeon Graphics, ...)
+// start lighter: 1x pixels and a 1024 shadow map. Read once from a throwaway
+// context so the real renderer is created with the right settings.
+const GPU = (() => {
+  try {
+    const gl = document.createElement('canvas').getContext('webgl');
+    const ext = gl && gl.getExtension('WEBGL_debug_renderer_info');
+    const name = ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : '';
+    gl?.getExtension('WEBGL_lose_context')?.loseContext();
+    return name;
+  } catch (e) { return ''; }
+})();
+const LOW_GPU = /intel|uhd|iris|hd graphics|mali|adreno|powervr|radeon\(tm\) graphics|vega \d+ graphics|swiftshader|llvmpipe/i.test(GPU) && !/apple/i.test(GPU);
+let shadowSize = LOW_GPU || MOBILE ? 1024 : 2048;
+// A frame counts as slow when it takes 1.45x the screen's normal interval
+// (24 ms at 60 Hz), measured once, so a 30 fps cap such as Chrome's Energy
+// Saver isn't mistaken for a slow graphics chip.
+let frameBudget = 0.024;
+function measureFrameBudget() {
+  const gaps = [];
+  let l = 0;
+  const f = t => {
+    if (l) gaps.push(t - l);
+    l = t;
+    if (gaps.length < 40) { requestAnimationFrame(f); return; }
+    gaps.sort((a, b) => a - b);
+    frameBudget = Math.max(0.024, (gaps[20] / 1000) * 1.45);
+    stats.budget = frameBudget;
+  };
+  requestAnimationFrame(f);
+}
+function setShadowSize(n) {
+  shadowSize = n;
+  scene.traverse(o => {
+    if (!o.isLight || !o.castShadow || o.shadow.mapSize.x === n) return;
+    o.shadow.mapSize.set(n, n);
+    if (o.shadow.map) { o.shadow.map.dispose(); o.shadow.map = null; }
+  });
+  stats.shadow = n;
+  dirty = true;
+}
 const yUp = ([x, y, z]) => new THREE.Vector3(x, z, -y);
 
 async function init() {
@@ -476,6 +529,7 @@ async function init() {
     renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
   } catch (e) { throw new Error('WebGL unavailable'); }
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  stats.gpu = GPU; stats.low = LOW_GPU; stats.shadow = shadowSize;
   // The film is graded with AgX at -0.12 EV.
   renderer.toneMapping = THREE.AgXToneMapping;
   renderer.toneMappingExposure = Math.pow(2, -0.12);
@@ -497,7 +551,7 @@ async function init() {
     s.target.position.copy(pos).addScaledVector(dir, 0.4);
     if (L.shadow) {
       s.castShadow = true;
-      s.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048);
+      s.shadow.mapSize.set(shadowSize, shadowSize);
       s.shadow.camera.near = 0.05; s.shadow.camera.far = 2;
       s.shadow.focus = 0.62;
       s.shadow.bias = -0.0003; s.shadow.normalBias = 0.0015; s.shadow.radius = 5;
@@ -745,15 +799,30 @@ async function init() {
 
 updateHud(FIRST);
 addEventListener('resize', () => { if (!renderer) layoutFilm(view.clientWidth || 1, view.clientHeight || 1); });
-init().catch(err => {
-  console.warn('PATHOS 3D fallback:', err.message);
-  fail('The interactive model could not load, so this is a still of it. The titles still follow your scroll.');
-});
+// Build the scene once the page has loaded and gone quiet, or as soon as the
+// section is about two screens away, whichever comes first, so the model
+// download and shader compile never slow the hero.
+let started = false;
+const start = () => {
+  if (started) return;
+  started = true;
+  near.disconnect();
+  measureFrameBudget();
+  init().catch(err => {
+    console.warn('PATHOS 3D fallback:', err.message);
+    fail('The interactive model could not load, so this is a still of it. The titles still follow your scroll.');
+  });
+};
+const near = new IntersectionObserver(es => { if (es[es.length - 1].isIntersecting) start(); }, { rootMargin: '200% 0px' });
+near.observe(stage);
+const idle = window.requestIdleCallback || (cb => setTimeout(cb, 1));
+const afterLoad = () => setTimeout(() => idle(start, { timeout: 2000 }), 1200);
+if (document.readyState === 'complete') afterLoad(); else addEventListener('load', afterLoad, { once: true });
 
 window.pathosPrototype = {
   stats, film,
   get state() { return { frame: cur, target: tgt, chapter: activeChapter, visible, rendering: !!raf, page: shownPage, art: uArt.value, mode, tweening: !!tween, label: pinned ? LABELS[pinned.obj.name][0] : null }; },
   frameAt, progressAt, scrollProgress, scrollYForFrame,
-  get debug() { return { scene, camera, mixer, orbit, orbitCam }; },
+  get debug() { return { scene, camera, mixer, orbit, orbitCam, renderer }; },
   enterOrbit: () => enterOrbit(), exitOrbit: () => exitOrbit(),
 };

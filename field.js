@@ -27,7 +27,9 @@ const countEl = document.getElementById('flCount');
 const prevBtn = document.getElementById('flPrev');
 const nextBtn = document.getElementById('flNext');
 const N = cards.length;
-const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+// Animations run on every device, including when the system asks for reduced
+// motion (school laptops often ship with animations off). Founder's decision.
+const reduced = { matches: false };
 
 const TURN = 50;           // turn at the first neighbour (degrees)
 const FLIP = 110;          // extra turn from the first to the second neighbour

@@ -56,7 +56,9 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 if (hero && canvas) init().catch(err => console.warn('Hero ASCII unavailable:', err.message));
 
 async function init() {
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Animations run on every device, including when the system asks for reduced
+  // motion (school laptops often ship with animations off). Founder's decision.
+  const reduced = false;
   const coarse = matchMedia('(pointer: coarse)').matches;
   if (document.fonts && document.fonts.load) {
     try { await Promise.all([document.fonts.load("700 12px 'Geist Mono'"), document.fonts.load("500 12px 'Geist Mono'")]); } catch (_) {}

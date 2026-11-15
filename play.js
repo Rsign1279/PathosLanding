@@ -13,10 +13,12 @@
    - Project log: a rail fills as you scroll and each milestone lights up.
    - Counters count up the first time they come into view.
    - Copy button for the contact email.
-   Canvases only draw while visible; everything respects reduced motion.
+   Canvases only draw while visible; animations run on every device.
    ========================================================================== */
 
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Animations run on every device, including when the system asks for reduced
+// motion (school laptops often ship with animations off). Founder's decision.
+const reduced = false;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const ease = x => 1 - Math.pow(1 - x, 3);
 
