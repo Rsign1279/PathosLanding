@@ -8,3 +8,5 @@ node_modules/
 **/frames/
 *.log
 !assets/film/film-1080.mp4
+!assets/hero/hero.mp4
+!assets/hero/hero-portrait.mp4

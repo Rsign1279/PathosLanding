@@ -50,6 +50,16 @@ const reduced = false;
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
+// The pre-rendered film (laptops and desktops). Every 6th film frame was
+// rendered offline from this same scene (?bake, deliverables/hw-bake.cjs) at
+// 1600x800 with the 1280x720 film frame in the middle, so it covers any view
+// from 1.6:1 to 2.2:1 the way the live render would.
+const SEQ = { step: 6, w: 1600, h: 800, fw: 1280, fh: 720, url: k => `./assets/hw-seq/${String(k).padStart(3, '0')}.webp` };
+SEQ.n = Math.floor((LAST - FIRST) / SEQ.step) + 1;
+// ?bake renders frames for that sequence; nothing else runs.
+const BAKE = new URLSearchParams(location.search).has('bake') ? { w: SEQ.w, h: SEQ.h, s: 1.5 } : null;
+let USE_SEQ = !BAKE && !MOBILE && !window.__hwLive;
+
 /* ---------- Film timing (from the Blender file) ---------- */
 
 // "Screen page" value on the MacBook display (constant interpolation).
@@ -244,14 +254,20 @@ function fail(message) {
 }
 
 function resize() {
-  const w = view.clientWidth, h = view.clientHeight;
+  const w = BAKE ? BAKE.w : view.clientWidth, h = BAKE ? BAKE.h : view.clientHeight;
   if (!w || !h) return;
   layoutFilm(w, h);
+  if (BAKE) {
+    // A view 1600x800 with the film frame 1280x720 in the middle.
+    film.zoom = SEQ.h / SEQ.fh; film.w = SEQ.fw; film.h = SEQ.fh;
+    film.x = (w - film.w) / 2; film.y = (h - film.h) / 2; film.lift = 0;
+  }
+  if (USE_SEQ) seqResize(w, h);
   if (!renderer) return;
   // Built-in laptop graphics render at up to 1x; others up to 1.75x (1.35x on
   // phones). Adaptive quality can then go below 1x on a slow machine.
   const cap = LOW_GPU ? Math.min(devicePixelRatio || 1, 1) : Math.min(devicePixelRatio || 1, MOBILE ? 1.35 : 1.75);
-  renderer.setPixelRatio(Math.max(0.55, cap * quality));
+  renderer.setPixelRatio(BAKE ? BAKE.s : Math.max(0.55, cap * quality));
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   setLens(lensAt(Math.round(cur)));
@@ -421,7 +437,7 @@ function render(now) {
   cur += (tgt - cur) * k;
   if (Math.abs(tgt - cur) < 0.08) cur = tgt;
   let moving = cur !== tgt;
-  if (mode === 'orbit') {
+  if (mode === 'orbit' && orbit) {
     syncProjection(orbitCam);
     // Zoom buttons ease the distance; damping keeps every move gentle.
     const off = v3.subVectors(orbitCam.position, orbit.target), d = off.length();
@@ -433,8 +449,18 @@ function render(now) {
     if (orbit.update()) moving = true;
   }
   if (stepTween(dt)) moving = true;
+  // With the pre-rendered film, the live scene only draws in the 360 view and
+  // while gliding into or out of it.
+  const live = !!renderer && (!USE_SEQ || mode === 'orbit' || !!tween);
+  if (USE_SEQ) showLive(live);
 
-  if (moving || dirty) {
+  if ((moving || dirty) && !live) {
+    updateHud(cur);
+    drawSeq(cur);
+    // A pinned label follows its part: pose the (undrawn) scene to match.
+    if (pinned && mixer) { apply(cur); placeLabel(); }
+    dirty = false;
+  } else if (moving || dirty) {
     apply(cur);
     placeLabel();
     renderer.render(scene, activeCam());
@@ -457,6 +483,141 @@ function render(now) {
   else last = 0;
 }
 function wake() { if (!raf && visible) raf = requestAnimationFrame(render); }
+
+/* ---------- Pre-rendered film ---------- */
+
+let seqCanvas = null, seqCtx = null, seqReady = false, seqDpr = 1, seqKey = '', liveShown = null;
+const seqImgs = new Array(SEQ.n).fill(null);
+let glStarted = false, pendingOrbit = false, pendingClick = null, pickAt = null;
+
+function seqResize(w, h) {
+  if (!seqCanvas) return;
+  seqDpr = Math.min(devicePixelRatio || 1, 1.5);
+  seqCanvas.width = Math.round(w * seqDpr);
+  seqCanvas.height = Math.round(h * seqDpr);
+  seqKey = ''; dirty = true; wake();
+}
+function nearestLoaded(u, dir) {
+  for (let k = dir < 0 ? Math.floor(u) : Math.ceil(u); k >= 0 && k < SEQ.n; k += dir) if (seqImgs[k]) return k;
+  return -1;
+}
+// Draws the two samples either side of frame f, blended, with the image's
+// film frame on the view's film frame; edges feather into the backdrop.
+function drawSeq(f) {
+  if (!seqCtx) return;
+  const u = clamp((f - FIRST) / SEQ.step, 0, SEQ.n - 1);
+  let lo = nearestLoaded(u, -1), hi = nearestLoaded(u, 1);
+  if (lo < 0 && hi < 0) return;
+  if (lo < 0) lo = hi;
+  if (hi < 0) hi = lo;
+  const a = hi === lo ? 0 : (u - lo) / (hi - lo);
+  const key = `${lo}:${hi}:${a.toFixed(3)}:${seqCanvas.width}x${seqCanvas.height}`;
+  if (key === seqKey) return;
+  seqKey = key;
+  const c = seqCtx, W = seqCanvas.width, H = seqCanvas.height, d = seqDpr;
+  const k = (film.w / SEQ.fw) * d;
+  const iw = SEQ.w * k, ih = SEQ.h * k;
+  const ix = film.x * d - ((SEQ.w - SEQ.fw) / 2) * k, iy = film.y * d - ((SEQ.h - SEQ.fh) / 2) * k;
+  c.globalAlpha = 1;
+  c.fillStyle = '#060607';
+  c.fillRect(0, 0, W, H);
+  c.drawImage(seqImgs[lo], ix, iy, iw, ih);
+  if (a > 0.004) { c.globalAlpha = a; c.drawImage(seqImgs[hi], ix, iy, iw, ih); c.globalAlpha = 1; }
+  const e = 40 * k;
+  const edge = (x0, y0, x1, y1, rx, ry, rw, rh) => {
+    const g = c.createLinearGradient(x0, y0, x1, y1);
+    g.addColorStop(0, 'rgba(6,6,7,1)'); g.addColorStop(1, 'rgba(6,6,7,0)');
+    c.fillStyle = g; c.fillRect(rx, ry, rw, rh);
+  };
+  if (ix > 0) edge(ix, 0, ix + e, 0, ix, iy, e, ih);
+  if (ix + iw < W) edge(ix + iw, 0, ix + iw - e, 0, ix + iw - e, iy, e, ih);
+  if (iy > 0) edge(0, iy, 0, iy + e, ix, iy, iw, e);
+  if (iy + ih < H) edge(0, iy + ih, 0, iy + ih - e, ix, iy + ih - e, iw, e);
+}
+function showLive(on) {
+  if (on === liveShown) return;
+  liveShown = on;
+  if (renderer) renderer.domElement.style.visibility = on ? 'visible' : 'hidden';
+  if (seqCanvas) seqCanvas.style.visibility = on ? 'hidden' : 'visible';
+  seqKey = ''; dirty = true;
+}
+// The live scene, built only when someone asks for it: a click on the
+// picture (labels, then part names on hover) or the 360 view.
+function startGL() {
+  if (glStarted) return;
+  glStarted = true;
+  measureFrameBudget();
+  if (USE_SEQ) { statusEl.textContent = 'Loading the 3D model…'; statusEl.hidden = false; }
+  init().catch(err => {
+    console.warn('PATHOS 3D (live) unavailable:', err.message);
+    if (USE_SEQ) { orbitBtn.hidden = true; pendingOrbit = false; pendingClick = null; }
+    else fail('The interactive model could not load, so this is a still of it. The titles still follow your scroll.');
+  });
+}
+function seqFail() {
+  if (!USE_SEQ || seqReady) return;
+  console.warn('PATHOS 3D: pre-rendered film unavailable, rendering live');
+  USE_SEQ = false;
+  seqCanvas?.remove(); seqCanvas = seqCtx = null;
+  startGL();
+}
+function seqStart() {
+  seqCanvas = document.createElement('canvas');
+  seqCanvas.className = 'hw-seq';
+  seqCanvas.setAttribute('aria-hidden', 'true');
+  view.prepend(seqCanvas);
+  seqCtx = seqCanvas.getContext('2d', { alpha: false });
+  resize();
+  new ResizeObserver(resize).observe(view);
+  // Coarse to fine: the whole film can be scrubbed early, then sharpens.
+  const order = [], seen = new Uint8Array(SEQ.n);
+  for (const st of [64, 32, 16, 8, 4, 2, 1]) for (let k = 0; k < SEQ.n; k += st) if (!seen[k]) { seen[k] = 1; order.push(k); }
+  let next = 0, active = 0, failed = 0, loaded = 0;
+  const pump = () => {
+    while (active < 6 && next < order.length) {
+      const k = order[next++];
+      active++;
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = SEQ.url(k);
+      img.decode().then(() => {
+        seqImgs[k] = img;
+        stats.seqLoaded = ++loaded;
+        if (!seqReady) { seqReady = true; stats.ready = true; stage.classList.add('is-ready'); statusEl.hidden = true; }
+        seqKey = ''; dirty = true; wake();
+      }).catch(() => { if (++failed >= 6 && !loaded) seqFail(); })
+        .finally(() => { active--; if (USE_SEQ) pump(); });
+    }
+  };
+  pump();
+  new IntersectionObserver(entries => {
+    visible = entries[entries.length - 1].isIntersecting;
+    if (visible) { dirty = true; wake(); }
+    else if (mode === 'orbit') { exitOrbit(); tween = null; }
+  }, { rootMargin: '120px 0px' }).observe(stage);
+  addEventListener('scroll', () => {
+    if (!visible) {
+      const r = stage.getBoundingClientRect();
+      if (r.bottom > -120 && r.top < innerHeight + 120) { visible = true; dirty = true; }
+    }
+    wake();
+  }, { passive: true });
+  // A click on the picture builds the live scene (labels, part names on hover,
+  // the 360 view); the click itself is answered as soon as it's ready.
+  view.addEventListener('pointerdown', e => {
+    if (e.button === 0 && !e.target.closest('a, button, .hw-label, .hw-orbit-ui')) startGL();
+  });
+  view.addEventListener('pointerup', e => {
+    if (stats.gl || e.button !== 0 || e.target.closest('a, button, .hw-label, .hw-orbit-ui')) return;
+    pendingClick = { x: e.clientX, y: e.clientY };
+    startGL();
+  });
+  orbitBtn.hidden = false;
+}
+orbitBtn.addEventListener('click', () => {
+  if (!stats.gl) { pendingOrbit = true; startGL(); return; }
+  mode === 'orbit' ? exitOrbit() : enterOrbit();
+});
 
 const texLoader = new THREE.TextureLoader();
 function loadTexture(url, { flipY = false, wrap = THREE.ClampToEdgeWrapping } = {}) {
@@ -493,7 +654,7 @@ const GPU = (() => {
   } catch (e) { return ''; }
 })();
 const LOW_GPU = /intel|uhd|iris|hd graphics|mali|adreno|powervr|radeon\(tm\) graphics|vega \d+ graphics|swiftshader|llvmpipe/i.test(GPU) && !/apple/i.test(GPU);
-let shadowSize = LOW_GPU || MOBILE ? 1024 : 2048;
+let shadowSize = BAKE ? 2048 : LOW_GPU || MOBILE ? 1024 : 2048;
 // A frame counts as slow when it takes 1.45x the screen's normal interval
 // (24 ms at 60 Hz), measured once, so a 30 fps cap such as Chrome's Energy
 // Saver isn't mistaken for a slow graphics chip.
@@ -660,6 +821,7 @@ async function init() {
   }
 
   view.appendChild(renderer.domElement);
+  if (USE_SEQ) { liveShown = null; showLive(false); }
   resize();
   // Warm the GPU: compile shaders and upload geometry before the first scroll frame.
   apply(FIRST);
@@ -735,12 +897,9 @@ async function init() {
     press = { x: e.clientX, y: e.clientY, t: e.timeStamp };
   });
   view.addEventListener('pointercancel', () => { press = null; });
-  view.addEventListener('pointerup', e => {
-    if (!press || e.target.closest('.hw-label, .hw-orbit-ui')) return;
-    const moved = Math.hypot(e.clientX - press.x, e.clientY - press.y), long = e.timeStamp - press.t;
-    press = null;
-    if (moved > 6 || long > 700) return;           // that was a drag, not a click
-    ndcAt(e);
+  pickAt = (clientX, clientY) => {
+    if (USE_SEQ && mode === 'film' && !tween) apply(cur);   // pose the undrawn scene at this frame
+    ndcAt({ clientX, clientY });
     const cam = activeCam();
     ray.setFromCamera(ndc, cam);
     let found = null;
@@ -757,12 +916,20 @@ async function init() {
     labelEl.hidden = false;
     placeLabel();
     tip.hidden = true;
+  };
+  view.addEventListener('pointerup', e => {
+    if (!press || e.target.closest('.hw-label, .hw-orbit-ui')) return;
+    const moved = Math.hypot(e.clientX - press.x, e.clientY - press.y), long = e.timeStamp - press.t;
+    press = null;
+    if (moved > 6 || long > 700) return;           // that was a drag, not a click
+    pickAt(e.clientX, e.clientY);
   });
   view.addEventListener('pointermove', e => {
     if (e.pointerType !== 'mouse' || e.buttons || tipTimer) return;
     tipTimer = requestAnimationFrame(() => {
       tipTimer = 0;
       const r = ndcAt(e);
+      if (USE_SEQ && mode === 'film' && !tween) apply(cur);
       ray.setFromCamera(ndc, activeCam());
       let best = null, bestD = Infinity;
       for (const p of pickables) {
@@ -784,7 +951,6 @@ async function init() {
 
   labelEl.querySelector('.hw-label-x').addEventListener('click', closeLabel);
   orbitBtn.hidden = false;
-  orbitBtn.addEventListener('click', () => (mode === 'orbit' ? exitOrbit() : enterOrbit()));
   document.getElementById('hwExit360').addEventListener('click', exitOrbit);
   document.getElementById('hwZoomIn').addEventListener('click', () => { zoomGoal = clamp(zoomGoal * 0.8, orbit.minDistance, orbit.maxDistance); wake(); });
   document.getElementById('hwZoomOut').addEventListener('click', () => { zoomGoal = clamp(zoomGoal * 1.25, orbit.minDistance, orbit.maxDistance); wake(); });
@@ -794,7 +960,10 @@ async function init() {
     else if (mode === 'orbit') exitOrbit();
   });
 
+  stats.gl = true;
   visible = true; wake();
+  if (pendingOrbit) { pendingOrbit = false; enterOrbit(); }
+  if (pendingClick) { const c = pendingClick; pendingClick = null; if (mode === 'film') pickAt(c.x, c.y); }
 }
 
 updateHud(FIRST);
@@ -807,21 +976,25 @@ const start = () => {
   if (started) return;
   started = true;
   near.disconnect();
-  measureFrameBudget();
-  init().catch(err => {
-    console.warn('PATHOS 3D fallback:', err.message);
-    fail('The interactive model could not load, so this is a still of it. The titles still follow your scroll.');
-  });
+  if (USE_SEQ) seqStart(); else startGL();
 };
 const near = new IntersectionObserver(es => { if (es[es.length - 1].isIntersecting) start(); }, { rootMargin: '200% 0px' });
 near.observe(stage);
 const idle = window.requestIdleCallback || (cb => setTimeout(cb, 1));
 const afterLoad = () => setTimeout(() => idle(start, { timeout: 2000 }), 1200);
-if (document.readyState === 'complete') afterLoad(); else addEventListener('load', afterLoad, { once: true });
+if (BAKE) {
+  // Offline rendering of the sequence (deliverables/hw-bake.cjs).
+  started = true; near.disconnect();
+  init().then(async () => {
+    await Promise.all(PAGES.map((url, i) => pageTex[i] || loadTexture(url).then(t => { pageTex[i] = t; })));
+    window.pathosBake = f => { resize(); shownPage = -1; apply(f); renderer.render(scene, camera); return renderer.domElement.toDataURL('image/png'); };
+    window.pathosBakeReady = true;
+  });
+} else if (document.readyState === 'complete') afterLoad(); else addEventListener('load', afterLoad, { once: true });
 
 window.pathosPrototype = {
   stats, film,
-  get state() { return { frame: cur, target: tgt, chapter: activeChapter, visible, rendering: !!raf, page: shownPage, art: uArt.value, mode, tweening: !!tween, label: pinned ? LABELS[pinned.obj.name][0] : null }; },
+  get state() { const baked = USE_SEQ && mode === 'film' && !tween; return { frame: cur, target: tgt, chapter: activeChapter, visible, rendering: !!raf, page: baked ? pageAt(Math.round(cur)) : shownPage, art: baked ? artAt(Math.round(cur)) : uArt.value, mode, seq: USE_SEQ, tweening: !!tween, label: pinned ? LABELS[pinned.obj.name][0] : null }; },
   frameAt, progressAt, scrollProgress, scrollYForFrame,
   get debug() { return { scene, camera, mixer, orbit, orbitCam, renderer }; },
   enterOrbit: () => enterOrbit(), exitOrbit: () => exitOrbit(),

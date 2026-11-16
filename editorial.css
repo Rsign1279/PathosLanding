@@ -1,0 +1,277 @@
+/* ==========================================================================
+   Editorial layer (loaded last)
+
+   No boxed cards. Content sits on the page and is organised by hairline
+   rules, numbers and type. Marble is a material, used where something is a
+   real object or screen: the hero's slabs, the instrument screens (traces,
+   chart, scene, feature tiles), the closing band, the big numbers.
+   ========================================================================== */
+:root {
+  --rule: rgba(26, 20, 14, 0.14);
+  --rule-strong: rgba(26, 20, 14, 0.32);
+  --deep: #0b0908;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Dark marble with a gold edge: the hero slabs, scaled down. */
+  --slab-bg:
+    linear-gradient(160deg, rgba(11, 9, 8, 0.58), rgba(11, 9, 8, 0.8)),
+    #120e0b url('assets/marble-sm.webp') var(--mp, 60% 40%) / cover no-repeat;
+  --slab-edge: inset 0 0 0 1px rgba(210, 175, 112, 0.42), 0 1px 0 rgba(255, 244, 228, 0.06) inset;
+  /* Small screens (traces, tiles) sit deeper so their lines read first. */
+  --slab-bg-deep:
+    linear-gradient(160deg, rgba(11, 9, 8, 0.74), rgba(11, 9, 8, 0.88)),
+    #120e0b url('assets/marble-sm.webp') var(--mp, 60% 40%) / cover no-repeat;
+}
+
+/* ---------- Slabs: marble screens ---------- */
+.slab,
+.solution .feat-viz,
+.sig-card .sig-trace,
+#sensors .sig-trace--row {
+  background: var(--slab-bg) !important;
+  box-shadow: var(--slab-edge), 0 18px 30px -24px rgba(20, 12, 6, 0.6) !important;
+  border: 0 !important;
+}
+.slab { border-radius: 20px !important; color: var(--on-dark-2); }
+.problem .problem-chart.slab, .solution .feat-viz, .sig-card .sig-trace, #sensors .sig-trace--row { background: var(--slab-bg-deep) !important; }
+.problem .problem-chart.slab { --mp: 70% 30%; padding: var(--sp-300); }
+.how .how-scene.slab { --mp: 30% 70%; }
+.solution .feat-viz { border-radius: 14px !important; }
+.feats > .feat:nth-child(1) .feat-viz { --mp: 8% 30%; }
+.feats > .feat:nth-child(2) .feat-viz { --mp: 55% 20%; }
+.feats > .feat:nth-child(3) .feat-viz { --mp: 92% 60%; }
+.feats > .feat:nth-child(4) .feat-viz { --mp: 30% 90%; }
+.sig-card .sig-trace { border-radius: 10px !important; }
+.sig-grid > :nth-child(1) .sig-trace { --mp: 10% 30%; }
+.sig-grid > :nth-child(2) .sig-trace { --mp: 50% 60%; }
+.sig-grid > :nth-child(3) .sig-trace { --mp: 80% 20%; }
+.sig-grid > :nth-child(4) .sig-trace { --mp: 35% 85%; }
+#sensors .sig-trace--row { border-radius: 8px !important; }
+
+/* ---------- Hero: the film ---------- */
+#hero.hero--film {
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end;
+  min-height: 100svh; padding: 120px var(--gutter) 40px; overflow: hidden;
+  background: var(--deep) url('assets/hero/hero-poster.webp') center / cover no-repeat;
+  color: var(--on-dark); user-select: none; -webkit-user-select: none;
+}
+@media (max-aspect-ratio: 4/5) {
+  #hero.hero--film { background-image: url('assets/hero/hero-poster-portrait.webp'); }
+}
+#hero .hero-video {
+  position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%;
+  object-fit: cover; pointer-events: none;
+}
+/* Keeps the headline readable over the slabs: darker bottom left. */
+#hero .hero-shade {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(0deg, rgba(11, 9, 8, 0.92) 0%, rgba(11, 9, 8, 0.55) 26%, rgba(11, 9, 8, 0) 52%),
+    linear-gradient(90deg, rgba(11, 9, 8, 0.72) 0%, rgba(11, 9, 8, 0.25) 42%, rgba(11, 9, 8, 0) 62%);
+}
+#hero .hero-inner {
+  position: relative; z-index: 2; width: 100%; max-width: 1240px; margin: 0 auto; text-align: left;
+}
+#hero .announce { margin: 0; background: rgba(210, 175, 112, 0.14); color: var(--gold-light); box-shadow: inset 0 0 0 1px rgba(210, 175, 112, 0.4); }
+#hero .announce:hover { background: rgba(210, 175, 112, 0.24); }
+#hero .hero-title {
+  margin: var(--sp-300) 0 0; max-width: 12.5em;
+  font-size: clamp(46px, 6.2vw, 96px); color: var(--bg); text-wrap: balance;
+}
+#hero .hero-title .accent:not(.accent--mono) { color: var(--gold-light); }
+#hero .hero-title .accent--mono { color: var(--gold-light); font-size: 0.86em; }
+#hero .hero-foot {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-300) var(--sp-500);
+  margin-top: var(--sp-400);
+}
+#hero .hero-sub { margin: 0; max-width: 26em; font-size: 18px; line-height: 28px; color: rgba(246, 239, 231, 0.78); text-align: left; }
+#hero .hero-cta { margin: 0; }
+#hero .logos {
+  position: relative; z-index: 2; width: 100%; max-width: 1240px; margin: var(--sp-600) auto 0;
+  padding-top: var(--sp-300); border-top: 1px solid rgba(246, 239, 231, 0.14);
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-200) var(--sp-400);
+}
+#hero .logo { color: rgba(246, 239, 231, 0.55); }
+#hero .logo:hover { color: var(--bg); }
+@media (max-width: 720px) {
+  #hero.hero--film { padding: 108px var(--sp-200) 28px; }
+  #hero .hero-title { font-size: clamp(40px, 11vw, 56px); }
+  #hero .hero-sub { font-size: 16px; line-height: 24px; }
+  #hero .logos { display: grid; grid-template-columns: 1fr 1fr; justify-items: start; gap: var(--sp-200) var(--sp-300); margin-top: var(--sp-400); }
+  #hero .logo { font-size: 15px; }
+  #hero .logo--caps { font-size: 11px; }
+  #hero .logo--serif { font-size: 16px; }
+  #hero .logo--heavy { font-size: 18px; }
+  /* Taller shade on phones: the copy sits lower and the slabs above it. */
+  #hero .hero-shade {
+    background: linear-gradient(0deg, rgba(11, 9, 8, 0.96) 0%, rgba(11, 9, 8, 0.86) 38%, rgba(11, 9, 8, 0.35) 62%, rgba(11, 9, 8, 0) 78%);
+  }
+}
+
+/* ---------- Results: no box, rules and marble numbers ---------- */
+.proof .proof-panel {
+  padding: var(--sp-400) 0 0; border: 0; border-radius: 0; background: none; box-shadow: none;
+}
+.proof .proof-title { margin-bottom: var(--sp-300); }
+.proof .proof-stats { gap: 0; border-top: 1px solid var(--rule-strong); }
+.proof .proof-stats > li { padding: var(--sp-300) var(--sp-300) var(--sp-200); border-left: 1px solid var(--rule); }
+.proof .proof-stats > li:first-child { border-left: 0; padding-left: 0; }
+.proof .proof-n {
+  font-size: clamp(48px, 5.4vw, 80px) !important; line-height: 1 !important;
+  /* Marble multiplied by a deep bronze: cream veins turn brown, gold stays
+     gold, so every stroke reads on the cream page. */
+  background: url('assets/marble.webp') 58% 40% / 420% auto, #6b4a2a;
+  background-blend-mode: multiply;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.proof .proof-n .count { color: transparent; }
+@media (max-width: 860px) {
+  .proof .proof-stats { grid-template-columns: 1fr 1fr; }
+  .proof .proof-stats > li:nth-child(3) { border-left: 0; padding-left: 0; }
+  .proof .proof-stats > li:nth-child(n+3) { border-top: 1px solid var(--rule); }
+}
+
+/* ---------- Shared: columns divided by rules ---------- */
+.feats, .sig-grid, .pipeline, #pathos-iot .sys-grid { gap: 0 !important; }
+.solution .feat, .sig-card, .pipeline > li.sys-panel, #pathos-iot .sys-panel {
+  background: none !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  padding: var(--sp-300) var(--sp-300) var(--sp-200) !important;
+  border-left: 1px solid var(--rule) !important;
+}
+.solution .feat:first-child, .sig-card:first-child, .pipeline > li.sys-panel:first-child, #pathos-iot .sys-panel:first-child {
+  border-left: 0 !important; padding-left: 0 !important;
+}
+.feats, .sig-grid, .pipeline, #pathos-iot .sys-grid { border-top: 1px solid var(--rule-strong); }
+@media (max-width: 960px) {
+  .solution .feat, .sig-card, .pipeline > li.sys-panel, #pathos-iot .sys-panel {
+    border-left: 0 !important; padding-left: 0 !important; padding-right: 0 !important;
+    border-bottom: 1px solid var(--rule) !important;
+  }
+}
+
+/* Features */
+.solution .feat { color: var(--text); text-decoration: none; }
+.solution .feat:hover { transform: none !important; }
+.solution .feat .feat-viz { transition: transform 500ms var(--ease-out), box-shadow 500ms var(--ease-out); }
+.solution .feat:hover .feat-viz { transform: translateY(-4px); }
+.solution .feat h3.title-2 { font-family: var(--font-serif); font-size: 26px; line-height: 30px; font-weight: 400; letter-spacing: -0.01em; }
+.solution .feat-more { color: var(--gold) !important; }
+.solution .feat:hover .feat-more { color: var(--ink) !important; }
+
+/* Signals: each column is a toggle; its top rule lights when pressed. */
+.sig-card { position: relative; cursor: pointer; }
+.sig-card::after {
+  content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px;
+  background: var(--pink-deep); transform: scaleX(0); transform-origin: left;
+  transition: transform 500ms var(--ease-out);
+}
+.sig-card:first-child::after { left: 0; }
+.sig-card[aria-pressed="true"]::after { transform: scaleX(1); }
+.sig-card[aria-pressed="true"] { box-shadow: none !important; }
+.sig-card:hover h3.title-2 { color: var(--gold) !important; }
+.sig-card h3.title-2 { font-family: var(--font-serif); font-size: 24px; line-height: 28px; font-weight: 400; }
+
+/* Pipeline: steps along one rule; the active step's bar runs along it. */
+.pipeline > li.sys-panel { position: relative; }
+.pipeline > li.sys-panel .step-bar { position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--gold) !important; }
+.pipeline > li.sys-panel:not(:first-child) .step-bar { left: 0; }
+.pipeline > li.sys-panel h3.title-2 { font-family: var(--font-serif); font-size: 26px; line-height: 30px; font-weight: 400; }
+#ai .sys-note {
+  max-width: 680px; margin: var(--sp-500) auto 0; padding: 0 0 0 var(--sp-300);
+  border: 0; border-left: 2px solid var(--gold); border-radius: 0; background: none; box-shadow: none;
+}
+
+/* MVP 2 */
+#pathos-iot .sys-panel h3.title-2 { font-family: var(--font-serif); font-size: 26px; line-height: 30px; font-weight: 400; }
+
+/* ---------- Partners ---------- */
+.partners-section .partner-rows {
+  padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
+  gap: 0 var(--sp-500); border-top: 1px solid var(--rule-strong);
+}
+.partners-section .partner-rows > li { padding: var(--sp-300) 0; border-bottom: 1px solid var(--rule); }
+.partners-section .partner-rows h3.title-2 { font-family: var(--font-serif); font-size: 26px; line-height: 30px; font-weight: 400; }
+.partners-section .press-strip .shot {
+  background: none; border: 0; border-radius: 18px; overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(210, 175, 112, 0.5), 0 28px 50px -30px rgba(20, 12, 6, 0.55);
+}
+.partners-section .press-strip .shot::before, .partners-section .press-strip .shot::after { display: none !important; }
+.partners-section .press-strip .shot-caption {
+  position: static; display: block; padding: var(--sp-150, 12px) var(--sp-200); background: var(--deep);
+}
+
+/* ---------- Problem ---------- */
+.problem .problem-cards { gap: 0; border-top: 1px solid var(--rule-strong); }
+.problem .problem-point {
+  padding: var(--sp-300) 0; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; box-shadow: none;
+}
+.problem .problem-point h3.title-2 { font-family: var(--font-serif); font-size: 26px; line-height: 30px; font-weight: 400; }
+
+/* ---------- Parts table ---------- */
+#sensors .sensor-table { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+#sensors .sensor-row { border-radius: 0 !important; border-bottom: 1px solid var(--rule) !important; padding-left: 0 !important; padding-right: 0 !important; }
+#sensors .sensor-row:hover:not(.sensor-row--head) { background: none !important; }
+#sensors .sensor-row--head { background: none !important; border-bottom: 1px solid var(--rule-strong) !important; color: var(--muted) !important; }
+#sensors .sensor-row h3.title-3 { font-family: var(--font-serif); font-size: 22px; line-height: 28px; font-weight: 400; }
+#sensors .parts-foot { padding-left: 0; padding-right: 0; border-top: 0; }
+
+/* ---------- Roadmap timeline (light) ---------- */
+.journey-section .log-panel { padding: var(--sp-100) 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.journey-section .log-panel li.is-next::before,
+.journey-section .log-panel li.is-next.is-reached::before { background: var(--bg) !important; box-shadow: inset 0 0 0 2px var(--gold) !important; }
+.journey-section .log-panel li.is-next:not(.is-reached)::before { box-shadow: inset 0 0 0 2px var(--rule-strong) !important; }
+.journey-section .log-panel li:has(+ li.is-next)::after,
+.journey-section .log-panel li.is-next::after { background: var(--rule) !important; }
+.journey-section .log-panel h3.title-2 { font-family: var(--font-serif); font-size: 24px; line-height: 28px; font-weight: 400; }
+
+/* ---------- Workshops ---------- */
+#workshops .ws-list { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; border-top: 1px solid var(--rule-strong); }
+#workshops .ws-list > li { border-radius: 0; background: none; border-bottom: 1px solid var(--rule); padding-left: 0; padding-right: 0; }
+#workshops .ws-list h3.title-2 { font-family: var(--font-serif); font-size: 24px; line-height: 28px; font-weight: 400; }
+
+/* ---------- How it works ---------- */
+.how .how-step { background: none !important; border: 0 !important; border-radius: 0 !important; border-top: 1px solid var(--rule) !important; box-shadow: none !important; transform: none !important; padding-left: 0 !important; }
+.how .how-steps > li:last-child .how-step { border-bottom: 1px solid var(--rule) !important; }
+.how .how-step.is-on .how-t { color: var(--gold); }
+.how .how-step::after { top: -1px; bottom: auto !important; }
+
+/* ---------- Founder ---------- */
+#team .founder--sys { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+#team .founder-photo { border-radius: 20px; box-shadow: 0 0 0 1px rgba(210, 175, 112, 0.5); }
+#team .founder-facts li { background: none !important; border: 1px solid var(--rule-strong) !important; }
+
+/* ---------- FAQ ---------- */
+.faq .faq-list { border-top: 1px solid var(--rule-strong); gap: 0 !important; }
+.faq .faq-item { border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; background: none; box-shadow: none; }
+.faq .faq-item summary { padding-left: 0; padding-right: 0; }
+.faq .faq-item .faq-a { padding-left: 0; padding-right: 0; }
+.faq .faq-item summary .title-2 { font-family: var(--font-serif); font-size: 24px; line-height: 30px; font-weight: 400; }
+
+/* ---------- Closing band: contact and footer on dark marble ---------- */
+#contact.band {
+  position: relative; isolation: isolate; color: var(--on-dark-2);
+  background:
+    linear-gradient(180deg, var(--bg) 0, rgba(11, 9, 8, 0) 1px),
+    linear-gradient(100deg, rgba(11, 9, 8, 0.95) 0%, rgba(11, 9, 8, 0.86) 55%, rgba(11, 9, 8, 0.62) 100%),
+    var(--deep) url('assets/marble.webp') 70% 30% / cover no-repeat;
+}
+#contact.band .edge-art { display: none; }
+#contact .contact--sys { padding: var(--sp-200) 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+#contact .contact--sys h2.heading-2 { font-size: clamp(40px, 4.4vw, 64px); line-height: 1; }
+.site-foot { background: var(--deep); padding: 0 !important; }
+.site-foot .foot-card { border-radius: 0 !important; box-shadow: none !important; border-top: 1px solid rgba(246, 239, 231, 0.1) !important; }
+
+/* ---------- Spawn: the new elements rise in too ---------- */
+.js :is(.slab, .partners-aside, .sys-note)[data-reveal].in {
+  animation: spawn 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d, 0ms) backwards;
+}
+#contact .contact--sys .contact-info > p.body-3.sec-tag { color: var(--on-dark-2) !important; }
+.how .how-scene.slab { background: var(--slab-bg-deep) !important; }
+/* Results: number above its label at every size. */
+.proof .proof-stats > li { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.proof .proof-n { white-space: nowrap; }
+@media (max-width: 860px) {
+  .proof .proof-stats > li { padding: var(--sp-300) var(--sp-200) var(--sp-200); }
+  .proof .proof-stats > li:nth-child(odd) { padding-left: 0; border-left: 0; }
+  .proof .proof-stats > li:nth-child(even) { border-left: 1px solid var(--rule); }
+  .proof .proof-n { font-size: clamp(36px, 10.5vw, 56px) !important; }
+}

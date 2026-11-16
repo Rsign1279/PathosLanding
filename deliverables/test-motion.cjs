@@ -26,9 +26,10 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) fails++
     return a.length > 0 && a !== z;
   };
 
-  // Hero: the ASCII hand animates and reacts to the pointer.
-  await p.waitForTimeout(1500);
-  ok(await moves('#heroAscii'), 'hero ASCII animates');
+  // Hero: the marble film plays on its own.
+  await p.waitForTimeout(2500);
+  const hv = await p.evaluate(() => { const v = document.getElementById('heroVideo'); return { paused: v.paused, t: v.currentTime, controls: v.controls, src: v.currentSrc }; });
+  ok(!hv.paused && hv.t > 0 && !hv.controls && /hero\.mp4/.test(hv.src), `hero film plays (t=${hv.t.toFixed(2)})`);
 
   // Cards spawn in.
   await go('#solution', -100);
@@ -60,6 +61,15 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) fails++
   // How it works: the finger scene animates.
   await go('#how', 50);
   ok(await moves('#howCanvas'), 'how-it-works finger animates');
+
+  // 3D: on laptops the pre-rendered film follows the scroll; the live scene
+  // isn't built until someone clicks or opens the 360 view.
+  await go('#prototype', 300);
+  await p.waitForFunction(() => (window.pathosPrototype?.stats.seqLoaded || 0) > 30, undefined, { timeout: 180000 });
+  const seqSnap = () => p.evaluate(() => document.querySelector('.hw-seq').toDataURL('image/jpeg', 0.5));
+  const s0 = await seqSnap(); await p.mouse.wheel(0, 900); await p.waitForTimeout(1500); const s1 = await seqSnap();
+  ok(s0 !== s1, '3D film follows the scroll');
+  ok(await p.evaluate(() => !window.pathosPrototype.stats.gl), 'live 3D waits until asked');
 
   // Film: plays on its own with no controls.
   await go('#film', -100); await p.waitForTimeout(3500);

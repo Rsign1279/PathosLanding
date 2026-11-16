@@ -367,7 +367,7 @@ async function initHalftones() {
   new IntersectionObserver(es => document.documentElement.classList.toggle('hero-off', !es[es.length - 1].isIntersecting)).observe(hero);
 
   let arts = [];
-  // The hero figures are now drawn by heroAscii.js; only the margin art
+  // The hero is the marble film (hero.js); only the margin art
   // (and its cursor handling below) remains here.
   if (!hand || !board) initEdgeArt(arts);
   else try {
