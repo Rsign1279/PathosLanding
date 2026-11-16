@@ -1,11 +1,14 @@
-// Failure modes for the 3D hardware section: missing model, failed Draco
+// Failure modes for the 3D hardware section. With the pre-rendered frames
+// unavailable (so the live scene must take over): missing model, failed Draco
 // decoder, and no WebGL. Each must keep the poster, show a clear message and
-// still move the chapter titles with the scroll.
+// still move the chapter titles with the scroll. Then no WebGL with the
+// frames available: the film still plays and the 360 button steps aside.
 const { chromium } = require('playwright');
 const ARGS = ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
 
 async function check(browser, mode) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await page.route(/assets\/hw-seq\//, r => r.fulfill({ status: 404, body: '' }));
   if (mode === 'missing-model') await page.route(/pathos-hardware\.glb$/, r => r.fulfill({ status: 404, body: '' }));
   if (mode === 'decoder-failure') await page.route(/draco_(decoder|wasm_wrapper)/, r => r.fulfill({ status: 404, body: '' }));
   if (mode === 'no-webgl') await page.addInitScript(() => {
@@ -29,10 +32,30 @@ async function check(browser, mode) {
   return { mode, passed: posterVisible && titleOn, posterVisible, titleOn };
 }
 
+async function checkSeqNoWebgl(browser) {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  const errors = []; page.on('pageerror', e => errors.push(e.message));
+  await page.addInitScript(() => {
+    const get = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (type, ...rest) { return /webgl/.test(type) ? null : get.call(this, type, ...rest); };
+  });
+  await page.goto('http://127.0.0.1:8000/#prototype');
+  await page.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
+  await page.waitForFunction(() => (window.pathosPrototype?.stats.seqLoaded || 0) > 10, undefined, { timeout: 180000 });
+  for (let i = 0; i < 6; i++) { await page.evaluate(() => scrollTo(0, window.pathosPrototype.scrollYForFrame(1300))); await page.waitForTimeout(400); }
+  const titleOn = await page.$eval('#hwHud .hw-chapter:nth-child(5)', el => el.classList.contains('is-on'));
+  await page.click('#hw360');
+  await page.waitForFunction(() => document.getElementById('hw360').hidden, undefined, { timeout: 120000 });
+  const stillFilm = await page.evaluate(() => window.pathosPrototype.state.mode === 'film' && getComputedStyle(document.querySelector('.hw-seq')).visibility !== 'hidden');
+  await page.close();
+  return { mode: 'no-webgl, frames available', passed: titleOn && stillFilm && !errors.length, titleOn, stillFilm, errors };
+}
+
 (async () => {
   const browser = await chromium.launch({ args: ARGS });
   const results = [];
   for (const mode of ['missing-model', 'decoder-failure', 'no-webgl']) results.push(await check(browser, mode));
+  results.push(await checkSeqNoWebgl(browser));
   console.log(JSON.stringify(results));
   await browser.close();
   if (results.some(r => !r.passed)) process.exit(1);

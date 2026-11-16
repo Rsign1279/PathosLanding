@@ -275,3 +275,19 @@
   .proof .proof-stats > li:nth-child(even) { border-left: 1px solid var(--rule); }
   .proof .proof-n { font-size: clamp(36px, 10.5vw, 56px) !important; }
 }
+/* The contact block is part of the band, not a card on it. */
+#contact .contact--sys { background: none !important; box-shadow: none !important; border: 0 !important; overflow: visible !important; isolation: auto !important; }
+#contact .contact--sys::before, #contact .contact--sys::after { display: none !important; }
+/* The band's marble fades to the deep tone at its foot, where the footer's
+   own drifting marble begins from the same deep tone: one closing area. */
+#contact.band {
+  background:
+    linear-gradient(180deg, var(--bg) 0, rgba(11, 9, 8, 0) 1px),
+    linear-gradient(180deg, rgba(11, 9, 8, 0) 62%, var(--deep) 100%),
+    linear-gradient(100deg, rgba(11, 9, 8, 0.95) 0%, rgba(11, 9, 8, 0.86) 55%, rgba(11, 9, 8, 0.62) 100%),
+    var(--deep) url('assets/marble.webp') 70% 30% / cover no-repeat;
+}
+.site-foot .foot-card { margin: 0 !important; max-width: none !important; border: 0 !important; }
+.site-foot .foot-card::before {
+  background: linear-gradient(180deg, var(--deep) 0%, rgba(11, 9, 8, 0.86) 24%, rgba(14, 10, 7, 0.34) 70%, rgba(14, 10, 7, 0.86) 100%) !important;
+}

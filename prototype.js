@@ -998,4 +998,7 @@ window.pathosPrototype = {
   frameAt, progressAt, scrollProgress, scrollYForFrame,
   get debug() { return { scene, camera, mixer, orbit, orbitCam, renderer }; },
   enterOrbit: () => enterOrbit(), exitOrbit: () => exitOrbit(),
+  // Tests: pose the live scene at the current frame (with the pre-rendered
+  // film it is only posed when picked or labelled).
+  sync: () => { if (mixer && mode === 'film' && !tween) apply(cur); },
 };

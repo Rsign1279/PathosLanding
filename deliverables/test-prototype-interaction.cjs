@@ -14,13 +14,21 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   await p.waitForFunction(() => window.pathosPrototype?.stats.ready, undefined, { timeout: 180000 });
   const settle = () => p.waitForFunction(() => { const s = window.pathosPrototype.state; return s.frame === s.target && !s.tweening && !s.rendering; }, undefined, { timeout: 900000, polling: 300 });
   const seek = async f => { for (let i = 0; i < 4; i++) { await p.evaluate(f => scrollTo(0, window.pathosPrototype.scrollYForFrame(f)), f); await p.waitForTimeout(300); } await p.waitForFunction(f => Math.abs(window.pathosPrototype.state.target - f) < 2, f, { timeout: 60000 }); await settle(); };
-  const pose = () => p.evaluate(() => { const { scene, camera } = window.pathosPrototype.debug; scene.updateMatrixWorld(true); const e = camera.matrixWorld.elements; const o = { cam: Array.from(e).map(v => +v.toFixed(5)) }; for (const n of ['ESP32_S3', 'TMP117', 'MAX30102', 'Laptop']) { const x = scene.getObjectByName(n); o[n] = x.matrixWorld.elements.slice(12, 15).map(v => +v.toFixed(5)); } o.frame = window.pathosPrototype.state.frame; return o; });
+  const pose = () => p.evaluate(() => { window.pathosPrototype.sync(); const { scene, camera } = window.pathosPrototype.debug; scene.updateMatrixWorld(true); const e = camera.matrixWorld.elements; const o = { cam: Array.from(e).map(v => +v.toFixed(5)) }; for (const n of ['ESP32_S3', 'TMP117', 'MAX30102', 'Laptop']) { const x = scene.getObjectByName(n); o[n] = x.matrixWorld.elements.slice(12, 15).map(v => +v.toFixed(5)); } o.frame = window.pathosPrototype.state.frame; return o; });
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   let v;
   const at = (fx, fy) => [v.x + v.width * fx, v.y + v.height * fy];
 
   await seek(1300);
   v = await p.locator('#hwView').boundingBox();
+  // On laptops the film is pre-rendered; a click on the picture builds the
+  // live scene (as a visitor's first click does).
+  const seqMode = await p.evaluate(() => window.pathosPrototype.state.seq);
+  ok(seqMode, 'desktop plays the pre-rendered film');
+  ok(await p.evaluate(() => !window.pathosPrototype.stats.gl), 'live scene not built before a click');
+  await p.mouse.click(...at(0.06, 0.62));
+  await p.waitForFunction(() => window.pathosPrototype.stats.gl, undefined, { timeout: 300000 });
+  await p.waitForTimeout(800); await settle();
   const base = await pose();
   // 1. Film mode: moving, dragging, clicking anywhere never moves the film.
   await p.mouse.move(...at(0.2, 0.2)); await p.mouse.move(...at(0.8, 0.7), { steps: 20 });
@@ -31,7 +39,7 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   ok(same(base, await pose()), 'film mode: pointer moves, drags and clicks leave camera and parts exactly where they were');
 
   // 2. Click a part: label appears with its name; clicking empty table clears it.
-  const pt = await p.evaluate(() => { const { scene, camera } = window.pathosPrototype.debug; const T = camera.position.constructor; const o = scene.getObjectByName('ESP32_S3'); let m = null; o.traverse(c => { if (!m && c.isMesh) m = c; }); m.geometry.computeBoundingBox(); const c = m.geometry.boundingBox.getCenter(new T()); m.localToWorld(c); c.project(camera); const r = document.getElementById('hwView').getBoundingClientRect(); return [r.left + (c.x * 0.5 + 0.5) * r.width, r.top + (-c.y * 0.5 + 0.5) * r.height]; });
+  const pt = await p.evaluate(() => { window.pathosPrototype.sync(); const { scene, camera } = window.pathosPrototype.debug; const T = camera.position.constructor; const o = scene.getObjectByName('ESP32_S3'); let m = null; o.traverse(c => { if (!m && c.isMesh) m = c; }); m.geometry.computeBoundingBox(); const c = m.geometry.boundingBox.getCenter(new T()); m.localToWorld(c); c.project(camera); const r = document.getElementById('hwView').getBoundingClientRect(); return [r.left + (c.x * 0.5 + 0.5) * r.width, r.top + (-c.y * 0.5 + 0.5) * r.height]; });
   await p.mouse.click(pt[0], pt[1]); await p.waitForTimeout(800);
   let st = await p.evaluate(() => ({ ...window.pathosPrototype.state, shown: !document.getElementById('hwLabel').hidden, text: document.querySelector('#hwLabel strong').textContent }));
   ok(st.shown && st.label === 'ESP32-S3', `click on the ESP32 labels it: ${st.text}`);
@@ -71,6 +79,19 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   await p.keyboard.press('Escape'); await p.waitForTimeout(1500); await settle();
   st = await p.evaluate(() => window.pathosPrototype.state);
   ok(st.mode === 'film' && !st.tweening, 'Esc returns to the film');
+  // 5. A click made before the live scene exists is answered once it's built.
+  const q = await b.newPage({ viewport: { width: 1280, height: 800 } });
+  q.on('pageerror', e => errs.push('q ' + e.message));
+  await q.goto('http://127.0.0.1:8000/#prototype'); await q.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
+  await q.waitForFunction(() => window.pathosPrototype?.stats.ready, undefined, { timeout: 180000 });
+  for (let i = 0; i < 4; i++) { await q.evaluate(() => scrollTo(0, window.pathosPrototype.scrollYForFrame(1300))); await q.waitForTimeout(300); }
+  await q.waitForFunction(() => { const s = window.pathosPrototype.state; return Math.abs(s.target - 1300) < 2 && s.frame === s.target; }, undefined, { timeout: 120000, polling: 300 });
+  const early = await q.evaluate(() => !window.pathosPrototype.stats.gl);
+  await q.mouse.click(pt[0], pt[1]);
+  await q.waitForFunction(() => !document.getElementById('hwLabel').hidden, undefined, { timeout: 300000 });
+  const lbl = await q.evaluate(() => window.pathosPrototype.state.label);
+  ok(early && lbl === 'ESP32-S3', `first click, before the live scene loads, labels the part once ready: ${lbl}`);
+
   ok(errs.length === 0, 'no errors ' + errs.join(' | '));
   await b.close();
 })();
