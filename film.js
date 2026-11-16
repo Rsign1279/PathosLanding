@@ -1,11 +1,10 @@
 /* ==========================================================================
    The PATHOS film: plays on its own, on every device.
 
-   The video is muted and loops, with no controls. This script:
-   - starts downloading it once the rest of the page has loaded, or as soon as
-     it is about a screen away, whichever comes first, so the 25 MB file never
-     competes with the page's first paint;
-   - plays it while it is on screen and pauses it off screen;
+   The video autoplays muted and loops with no controls (set in the markup,
+   so the browser starts it even before this script runs). This script:
+   - pauses it off screen and plays it on screen;
+   - restarts it if playback ever stalls while it is on screen;
    - moves the thin gold progress line.
    ========================================================================== */
 
@@ -16,17 +15,10 @@ const bar = document.getElementById('filmScrub');
 if (stage && video) {
   video.muted = true;
   video.controls = false;
-  let onScreen = false, loading = false, raf = 0;
+  let onScreen = false, raf = 0, lastT = -1, stuck = 0;
 
-  const load = () => {
-    if (loading) return;
-    loading = true;
-    video.preload = 'auto';
-    video.load();
-  };
   const tryPlay = () => {
-    if (!onScreen) return;
-    load();
+    if (!onScreen || document.hidden) return;
     const p = video.play();
     if (p && p.catch) p.catch(() => {});
   };
@@ -39,18 +31,22 @@ if (stage && video) {
   video.addEventListener('play', () => { if (!raf) raf = requestAnimationFrame(draw); });
   video.addEventListener('seeked', draw);
 
-  if (document.readyState === 'complete') load();
-  else addEventListener('load', load, { once: true });
-  new IntersectionObserver(es => {
-    if (es[es.length - 1].isIntersecting) load();
-  }, { rootMargin: '100% 0px' }).observe(stage);
-
   new IntersectionObserver(es => {
     onScreen = es[es.length - 1].isIntersecting;
     if (onScreen) tryPlay(); else video.pause();
   }, { threshold: 0.15 }).observe(stage);
 
-  // Some browsers hold playback until the data is ready.
+  // Watchdog: on screen but paused or frozen for ~3 s means something stopped
+  // it (a stall, a lost decoder, a browser pause); start it again.
+  setInterval(() => {
+    if (!onScreen || document.hidden) { stuck = 0; return; }
+    const frozen = video.paused || video.currentTime === lastT;
+    lastT = video.currentTime;
+    if (frozen && ++stuck >= 3) { stuck = 0; tryPlay(); }
+    else if (!frozen) stuck = 0;
+  }, 1000);
+
   video.addEventListener('canplay', tryPlay);
+  video.addEventListener('stalled', tryPlay);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) tryPlay(); });
 }

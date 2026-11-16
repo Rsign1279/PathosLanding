@@ -652,9 +652,10 @@ function initDevice() {
 
 function initImageLoading() {
   document.querySelectorAll('.shot img').forEach(img => {
+    // Photos are always visible; one that arrives after the page fades in.
     const done = () => img.classList.add('loaded');
     if (img.complete && img.naturalWidth > 0) return done();
-    img.addEventListener('load', done, { once: true });
+    img.addEventListener('load', () => { img.classList.add('fade-in'); done(); }, { once: true });
     img.addEventListener('error', () => {
       const shot = img.closest('.shot');
       if (shot) { shot.classList.add('is-missing'); shot.setAttribute('aria-disabled', 'true'); }
@@ -794,13 +795,21 @@ function initContactForm() {
 
 /* ---------- Init ---------- */
 
-initNav();
-initReveals();
-initHalftones();
-initDevice();
-initImageLoading();
-initLightbox();
-initContactForm();
+// Each part starts on its own, so one that fails on some browser can never
+// stop the rest (photos, the form, the intro) from working.
+const safely = (name, fn) => {
+  try {
+    const r = fn();
+    if (r && typeof r.catch === 'function') r.catch(err => console.warn(`PATHOS ${name}:`, err));
+  } catch (err) { console.warn(`PATHOS ${name}:`, err); }
+};
+safely('images', initImageLoading);
+safely('intro', startIntro);
+safely('nav', initNav);
+safely('reveals', initReveals);
+safely('art', initHalftones);
+safely('device', initDevice);
+safely('lightbox', initLightbox);
+safely('form', initContactForm);
 const year = document.getElementById('copyrightYear');
 if (year) year.textContent = new Date().getFullYear();
-startIntro();

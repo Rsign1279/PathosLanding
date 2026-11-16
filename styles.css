@@ -340,8 +340,10 @@ ol.grid { list-style: none; margin: 0; padding: 0; }
   transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
 }
 .shot:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -20px rgba(40,25,10,0.4); }
-.shot img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; opacity: 0; transform: scale(1.03); transition: opacity 0.6s var(--ease), transform 0.9s var(--ease); }
+.shot img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; transition: opacity 0.6s var(--ease), transform 0.9s var(--ease); }
 .shot img.loaded { opacity: 1; transform: none; }
+.shot img.fade-in { animation: img-in 0.6s var(--ease) both; }
+@keyframes img-in { from { opacity: 0; transform: scale(1.03); } to { opacity: 1; transform: none; } }
 .shot--portrait img { aspect-ratio: 952 / 1652; max-height: 520px; object-position: top; }
 .shot-caption { display: block; padding: 12px 14px 14px; }
 .shot-caption-text strong { display: block; font-size: 14px; font-weight: 500; color: var(--ink); }
