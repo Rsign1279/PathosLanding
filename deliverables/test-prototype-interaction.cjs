@@ -80,9 +80,10 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) process
   st = await p.evaluate(() => window.pathosPrototype.state);
   ok(st.mode === 'film' && !st.tweening, 'Esc returns to the film');
   // 5. A click made before the live scene exists is answered once it's built.
+  await p.close();   // free the software renderer before the second page
   const q = await b.newPage({ viewport: { width: 1280, height: 800 } });
   q.on('pageerror', e => errs.push('q ' + e.message));
-  await q.goto('http://127.0.0.1:8000/#prototype'); await q.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
+  await q.goto('http://127.0.0.1:8000/#prototype', { timeout: 180000 }); await q.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
   await q.waitForFunction(() => window.pathosPrototype?.stats.ready, undefined, { timeout: 180000 });
   for (let i = 0; i < 4; i++) { await q.evaluate(() => scrollTo(0, window.pathosPrototype.scrollYForFrame(1300))); await q.waitForTimeout(300); }
   await q.waitForFunction(() => { const s = window.pathosPrototype.state; return Math.abs(s.target - 1300) < 2 && s.frame === s.target; }, undefined, { timeout: 120000, polling: 300 });
